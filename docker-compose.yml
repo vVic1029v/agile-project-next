@@ -3,11 +3,11 @@ version: '3.8'
 services:
   db:
     image: postgres:13
-    container_name: nextjs-db
+    container_name: agile-db
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: yourpassword
-      POSTGRES_DB: nextjs_db
+      POSTGRES_PASSWORD: emDvuwU6
+      POSTGRES_DB: agile_db
     ports:
       - '5432:5432'
     volumes:
