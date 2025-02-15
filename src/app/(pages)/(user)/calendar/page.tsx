@@ -1,32 +1,26 @@
 import { NextResponse } from "next/server";
 import React from "react"
-import CalendarComp from "@/components/calendar/Calendar"
-import { getSession } from 'next-auth/react';
+import DemoWrapper from "@/components/calendar/DemoWrapper"
 import { getServerSession } from "next-auth/next"
 import {auth, authOptions} from "@/lib/auth"
+import { SnackProvider } from "@/app/SnackProvider";
+
+import AuthContent from "@/components/auth/AuthContent";
 
 export default async function CalendarPage(context: any) {
     const sess = await getServerSession(authOptions)
-    sess?.user?.email
 
     if (sess)
     {
         return(
-            <div className="">
-                <CalendarComp/>
-            </div>
+            <SnackProvider>
+                <DemoWrapper/>
+            </SnackProvider>
         )
     } else {
         return(
-            <>
-                <div className="">
-
-
-                </div>
-            </>
+            <AuthContent tryingToAccess={"the calendar"}/>
         )
     }
-    
-    
 }
   
