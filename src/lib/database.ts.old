@@ -1,0 +1,114 @@
+import { PrismaClient, UserType, EventType } from "@prisma/client";
+
+const prisma = new PrismaClient();
+
+// User Helpers
+export const createUser = async (
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string,
+  userType: UserType
+) => {
+  return await prisma.user.create({
+    data: { email, password, firstName, lastName, userType },
+  });
+};
+
+export const getUserById = async (id: string) => {
+  return await prisma.user.findUnique({ where: { id } });
+};
+
+export const deleteUser = async (id: string) => {
+  return await prisma.user.delete({ where: { id } });
+};
+
+// Student Helpers
+export const createStudent = async (userId: string, homeClassId?: string) => {
+  return await prisma.student.create({
+    data: { id: userId, homeClassId },
+  });
+};
+
+export const getStudentById = async (id: string) => {
+  return await prisma.student.findUnique({ where: { id }, include: { user: true, courses: true } });
+};
+
+// Teacher Helpers
+export const createTeacher = async (userId: string) => {
+  return await prisma.teacher.create({
+    data: { id: userId },
+  });
+};
+
+export const getTeacherById = async (id: string) => {
+  return await prisma.teacher.findUnique({ where: { id }, include: { user: true, courses: true } });
+};
+
+// Course Helpers
+export const createCourse = async (
+  subject: string,
+  teacherId: string,
+  homeClassId?: string
+) => {
+  return await prisma.course.create({
+    data: { subject, teacherId, homeClassId },
+  });
+};
+
+export const getCourseById = async (id: string) => {
+  return await prisma.course.findUnique({ where: { id }, include: { teacher: true, students: true } });
+};
+
+export const assignStudentToCourse = async (studentId: string, courseId: string) => {
+  return await prisma.course.update({
+    where: { id: courseId },
+    data: { students: { connect: { id: studentId } } },
+  });
+};
+
+// Event Helpers
+export const createEvent = async (
+  title: string,
+  type: EventType,
+  courseId: string,
+  description?: string,
+  timeSlotId?: string,
+  customDate?: Date
+) => {
+  return await prisma.event.create({
+    data: { title, type, courseId, description, timeSlotId, customDate },
+  });
+};
+
+export const getEventsByCourse = async (courseId: string) => {
+  return await prisma.event.findMany({ where: { courseId } });
+};
+
+// HomeClass Helpers
+export const createHomeClass = async (name: string, homeroomTeacherId?: string) => {
+  return await prisma.homeClass.create({
+    data: { name, homeroomTeacherId },
+  });
+};
+
+export const getHomeClassById = async (id: string) => {
+  return await prisma.homeClass.findUnique({ where: { id }, include: { students: true, schedule: true } });
+};
+
+// TimeSlot Helpers
+export const createTimeSlot = async (
+  dayOfWeek: number,
+  startTime: Date,
+  endTime: Date,
+  homeClassId: string,
+  courseId?: string
+) => {
+  return await prisma.timeSlot.create({
+    data: { dayOfWeek, startTime, endTime, homeClassId, courseId },
+  });
+};
+
+export const getTimeSlotsByHomeClass = async (homeClassId: string) => {
+  return await prisma.timeSlot.findMany({ where: { homeClassId } });
+};

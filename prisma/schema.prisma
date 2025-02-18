@@ -1,74 +1,123 @@
-generator client {
-  provider = "prisma-client-js"
-}
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-enum UserRole {
-  STUDENT
-  FACULTY
-	@@map("UserRole")
+generator client {
+  provider = "prisma-client-js"
 }
 
-model User {
-  id         String      @id @default(uuid())
-  name       String
-  email      String      @unique
-  password   String
-  createdAt  DateTime    @default(now())
-  role       UserRole
-  homeClass  HomeClass?  @relation(fields: [homeClassId], references: [id])
-  homeClassId String?
 
-  classes    UserClass[]  
-  titles     String[]
+model User {
+  id            String         @id @default(uuid())
+  email         String         @unique
+  password      String
+  firstName     String
+  lastName      String
+  userType      UserType
+  facultyMember FacultyMember?
+  student       Student?
+  events        Event[]        @relation("UserEvents")
+}
+
+model Student {
+  id          String          @id @default(uuid())
+  homeClassId String?
+  homeClass   HomeClass?      @relation(fields: [homeClassId], references: [id])
+  user        User            @relation(fields: [id], references: [id])
+  courses     StudentCourse[]
+}
+
+model FacultyMember {
+  id            String     @id @default(uuid())
+  titles        String?
+  courses       Course[]
+  user          User       @relation(fields: [id], references: [id])
+  homeroomClass HomeClass?
 }
 
 model HomeClass {
-  id       String     @id @default(uuid())
-  name     String
-  users    User[]     // HomeClass has many Users (one-to-many)
-  classes  Class[]    // HomeClass owns many Classes (one-to-many)
+  id                      String         @id @default(uuid())
+  name                    String
+  startYear               Int
+  homeroomFacultyMemberId String?        @unique
+  courses                 Course[]
+  homeroomFacultyMember   FacultyMember? @relation(fields: [homeroomFacultyMemberId], references: [id])
+  students                Student[]
+  schedule                TimeSlot[]
 }
 
-model Class {
-  id          String     @id @default(uuid())
-  name        String
-  homeClass   HomeClass? @relation(fields: [homeClassId], references: [id], onDelete: Cascade)  // Cascade delete when HomeClass is deleted
+model Course {
+  id              String          @id @default(uuid())
+  subject         String
+  facultyMemberId String
+  facultyMember   FacultyMember   @relation(fields: [facultyMemberId], references: [id])
+  homeClassId     String?
+  homeClass       HomeClass?      @relation(fields: [homeClassId], references: [id])
+  events          Event[]
+  students        StudentCourse[]
+  timeSlots       TimeSlot[]
+}
+
+model StudentCourse {
+  studentId String
+  courseId  String
+  role      CourseUserRole @default(MEMBER)
+  course    Course         @relation(fields: [courseId], references: [id])
+  student   Student        @relation(fields: [studentId], references: [id])
+
+  @@id([studentId, courseId])
+}
+
+model TimeSlot {
+  id          String    @id @default(uuid())
+
+  dayOfWeek   Int       // Store the day of the week (0-6, where 0 is Sunday, 1 is Monday, etc.)
+  periodOfDay Int       // Store the period of the day (e.g., 1 for the first period, 2 for the second, etc.)
+  startHour   Int       // Store the hour of the start time (relative to the start of the day)
+  startMinute Int       // Store the minute of the start time
+  endHour     Int       // Store the hour of the end time (relative to the start of the day)
+  endMinute   Int       // Store the minute of the end time
+
+  courseId    String
   homeClassId String?
-
-  users       UserClass[]  // Many-to-many relationship between Class and User
-
-  events      ClassEvent[]
+  events      Event[]
+  course      Course   @relation(fields: [courseId], references: [id])
+  homeClass   HomeClass? @relation(fields: [homeClassId], references: [id])
 }
 
-model UserClass {
-  userId  String
-  classId String
-  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+model Event {
+  id          String    @id @default(uuid())
+  title       String
+  type        EventType
+  description String?
 
-  @@id([userId, classId])  // Composite primary key
+  startTime   DateTime
+  endTime     DateTime
+  timeSlotId  String?
+  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
+  weekNumber  Int?
+  yearNumber  Int?
+
+  courseId    String
+  course      Course    @relation(fields: [courseId], references: [id])
+  users       User[]    @relation("UserEvents")
+}
+
+enum UserType {
+  STUDENT
+  FACULTYMEMBER
+  ADMIN
+}
+
+enum CourseUserRole {
+  MEMBER
+  MODERATOR
 }
 
 enum EventType {
-  TEST
   HOMEWORK
-  ANNOUNCEMENT
-	@@map("EventType")
-}
-
-model ClassEvent {
-  id        String      @id @default(uuid())
-  Class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)  
-  classId   String
-
-  role      EventType
-  postDate  DateTime    // Assuming this is a date or timestamp
-  dueDate   DateTime?
-  title     String
-  body      String
+  TEST
+  MISC
 }

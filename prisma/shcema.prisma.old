@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  FACULTY
+	@@map("UserRole")
+}
+
+model User {
+  id         String      @id @default(uuid())
+  name       String
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now())
+  role       UserRole
+  homeClass  HomeClass?  @relation(fields: [homeClassId], references: [id])
+  homeClassId String?
+
+  classes    UserClass[]  
+  titles     String[]
+}
+
+model HomeClass {
+  id       String     @id @default(uuid())
+  name     String
+  users    User[]     // HomeClass has many Users (one-to-many)
+  classes  Class[]    // HomeClass owns many Classes (one-to-many)
+}
+
+model Class {
+  id          String     @id @default(uuid())
+  name        String
+  homeClass   HomeClass? @relation(fields: [homeClassId], references: [id], onDelete: Cascade)  // Cascade delete when HomeClass is deleted
+  homeClassId String?
+
+  users       UserClass[]  // Many-to-many relationship between Class and User
+
+  events      ClassEvent[]
+}
+
+model UserClass {
+  userId  String
+  classId String
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  class   Class @relation(fields: [classId], references: [id], onDelete: Cascade)
+
+  @@id([userId, classId])  // Composite primary key
+}
+
+enum EventType {
+  TEST
+  HOMEWORK
+  ANNOUNCEMENT
+	@@map("EventType")
+}
+
+model ClassEvent {
+  id        String      @id @default(uuid())
+  Class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)  
+  classId   String
+
+  role      EventType
+  postDate  DateTime    // Assuming this is a date or timestamp
+  dueDate   DateTime?
+  title     String
+  body      String
+}
