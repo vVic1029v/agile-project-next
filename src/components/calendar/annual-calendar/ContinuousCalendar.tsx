@@ -125,7 +125,7 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
   }, []);
 
   return (
-    <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
+    <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl lg:px-[20vw] sm:px-[10vw]">
       <CalendarHeader
         selectedMonth={selectedMonth}
         monthOptions={monthOptions}

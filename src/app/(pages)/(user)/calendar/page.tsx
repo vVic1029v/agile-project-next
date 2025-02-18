@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import React from "react"
-import UserCalendar from "@/components/calendar/UserCalendar"
+import UserCalendar from "@/components/calendar/annual-calendar/UserCalendar"
 import { getServerSession } from "next-auth/next"
 import {auth, authOptions} from "@/lib/auth"
 import { SnackProvider } from "@/app/SnackProvider";

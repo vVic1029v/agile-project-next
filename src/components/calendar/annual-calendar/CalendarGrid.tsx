@@ -1,13 +1,13 @@
 // /components/Calendar/CalendarGrid.tsx
 import React, { useMemo } from 'react';
-import WeekRow from './WeekRow';
+import CalendarRow from './WeekRow';
 import { getDaysInYear, chunkDaysIntoWeeks } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
 
 export interface CalendarGridProps {
   year: number;
   onDayClick: (day: number, month: number, year: number) => void;
-  dayRefs: React.MutableRefObject<(HTMLDivElement | null)[]>;
+  dayRefs: React.RefObject <(HTMLDivElement | null)[]>;
   events?: { [key: string]: Array<{ icon: string; color: string }> };
 }
 
@@ -23,7 +23,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   return (
     <>
       {weeks.map((week, weekIndex) => (
-        <WeekRow
+        <CalendarRow
           key={weekIndex}
           week={week}
           weekIndex={weekIndex}

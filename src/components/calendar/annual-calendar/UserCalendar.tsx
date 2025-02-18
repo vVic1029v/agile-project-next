@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { ContinuousCalendar } from "@/components/calendar/ContinuousCalendar";
+import { ContinuousCalendar } from "@/components/calendar/annual-calendar/ContinuousCalendar";
 import ModalBody from "./ModalBody";
 import { useSession } from "next-auth/react";
 
@@ -167,7 +167,7 @@ export default function UserCalendar() {
           isModalOpen ? "pointer-events-none" : ""
         }`}
       >
-        <div className="relative h-full w-4/6 overflow-auto mt-20">
+        <div className="relative h-full w-full overflow-auto mt-10">
           <ContinuousCalendar
             onClick={handleDayClick}
             events={eventIconsMapping}
