@@ -10,9 +10,10 @@ export interface DayCellProps {
     index: number;
     isNewMonth: boolean;
     isToday: boolean;
-    onClick: (day: number, month: number, week: number, year: number) => void;
+    onClick: (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => void;
     dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
     year: number;
+    dayWeek: number,
     events?: EventTimeSlot[];
 }
 
@@ -24,6 +25,7 @@ const CalendarDayCell: React.FC<DayCellProps> = ({
     onClick,
     dayRefs,
     year,
+    dayWeek,
     events,
 }) => { // sm:-m-px sm:size-20 sm:rounded-2xl sm:border-2 lg:size-36 lg:rounded-3xl 2xl:size-40
     return (
@@ -33,7 +35,7 @@ const CalendarDayCell: React.FC<DayCellProps> = ({
             }}
             data-month={dayObj.month}
             data-day={dayObj.day}
-            onClick={() => onClick(dayObj.day, dayObj.month, dayObj.week, year)}
+            onClick={() => onClick(dayObj.day, dayObj.month, dayObj.week, year, dayWeek)}
             className="relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400
             sm:-m-px rounded-3xl size-40"
         >

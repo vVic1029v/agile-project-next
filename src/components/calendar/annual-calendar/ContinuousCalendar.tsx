@@ -8,7 +8,7 @@ import { monthNames } from '@/lib/calendarUtils';
 import { YearCell } from '../useCalendar';
 
 export interface ContinuousCalendarProps {
-  onClick?: (_day: number, _month: number, _week: number, _year: number) => void;
+  onClick?: (_dayMonth: number, _month: number, _week: number, _year: number, _dayWeek: number) => void;
   // Optional events mapping by date key (format: "YYYY-MM-DD")
   events: Record<number, YearCell>;
 }
@@ -77,12 +77,12 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
     setYear(today.getFullYear());
     scrollToDay(today.getMonth(), today.getDate());
   };
-  const handleDayClick = (day: number, month: number, week: number, year: number) => {
+  const handleDayClick = (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => {
     if (!onClick) return;
     if (month < 0) {
-      onClick(day, 11, 0, year - 1);
+      onClick(dayMonth, 11, 0, year - 1, dayWeek);
     } else {
-      onClick(day, month, week, year);
+      onClick(dayMonth, month, week, year, dayWeek);
     }
   };
 

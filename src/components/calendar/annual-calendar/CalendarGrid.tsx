@@ -6,7 +6,7 @@ import { YearCell } from '../useCalendar';
 
 export interface CalendarGridProps {
   year: number;
-  onDayClick: (day: number, month: number, yearWeek: number, year: number) => void;
+  onDayClick: (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   events?: Record<number, YearCell>;
 }

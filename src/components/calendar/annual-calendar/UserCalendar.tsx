@@ -6,7 +6,7 @@ import { ContinuousCalendar } from "@/components/calendar/annual-calendar/Contin
 import ModalBody from "./ModalBody";
 import { useSession } from "next-auth/react";
 import { useCalendar } from "../useCalendar";
-import { getISOWeekNumber } from "@/lib/calendarUtils";
+import { getWeekAndDay } from "@/lib/calendarUtils";
 
 const monthNames = [
   "January", "February", "March", "April", "May", "June", "July",
@@ -20,7 +20,7 @@ export default function UserCalendar() {
   const { data: session, status } = useSession();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<{ day: number; month: number; year: number; week: number } | null>(null);
+  const [selectedDate, setSelectedDate] = useState<{ dayMonth: number; month: number; year: number; week: number; dayWeek: number} | null>(null);
 
   const { timeCells, courses } = useCalendar(session?.user.id);
 
@@ -28,22 +28,21 @@ export default function UserCalendar() {
     if (!session?.user?.id) return;
     const dateParam = searchParams.get("date");
     if (dateParam) {
-      const [year, month, day] = dateParam.split("-").map(Number);
-      const week = getISOWeekNumber(year, month, day);
-
-      //setSelectedDate({ day, month: month - 1, year, week });
+      const [year, month, day] = dateParam.split("-").map(Number); 
+      const {week, dayWeek} = getWeekAndDay(year, month, day);
+      setSelectedDate({ dayMonth: day, month: month - 1, year, week: week - 1, dayWeek });
 
       setIsModalOpen(true);
     }
   }, [searchParams, session?.user?.id]);
 
-  const handleDayClick = (day: number, month: number, weekNumber: number, year: number) => {
+  const handleDayClick = (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => {
     if (!session?.user?.id) return;
     
-    const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayMonth).padStart(2, "0")}`; // -${String(week).padStart(2, "0")}
     router.push(`${pathname}?date=${dateString}`, { scroll: false });
 
-    setSelectedDate({ day, month, year, week: weekNumber });
+    setSelectedDate({ dayMonth: dayMonth, month, year, week: week - 1, dayWeek});
 
     setIsModalOpen(true);
   };
@@ -64,7 +63,7 @@ export default function UserCalendar() {
               ✕
             </button>
               <ModalBody
-              selectedDate={{ year: selectedDate.year, yearWeek: selectedDate.week, day: selectedDate.day, month: selectedDate.month }}
+              selectedDate={selectedDate}
               timeCells={timeCells}
             />
             

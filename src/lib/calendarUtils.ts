@@ -130,13 +130,19 @@ export function getTimeCellDates(timeCell: TimeCell) {
 }
 
 
-export function getISOWeekNumber(year: number, month: number, day: number): number {
-  const date = new Date(year, month - 1, day); // Month is 0-indexed
-  const tempDate = new Date(date.valueOf());
-  tempDate.setDate(date.getDate() - date.getDay() + 3); // Adjust for the week starting on Monday
+export function getWeekAndDay(year: number, month: number, day: number): { week: number, dayWeek: number } {
+  // Create a Date object from the input
+  const date = new Date(year, month - 1, day);
 
-  const firstThursday = tempDate.getDate();
-  const weekNumber = Math.ceil((date.getDate() - firstThursday + 1) / 7);
+  // Calculate the day of the week, making Monday 0 and Sunday 6
+  const dayWeek = (date.getDay() + 6) % 7;
 
-  return weekNumber;
+  // Calculate week number based on ISO week date system
+  const jan4 = new Date(date.getFullYear(), 0, 4);
+  const startOfYear = new Date(jan4.getFullYear(), 0, 1);
+  const daysSinceStartOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
+  const firstWeekDay = (jan4.getDay() + 6) % 7;
+  const week = Math.floor((daysSinceStartOfYear + firstWeekDay) / 7) + 1;
+
+  return { week, dayWeek };
 }

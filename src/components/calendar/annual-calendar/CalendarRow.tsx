@@ -8,7 +8,7 @@ export interface CalendarRowProps {
   week: DayObj[];
   weekIndex: number;
   days: DayObj[];
-  onDayClick: (day: number, month: number, week: number, year: number) => void;
+  onDayClick: (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   events?: DayCell[];
@@ -78,6 +78,7 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
               onClick={onDayClick}
               dayRefs={dayRefs}
               year={year}
+              dayWeek={dayIndex}
               events={dayEvents}
             />
           );
