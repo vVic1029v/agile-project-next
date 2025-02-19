@@ -1,15 +1,14 @@
 import React from "react";
-import { YearCell } from "../useCalendar";
+import { YearCell } from "./useCalendar";
 import { EventTimeSlot } from "calendar-types";
-import { getWeekAndDay } from "@/lib/calendarUtils";
 
 
-interface ModalBodyProps {
+interface CalendarDayModalProps {
   selectedDate: { dayMonth: number; month: number; year: number; week: number; dayWeek: number}
   timeCells: Record<number, YearCell>;
 }
 
-const ModalBody: React.FC<ModalBodyProps> = React.memo(({ selectedDate, timeCells }) => {
+const CalendarDayModal: React.FC<CalendarDayModalProps> = React.memo(({ selectedDate, timeCells }) => {
   const events: EventTimeSlot[] = timeCells[selectedDate.year]?.[selectedDate.week]?.[selectedDate.dayWeek] || [];
   console.log("Rendering ModalBody", events);
 
@@ -35,5 +34,5 @@ const ModalBody: React.FC<ModalBodyProps> = React.memo(({ selectedDate, timeCell
   );
 });
 
-export default ModalBody;
+export default CalendarDayModal;
 

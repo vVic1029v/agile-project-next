@@ -1,23 +1,23 @@
 import React, { useMemo } from 'react';
-import CalendarRow from './CalendarRow';
+import YearCalendarRow from './YearCalendarRow';
 import { getDaysInYear, chunkDaysIntoWeeks } from '@/lib/calendarUtils';
 import { YearCell } from '../useCalendar';
 
-export interface CalendarGridProps {
+export interface YearCalendarGridProps {
   year: number;
   onDayClick: (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   events?: Record<number, YearCell>;
 }
 
-const CalendarGrid: React.FC<CalendarGridProps> = ({ year, onDayClick, dayRefs, events }) => {
+const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({ year, onDayClick, dayRefs, events }) => {
   const days = useMemo(() => getDaysInYear(year), [year]);
   const weeks = useMemo(() => chunkDaysIntoWeeks(days), [days]);
 
   return (
     <>
       {weeks.map((week, weekIndex) => (
-        <CalendarRow
+        <YearCalendarRow
           key={weekIndex}
           week={week}
           weekIndex={weekIndex}
@@ -32,4 +32,4 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({ year, onDayClick, dayRefs, 
   );
 };
 
-export default CalendarGrid;
+export default YearCalendarGrid;

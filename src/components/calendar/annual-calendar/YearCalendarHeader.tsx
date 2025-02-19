@@ -3,7 +3,7 @@ import React from 'react';
 import Select from '../../Common/Select';
 import { daysOfWeek } from '@/lib/calendarUtils';
 
-export interface CalendarHeaderProps {
+export interface YearCalendarHeaderProps {
     selectedMonth: number;
     monthOptions: { name: string; value: string }[];
     onMonthChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
@@ -13,7 +13,7 @@ export interface CalendarHeaderProps {
     year: number;
 }
 
-const CalendarHeader: React.FC<CalendarHeaderProps> = ({
+const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
     selectedMonth,
     monthOptions,
     onMonthChange,
@@ -131,4 +131,4 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
     );
 };
 
-export default CalendarHeader;
+export default YearCalendarHeader;

@@ -1,17 +1,17 @@
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
-import CalendarHeader from './CalendarHeader';
-import CalendarGrid from './CalendarGrid';
+import YearCalendarHeader from './YearCalendarHeader';
+import YearCalendarGrid from './YearCalendarGrid';
 import { monthNames } from '@/lib/calendarUtils';
 import { YearCell } from '../useCalendar';
 
-export interface ContinuousCalendarProps {
+export interface YearCalendarProps {
   onClick?: (dayMonth: number, month: number, week: number, year: number, dayWeek: number) => void;
   events: Record<number, YearCell>;
 }
 
-export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick, events }) => {
+export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events }) => {
   const today = new Date();
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [year, setYear] = useState<number>(today.getFullYear());
@@ -96,7 +96,7 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
 
   return (
     <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl lg:px-[20vw] sm:px-[10vw]">
-      <CalendarHeader
+      <YearCalendarHeader
         selectedMonth={selectedMonth}
         monthOptions={monthOptions}
         onMonthChange={handleMonthChange}
@@ -106,10 +106,10 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
         year={year}
       />
       <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">
-        <CalendarGrid year={year} onDayClick={handleDayClick} dayRefs={dayRefs} events={events} />
+        <YearCalendarGrid year={year} onDayClick={handleDayClick} dayRefs={dayRefs} events={events} />
       </div>
     </div>
   );
 };
 
-export default ContinuousCalendar;
+export default YearCalendar;

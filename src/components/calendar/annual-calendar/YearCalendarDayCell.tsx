@@ -5,7 +5,7 @@ import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '../useCalendar';
 import { EventTimeSlot } from 'calendar-types';
 
-export interface DayCellProps {
+export interface YearDayCellProps {
     dayObj: DayObj;
     index: number;
     isNewMonth: boolean;
@@ -17,7 +17,7 @@ export interface DayCellProps {
     events?: EventTimeSlot[];
 }
 
-const CalendarDayCell: React.FC<DayCellProps> = ({
+const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
     dayObj,
     index,
     isNewMonth,
@@ -104,4 +104,4 @@ const CalendarDayCell: React.FC<DayCellProps> = ({
 
 
 
-export default CalendarDayCell;
+export default YearCalendarDayCell;

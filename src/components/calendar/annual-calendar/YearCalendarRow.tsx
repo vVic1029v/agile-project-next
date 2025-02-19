@@ -1,9 +1,9 @@
 import React from 'react';
-import CalendarDayCell from './CalendarDayCell';
+import YearCalendarDayCell from './YearCalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '../useCalendar';
 
-export interface CalendarRowProps {
+export interface YearCalendarRowProps {
   week: DayObj[];
   weekIndex: number;
   days: DayObj[];
@@ -13,7 +13,7 @@ export interface CalendarRowProps {
   events?: DayCell[];
 }
 
-const CalendarRow: React.FC<CalendarRowProps> = ({
+const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   week,
   weekIndex,
   days,
@@ -54,7 +54,7 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
           const dayEvents = events?.[dayIndex] ?? [];
 
           return (
-            <CalendarDayCell
+            <YearCalendarDayCell
               key={`${dayObj.month}-${dayObj.day}-${index}`}
               dayObj={dayObj}
               index={index}
@@ -73,4 +73,4 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
   );
 };
 
-export default CalendarRow;
+export default YearCalendarRow;
