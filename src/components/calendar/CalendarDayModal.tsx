@@ -1,6 +1,5 @@
 import React from "react";
-import { YearCell } from "./useCalendar";
-import { EventTimeSlot } from "calendar-types";
+import { EventTimeSlot, YearCell } from "./useCalendar";
 
 
 interface CalendarDayModalProps {

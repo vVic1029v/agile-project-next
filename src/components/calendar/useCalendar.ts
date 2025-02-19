@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
-import { Course } from "@prisma/client";
-import { EventTimeSlot } from "calendar-types";
+import { Course, Prisma } from "@prisma/client";
 
+export type EventTimeSlot = Prisma.EventGetPayload<{ include: { timeSlot: true } }>
 export type DayCell = EventTimeSlot[] | null;
 export type WeekCell = DayCell[] | null;
 export type YearCell = WeekCell[] | null;

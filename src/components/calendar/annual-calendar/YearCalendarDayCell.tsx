@@ -2,8 +2,7 @@
 import React, { ReactNode } from 'react';
 import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
-import { DayCell } from '../useCalendar';
-import { EventTimeSlot } from 'calendar-types';
+import { EventTimeSlot } from '../useCalendar';
 
 export interface YearDayCellProps {
     dayObj: DayObj;

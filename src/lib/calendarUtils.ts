@@ -1,4 +1,3 @@
-import { TimeCell } from "calendar-types";
 
 // /utils/calendarUtils.ts
 export interface DayObj {
@@ -115,19 +114,19 @@ export const chunkDaysIntoWeeks = (days: DayObj[]): DayObj[][] => {
 
 
 
-export function getTimeCellDates(timeCell: TimeCell) {
-  const { timeSlot, yearNumber, weekNumber } = timeCell;
-  const firstDayOfYear = new Date(yearNumber, 0, 1);
-  const dayOffset = (weekNumber - 1) * 7 + timeSlot.dayOfWeek;
-  const startDate = new Date(firstDayOfYear);
-  startDate.setDate(firstDayOfYear.getDate() + dayOffset);
-  startDate.setHours(timeSlot.startHour, timeSlot.startMinute, 0, 0);
+// export function getTimeCellDates(timeCell: TimeCell) {
+//   const { timeSlot, yearNumber, weekNumber } = timeCell;
+//   const firstDayOfYear = new Date(yearNumber, 0, 1);
+//   const dayOffset = (weekNumber - 1) * 7 + timeSlot.dayOfWeek;
+//   const startDate = new Date(firstDayOfYear);
+//   startDate.setDate(firstDayOfYear.getDate() + dayOffset);
+//   startDate.setHours(timeSlot.startHour, timeSlot.startMinute, 0, 0);
 
-  const endDate = new Date(startDate);
-  endDate.setHours(timeSlot.endHour, timeSlot.endMinute, 0, 0);
+//   const endDate = new Date(startDate);
+//   endDate.setHours(timeSlot.endHour, timeSlot.endMinute, 0, 0);
 
-  return { startDate, endDate };
-}
+//   return { startDate, endDate };
+// }
 
 
 export function getWeekAndDay(year: number, month: number, day: number): { week: number, dayWeek: number } {
