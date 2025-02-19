@@ -37,7 +37,7 @@ const CalendarDayCell: React.FC<DayCellProps> = ({
             data-day={dayObj.day}
             onClick={() => onClick(dayObj.day, dayObj.month, dayObj.week, year, dayWeek)}
             className="relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400
-            sm:-m-px rounded-3xl size-40"
+             rounded-3xl size-[15vh]"
         >
             <span
                 className={`absolute left-1 top-1 flex size-5 items-center justify-center rounded-full text-xs sm:size-6 sm:text-sm lg:left-2 lg:top-2 lg:size-8 lg:text-base ${isToday ? 'bg-blue-500 font-semibold text-white' : ''
@@ -97,11 +97,6 @@ const CalendarDayCell: React.FC<DayCellProps> = ({
                     ))}
                 </div>
             )}
-
-
-
-
-
         </div>
     );
 };

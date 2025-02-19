@@ -25,18 +25,18 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
   const now = new Date();
 
   return (
-    <div className="relative flex w-full items-center" key={`week-${weekIndex}`} style={{ maxWidth: "100%", maxHeight: "1%" }}>
+    <div className="relative flex w-full items-center" key={`week-${weekIndex}`}>
       <button
         type="button"
         style={{
           WebkitMaskImage: "linear-gradient(to left, black 1%, transparent 50%)",
           maskImage: "linear-gradient(to left, black 1%, transparent 50%)",
         }}
-        className="absolute left-0 -translate-x-full m-[-0.5px] group aspect-square w-full grow cursor-pointer 
-                   rounded-xl border font-medium transition-all opacity-20 
+        className="absolute left-0 -translate-x-full m-[-0.5px] group aspect-square grow cursor-pointer 
+                  border font-medium transition-all opacity-20 w-30
                    hover:z-20 hover:border-cyan-400 hover:opacity-100
-                   sm:-m-px sm:size-20 sm:rounded-2xl sm:border-2 
-                   lg:size-36 lg:rounded-3xl 2xl:size-40"
+                   sm:-m-px sm:border-2 
+                   rounded-3xl size-[15vh]"
         onClick={() => {}}
       >
         <span
