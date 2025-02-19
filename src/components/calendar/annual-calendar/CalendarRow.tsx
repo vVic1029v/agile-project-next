@@ -28,6 +28,10 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
     <div className="relative flex w-full items-center" key={`week-${weekIndex}`} style={{ maxWidth: "100%", maxHeight: "1%" }}>
       <button
         type="button"
+        style={{
+          WebkitMaskImage: "linear-gradient(to left, black 1%, transparent 50%)",
+          maskImage: "linear-gradient(to left, black 1%, transparent 50%)",
+        }}
         className="absolute left-0 -translate-x-full m-[-0.5px] group aspect-square w-full grow cursor-pointer 
                    rounded-xl border font-medium transition-all opacity-20 
                    hover:z-20 hover:border-cyan-400 hover:opacity-100

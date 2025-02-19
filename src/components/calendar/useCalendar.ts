@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Course } from "@prisma/client";
 import { EventTimeSlot } from "calendar-types";
 
-// Define types so that an empty array becomes null.
 export type DayCell = EventTimeSlot[] | null;
 export type WeekCell = DayCell[] | null;
 export type YearCell = WeekCell[] | null;
@@ -32,12 +31,10 @@ export function useCalendar(userId?: string): {
         const { courses } = coursesData;
 
         // Group events by year, then by week, then by day-of-week.
-        // Nested structure: year -> week -> day.
         const yearMap = new Map<number, Map<number, Map<number, EventTimeSlot[]>>>();
 
         events.forEach((event) => {
           const { yearNumber, weekNumber } = event;
-          // Assuming dayOfWeek is a number (0 = Sunday, …, 6 = Saturday)
           const dayOfWeek = event.timeSlot.dayOfWeek;
 
           if (!yearMap.has(yearNumber)) {
@@ -60,35 +57,29 @@ export function useCalendar(userId?: string): {
         const yearCells: Record<number, YearCell> = {};
 
         yearMap.forEach((weekMap, yearNumber) => {
-          // Determine the maximum week number for this year.
           const weekNumbers = Array.from(weekMap.keys());
           const maxWeekNumber = Math.max(...weekNumbers);
 
-          // Initialize weeks: if a week has no events, its slot remains null.
           const weeks: WeekCell[] = Array.from({ length: maxWeekNumber }, () => null);
 
-          // Process each week that has events.
           weekMap.forEach((dayMap, weekNumber) => {
             if (dayMap.size > 0) {
-              // Build an array for days (indices 0-6: Sunday to Saturday)
               const days: DayCell[] = [];
               for (let day = 0; day < 7; day++) {
                 const eventsForDay = dayMap.get(day) || [];
-                // If there are events, keep the array; if not, assign null.
                 days[day] = eventsForDay.length > 0 ? eventsForDay : null;
               }
               weeks[weekNumber - 1] = days;
             }
           });
 
-          // Optional: if every week in this year is null, assign yearCell as null.
           const yearCell: YearCell = weeks.some((week) => week !== null) ? weeks : null;
           yearCells[yearNumber] = yearCell;
         });
 
+        // Only update state if the data has changed.
         setTimeCells(yearCells);
         setCourses(courses);
-        console.log(yearCells);
       } catch (error) {
         console.error("Error fetching calendar data:", error);
         setTimeCells({});
@@ -99,5 +90,9 @@ export function useCalendar(userId?: string): {
     fetchCalendarData();
   }, [userId]);
 
-  return { timeCells, courses };
+  // Memoize timeCells and courses to avoid unnecessary recalculations
+  const memoizedTimeCells = useMemo(() => timeCells, [timeCells]);
+  const memoizedCourses = useMemo(() => courses, [courses]);
+
+  return { timeCells: memoizedTimeCells, courses: memoizedCourses };
 }

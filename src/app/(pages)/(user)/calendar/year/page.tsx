@@ -11,7 +11,6 @@ import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 
 export default async function CalendarPage(context: any) {
     const sess = await getServerSession(authOptions)
-
     if (sess)
     {
         return(

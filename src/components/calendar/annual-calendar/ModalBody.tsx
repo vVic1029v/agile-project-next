@@ -9,9 +9,9 @@ interface ModalBodyProps {
   timeCells: Record<number, YearCell>;
 }
 
-const ModalBody: React.FC<ModalBodyProps> = ({ selectedDate, timeCells }) => {
+const ModalBody: React.FC<ModalBodyProps> = React.memo(({ selectedDate, timeCells }) => {
   const events: EventTimeSlot[] = timeCells[selectedDate.year]?.[selectedDate.week]?.[selectedDate.dayWeek] || [];
-  console.log(timeCells, selectedDate)
+  console.log("Rendering ModalBody", events);
 
   return (
     <div className="p-5 sm:p-6">
@@ -33,6 +33,7 @@ const ModalBody: React.FC<ModalBodyProps> = ({ selectedDate, timeCells }) => {
       </div>
     </div>
   );
-};
+});
 
 export default ModalBody;
+

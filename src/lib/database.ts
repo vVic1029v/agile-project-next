@@ -96,7 +96,6 @@ export async function postNewCourse(
   const timeSlotsData = createScheduleTimeSlots(weekScheduleId, course.id, homeClassId)
 
   // Create multiple time slots in the database
-  console.log(timeSlotsData)
   await prisma.timeSlot.createMany({
     data: timeSlotsData
   });
