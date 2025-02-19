@@ -1,4 +1,3 @@
-// /components/Calendar/CalendarGrid.tsx
 import React, { useMemo } from 'react';
 import CalendarRow from './CalendarRow';
 import { getDaysInYear, chunkDaysIntoWeeks } from '@/lib/calendarUtils';
@@ -11,33 +10,24 @@ export interface CalendarGridProps {
   events?: Record<number, YearCell>;
 }
 
-const CalendarGrid: React.FC<CalendarGridProps> = ({
-  year,
-  onDayClick,
-  dayRefs,
-  events,
-}) => {
+const CalendarGrid: React.FC<CalendarGridProps> = ({ year, onDayClick, dayRefs, events }) => {
   const days = useMemo(() => getDaysInYear(year), [year]);
   const weeks = useMemo(() => chunkDaysIntoWeeks(days), [days]);
 
   return (
     <>
-      {weeks.map((week, weekIndex) => {
-        const weekEvents = events?.[year]?.[weekIndex] ?? [];
-
-        return (
-          <CalendarRow
-            key={weekIndex}
-            week={week}
-            weekIndex={weekIndex}
-            days={days}
-            onDayClick={onDayClick}
-            dayRefs={dayRefs}
-            year={year}
-            events={weekEvents}
-          />
-        );
-      })}
+      {weeks.map((week, weekIndex) => (
+        <CalendarRow
+          key={weekIndex}
+          week={week}
+          weekIndex={weekIndex}
+          days={days}
+          onDayClick={onDayClick}
+          dayRefs={dayRefs}
+          year={year}
+          events={events?.[year]?.[weekIndex] ?? []}
+        />
+      ))}
     </>
   );
 };

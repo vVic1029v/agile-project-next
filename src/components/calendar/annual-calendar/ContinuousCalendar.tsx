@@ -1,4 +1,3 @@
-// /components/Calendar/ContinuousCalendar.tsx
 'use client';
 
 import React, { useEffect, useRef, useState } from 'react';
@@ -8,8 +7,7 @@ import { monthNames } from '@/lib/calendarUtils';
 import { YearCell } from '../useCalendar';
 
 export interface ContinuousCalendarProps {
-  onClick?: (_dayMonth: number, _month: number, _week: number, _year: number, _dayWeek: number) => void;
-  // Optional events mapping by date key (format: "YYYY-MM-DD")
+  onClick?: (dayMonth: number, month: number, week: number, year: number, dayWeek: number) => void;
   events: Record<number, YearCell>;
 }
 
@@ -18,24 +16,23 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [year, setYear] = useState<number>(today.getFullYear());
   const [selectedMonth, setSelectedMonth] = useState<number>(0);
+
   const monthOptions = monthNames.map((month, index) => ({
     name: month,
-    value: `${index}`,
+    value: index.toString(),
   }));
 
   /* -----------------------------
      EVENT HANDLERS & SCROLLING
   ------------------------------ */
   const scrollToDay = (monthIndex: number, dayIndex: number) => {
-    const targetDayIndex = dayRefs.current.findIndex(
+    const targetElement = dayRefs.current.find(
       (ref) =>
-        ref &&
-        ref.getAttribute('data-month') === `${monthIndex}` &&
-        ref.getAttribute('data-day') === `${dayIndex}`
+        ref?.getAttribute('data-month') === monthIndex.toString() &&
+        ref?.getAttribute('data-day') === dayIndex.toString()
     );
-    const targetElement = dayRefs.current[targetDayIndex];
 
-    if (targetDayIndex !== -1 && targetElement) {
+    if (targetElement) {
       const container = document.querySelector('.calendar-container');
       const elementRect = targetElement.getBoundingClientRect();
       const is2xl = window.matchMedia('(min-width: 1536px)').matches;
@@ -43,25 +40,11 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
 
       if (container) {
         const containerRect = container.getBoundingClientRect();
-        const offset =
-          elementRect.top -
-          containerRect.top -
-          containerRect.height / offsetFactor +
-          elementRect.height / 2;
-        container.scrollTo({
-          top: container.scrollTop + offset,
-          behavior: 'smooth',
-        });
+        const offset = elementRect.top - containerRect.top - containerRect.height / offsetFactor + elementRect.height / 2;
+        container.scrollTo({ top: container.scrollTop + offset, behavior: 'smooth' });
       } else {
-        const offset =
-          window.scrollY +
-          elementRect.top -
-          window.innerHeight / offsetFactor +
-          elementRect.height / 2;
-        window.scrollTo({
-          top: offset,
-          behavior: 'smooth',
-        });
+        const offset = window.scrollY + elementRect.top - window.innerHeight / offsetFactor + elementRect.height / 2;
+        window.scrollTo({ top: offset, behavior: 'smooth' });
       }
     }
   };
@@ -78,11 +61,8 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
     scrollToDay(today.getMonth(), today.getDate());
   };
   const handleDayClick = (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => {
-    if (!onClick) return;
-    if (month < 0) {
-      onClick(dayMonth, 11, 0, year - 1, dayWeek);
-    } else {
-      onClick(dayMonth, month, week, year, dayWeek);
+    if (onClick) {
+      onClick(dayMonth, month < 0 ? 11 : month, month < 0 ? 0 : week, month < 0 ? year - 1 : year, dayWeek);
     }
   };
 
@@ -90,39 +70,28 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
      INTERSECTION OBSERVER
   ------------------------------ */
   useEffect(() => {
-    // Scroll to today on initial load
     handleTodayClick();
-
     const calendarContainer = document.querySelector('.calendar-container');
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const month = parseInt(
-              entry.target.getAttribute('data-month')!,
-              10
-            );
+            const month = parseInt(entry.target.getAttribute('data-month') || '0', 10);
             setSelectedMonth(month);
           }
         });
       },
-      {
-        root: calendarContainer,
-        rootMargin: '-75% 0px -25% 0px',
-        threshold: 0,
-      }
+      { root: calendarContainer, rootMargin: '-75% 0px -25% 0px', threshold: 0 }
     );
 
     dayRefs.current.forEach((ref) => {
-      if (ref && ref.getAttribute('data-day') === '15') {
+      if (ref?.getAttribute('data-day') === '15') {
         observer.observe(ref);
       }
     });
 
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, []);
 
   return (
@@ -137,12 +106,7 @@ export const ContinuousCalendar: React.FC<ContinuousCalendarProps> = ({ onClick,
         year={year}
       />
       <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">
-        <CalendarGrid
-          year={year}
-          onDayClick={handleDayClick}
-          dayRefs={dayRefs}
-          events={events}
-        />
+        <CalendarGrid year={year} onDayClick={handleDayClick} dayRefs={dayRefs} events={events} />
       </div>
     </div>
   );
