@@ -1,25 +1,22 @@
 // /components/Calendar/DayCell.tsx
 import React, { ReactNode } from 'react';
-import { monthNames, shadeColor } from '@/lib/calendarUtils';
+import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
-
-export interface EventIcon {
-    icon: string;
-    color: string;
-}
+import { DayCell } from '../useCalendar';
+import { EventTimeSlot } from 'calendar-types';
 
 export interface DayCellProps {
     dayObj: DayObj;
     index: number;
     isNewMonth: boolean;
     isToday: boolean;
-    onClick: (day: number, month: number, year: number) => void;
+    onClick: (day: number, month: number, week: number, year: number) => void;
     dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
     year: number;
-    events?: EventIcon[];
+    events?: EventTimeSlot[];
 }
 
-const DayCell: React.FC<DayCellProps> = ({
+const CalendarDayCell: React.FC<DayCellProps> = ({
     dayObj,
     index,
     isNewMonth,
@@ -36,7 +33,7 @@ const DayCell: React.FC<DayCellProps> = ({
             }}
             data-month={dayObj.month}
             data-day={dayObj.day}
-            onClick={() => onClick(dayObj.day, dayObj.month, year)}
+            onClick={() => onClick(dayObj.day, dayObj.month, dayObj.week, year)}
             className="relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400
             sm:-m-px rounded-3xl size-40"
         >
@@ -110,4 +107,4 @@ const DayCell: React.FC<DayCellProps> = ({
 
 
 
-export default DayCell;
+export default CalendarDayCell;

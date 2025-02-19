@@ -1,14 +1,14 @@
 // /components/Calendar/CalendarGrid.tsx
 import React, { useMemo } from 'react';
-import CalendarRow from './WeekRow';
+import CalendarRow from './CalendarRow';
 import { getDaysInYear, chunkDaysIntoWeeks } from '@/lib/calendarUtils';
-import type { DayObj } from '@/lib/calendarUtils';
+import { YearCell } from '../useCalendar';
 
 export interface CalendarGridProps {
   year: number;
-  onDayClick: (day: number, month: number, year: number) => void;
-  dayRefs: React.RefObject <(HTMLDivElement | null)[]>;
-  events?: { [key: string]: Array<{ icon: string; color: string }> };
+  onDayClick: (day: number, month: number, yearWeek: number, year: number) => void;
+  dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
+  events?: Record<number, YearCell>;
 }
 
 const CalendarGrid: React.FC<CalendarGridProps> = ({
@@ -22,18 +22,22 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   return (
     <>
-      {weeks.map((week, weekIndex) => (
-        <CalendarRow
-          key={weekIndex}
-          week={week}
-          weekIndex={weekIndex}
-          days={days}
-          onDayClick={onDayClick}
-          dayRefs={dayRefs}
-          year={year}
-          events={events}
-        />
-      ))}
+      {weeks.map((week, weekIndex) => {
+        const weekEvents = events?.[year]?.[weekIndex] ?? [];
+
+        return (
+          <CalendarRow
+            key={weekIndex}
+            week={week}
+            weekIndex={weekIndex}
+            days={days}
+            onDayClick={onDayClick}
+            dayRefs={dayRefs}
+            year={year}
+            events={weekEvents}
+          />
+        );
+      })}
     </>
   );
 };

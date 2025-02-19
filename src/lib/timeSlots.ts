@@ -82,4 +82,30 @@ export function getDateRangeFromTimeSlot(timeSlot: TimeSlot, year: number, weekN
     return { startDate, endDate };
 }
 
+// for new course
+export function createScheduleTimeSlots(weekScheduleId: WeekScheduleIdentifier, courseId: string, homeClassId?: string) {
+  const timeSlots = getTimesOfIndentifier(weekScheduleId);
+  return timeSlots.map((timeSlot, index) => ({
+    dayOfWeek: weekScheduleId[index].day, // zero-indexed, no change needed
+    periodOfDay: weekScheduleId[index].period, // zero-indexed, no change needed
+    startHour: timeSlot.startHour, // Using relative start time
+    startMinute: timeSlot.startMinute, // Using relative start time
+    endHour: timeSlot.endHour, // Using relative end time
+    endMinute: timeSlot.endMinute, // Using relative end time
+    courseId: courseId, // Connect the course to the time slot
+    homeClassId: homeClassId
+  }));
+}
+
+// for event without TimeSlot
+export function createTimeSlot(courseId: string, weekTime: {dayOfWeek: number, startHour: number, startMinute: number, endHour: number, endMinute: number} ) {
+    return {
+      dayOfWeek: weekTime.dayOfWeek, // zero-indexed, no change needed
+      startHour: weekTime.startHour, // Using relative start time
+      startMinute: weekTime.startMinute, // Using relative start time
+      endHour: weekTime.endHour, // Using relative end time
+      endMinute: weekTime.endMinute, // Using relative end time
+      courseId: courseId, // Connect the course to the time slot
+    };
+  }
 

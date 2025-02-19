@@ -41,9 +41,9 @@ model HomeClass {
   id                      String         @id @default(uuid())
   name                    String
   startYear               Int
-  homeroomFacultyMemberId String?        @unique
   courses                 Course[]
-  homeroomFacultyMember   FacultyMember? @relation(fields: [homeroomFacultyMemberId], references: [id])
+  homeroomFacultyMemberId String        @unique
+  homeroomFacultyMember   FacultyMember @relation(fields: [homeroomFacultyMemberId], references: [id])
   students                Student[]
   schedule                TimeSlot[]
 }
@@ -71,20 +71,20 @@ model StudentCourse {
 }
 
 model TimeSlot {
-  id          String    @id @default(uuid())
+  id          String      @id @default(uuid())
 
-  dayOfWeek   Int       // Store the day of the week (0-6, where 0 is Sunday, 1 is Monday, etc.)
-  periodOfDay Int       // Store the period of the day (e.g., 1 for the first period, 2 for the second, etc.)
-  startHour   Int       // Store the hour of the start time (relative to the start of the day)
-  startMinute Int       // Store the minute of the start time
-  endHour     Int       // Store the hour of the end time (relative to the start of the day)
-  endMinute   Int       // Store the minute of the end time
+  dayOfWeek   Int       
+  periodOfDay Int?   
+  startHour   Int       
+  startMinute Int       
+  endHour     Int       
+  endMinute   Int       
 
   courseId    String
   homeClassId String?
   events      Event[]
-  course      Course   @relation(fields: [courseId], references: [id])
-  homeClass   HomeClass? @relation(fields: [homeClassId], references: [id])
+  course      Course      @relation(fields: [courseId], references: [id])
+  homeClass   HomeClass?  @relation(fields: [homeClassId], references: [id])
 }
 
 model Event {
@@ -93,12 +93,12 @@ model Event {
   type        EventType
   description String?
 
-  startTime   DateTime
-  endTime     DateTime
-  timeSlotId  String?
-  timeSlot    TimeSlot? @relation(fields: [timeSlotId], references: [id])
-  weekNumber  Int?
-  yearNumber  Int?
+
+  timeSlotId  String
+  timeSlot    TimeSlot @relation(fields: [timeSlotId], references: [id])
+  weekNumber  Int
+  yearNumber  Int
+
 
   courseId    String
   course      Course    @relation(fields: [courseId], references: [id])

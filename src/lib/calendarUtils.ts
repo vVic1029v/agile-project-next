@@ -1,34 +1,85 @@
+import { TimeCell } from "calendar-types";
+
 // /utils/calendarUtils.ts
 export interface DayObj {
-    month: number;
-    day: number;
+  month: number;
+  week: number;
+  day: number;
+}
+
+export const monthNames = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+export const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+
+// CALENDAR GRID 
+
+export const getDaysInYear = (year: number): DayObj[] => {
+  const days: DayObj[] = [];
+  let startDayOfWeek = new Date(year, 0, 1).getDay();
+  startDayOfWeek = startDayOfWeek === 0 ? 7 : startDayOfWeek; // Convert Sunday (0) to 7
+
+  let week = 1;
+
+  // Fill in days from the previous year if needed
+  if (startDayOfWeek > 1) {
+    for (let i = startDayOfWeek - 2; i >= 0; i--) {
+      days.push({ month: -1, week: 0, day: 31 - i });
+    }
   }
-  
-  export const monthNames = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  
-  export const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  
+
+  // Add all days for the year
+  for (let month = 0; month < 12; month++) {
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let day = 1; day <= daysInMonth; day++) {
+      days.push({ month, week, day });
+      if (days.length % 7 === 0) week++;
+    }
+  }
+
+  // Fill last week with extra days from the next year if needed
+  const lastWeekDayCount = days.length % 7;
+  if (lastWeekDayCount > 0) {
+    const extraDaysNeeded = 7 - lastWeekDayCount;
+    for (let day = 1; day <= extraDaysNeeded; day++) {
+      days.push({ month: 0, week, day });
+    }
+  }
+
+  return days;
+};
+
+export const chunkDaysIntoWeeks = (days: DayObj[]): DayObj[][] => {
+  const weeks: DayObj[][] = [];
+  for (let i = 0; i < days.length; i += 7) {
+    weeks.push(days.slice(i, i + 7));
+  }
+  return weeks;
+};
+
+/* STARTING WITH SUNDAY
   export const getDaysInYear = (year: number): DayObj[] => {
     const days: DayObj[] = [];
     const startDayOfWeek = new Date(year, 0, 1).getDay();
+    let week = 1;
   
     // Fill in days from previous year if needed
     if (startDayOfWeek < 6) {
       for (let i = 0; i < startDayOfWeek; i++) {
-        days.push({ month: -1, day: 32 - startDayOfWeek + i });
+        days.push({ month: -1, week: 0, day: 32 - startDayOfWeek + i });
       }
     }
   
@@ -36,7 +87,8 @@ export interface DayObj {
     for (let month = 0; month < 12; month++) {
       const daysInMonth = new Date(year, month + 1, 0).getDate();
       for (let day = 1; day <= daysInMonth; day++) {
-        days.push({ month, day });
+        days.push({ month, week, day });
+        if (days.length % 7 === 0) week++;
       }
     }
   
@@ -45,12 +97,12 @@ export interface DayObj {
     if (lastWeekDayCount > 0) {
       const extraDaysNeeded = 7 - lastWeekDayCount;
       for (let day = 1; day <= extraDaysNeeded; day++) {
-        days.push({ month: 0, day });
+        days.push({ month: 0, week, day });
       }
     }
   
     return days;
-  };
+};
   
   export const chunkDaysIntoWeeks = (days: DayObj[]): DayObj[][] => {
     const weeks: DayObj[][] = [];
@@ -59,35 +111,32 @@ export interface DayObj {
     }
     return weeks;
   };
-  
-  // Darken/lighten a hex color by a percent (negative percent darkens)
-  export const shadeColor = (color: string, percent: number): string => {
-    let R = parseInt(color.substring(1, 3), 16);
-    let G = parseInt(color.substring(3, 5), 16);
-    let B = parseInt(color.substring(5, 7), 16);
-  
-    R = Math.min(255, Math.max(0, R + Math.round(2.55 * percent)));
-    G = Math.min(255, Math.max(0, G + Math.round(2.55 * percent)));
-    B = Math.min(255, Math.max(0, B + Math.round(2.55 * percent)));
-  
-    const RR = R.toString(16).padStart(2, '0');
-    const GG = G.toString(16).padStart(2, '0');
-    const BB = B.toString(16).padStart(2, '0');
-  
-    return `#${RR}${GG}${BB}`;
-  };
-  
-  // Compute a date key for events mapping in the format "YYYY-MM-DD"
-  export const computeDateKey = (dayObj: DayObj, currentYear: number): string => {
-    let actualYear = currentYear;
-    let actualMonth = dayObj.month;
-    if (dayObj.month < 0) {
-      actualYear = currentYear - 1;
-      actualMonth = 11;
-    }
-    // Note: Extra days (from next month) aren’t adjusted here.
-    return `${actualYear}-${(actualMonth + 1).toString().padStart(2, '0')}-${dayObj.day
-      .toString()
-      .padStart(2, '0')}`;
-  };
-  
+*/
+
+
+
+export function getTimeCellDates(timeCell: TimeCell) {
+  const { timeSlot, yearNumber, weekNumber } = timeCell;
+  const firstDayOfYear = new Date(yearNumber, 0, 1);
+  const dayOffset = (weekNumber - 1) * 7 + timeSlot.dayOfWeek;
+  const startDate = new Date(firstDayOfYear);
+  startDate.setDate(firstDayOfYear.getDate() + dayOffset);
+  startDate.setHours(timeSlot.startHour, timeSlot.startMinute, 0, 0);
+
+  const endDate = new Date(startDate);
+  endDate.setHours(timeSlot.endHour, timeSlot.endMinute, 0, 0);
+
+  return { startDate, endDate };
+}
+
+
+export function getISOWeekNumber(year: number, month: number, day: number): number {
+  const date = new Date(year, month - 1, day); // Month is 0-indexed
+  const tempDate = new Date(date.valueOf());
+  tempDate.setDate(date.getDate() - date.getDay() + 3); // Adjust for the week starting on Monday
+
+  const firstThursday = tempDate.getDate();
+  const weekNumber = Math.ceil((date.getDate() - firstThursday + 1) / 7);
+
+  return weekNumber;
+}

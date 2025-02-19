@@ -1,17 +1,17 @@
 // /components/Calendar/WeekRow.tsx
 import React from 'react';
-import DayCell from './DayCell';
-import { computeDateKey } from '@/lib/calendarUtils';
+import CalendarDayCell from './CalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
+import { DayCell } from '../useCalendar';
 
 export interface CalendarRowProps {
   week: DayObj[];
   weekIndex: number;
   days: DayObj[];
-  onDayClick: (day: number, month: number, year: number) => void;
+  onDayClick: (day: number, month: number, week: number, year: number) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
-  events?: { [key: string]: Array<{ icon: string; color: string }> };
+  events?: DayCell[];
 }
 
 const CalendarRow: React.FC<CalendarRowProps> = ({
@@ -21,7 +21,7 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
   onDayClick,
   dayRefs,
   year,
-  events,
+  events
 }) => {
   const now = new Date();
 
@@ -65,10 +65,11 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
             dayObj.month === now.getMonth() &&
             dayObj.day === now.getDate() &&
             now.getFullYear() === year;
-          const dateKey = computeDateKey(dayObj, year);
-          const dayEvents = events ? events[dateKey] : undefined;
+
+          const dayEvents = events?.[dayIndex] ?? [];
+
           return (
-            <DayCell
+            <CalendarDayCell
               key={`${dayObj.month}-${dayObj.day}-${index}`}
               dayObj={dayObj}
               index={index}
@@ -80,6 +81,7 @@ const CalendarRow: React.FC<CalendarRowProps> = ({
               events={dayEvents}
             />
           );
+          
         })}
       </div>
     </div>

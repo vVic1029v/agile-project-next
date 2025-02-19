@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { getUserEvents } from "@/lib/database";
+import { getUserCourses } from "@/lib/database";
 import { auth, isAuthorized } from "@/lib/auth";
+import { Course } from "@prisma/client";
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -15,12 +16,21 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    const events = await getUserEvents(userId);
+    let courses: Course[] | null = null
+    if (session?.user.userType === "FACULTYMEMBER")
+    {
+        courses = await getUserCourses(userId, "FACULTYMEMBER");
+    }
+    else if (session?.user.userType === "STUDENT")
+    {
+        courses = await getUserCourses(userId, "STUDENT");
+    }
+    
 
-    if (events && events.length > 0) {
-      return NextResponse.json({ message: "User events fetched successfully", events }, { status: 200 });
+    if (courses && courses.length > 0) {
+      return NextResponse.json({ message: "User courses fetched successfully", courses }, { status: 200 });
     } else {
-      return NextResponse.json({ message: "No events found for this user" }, { status: 200 });
+      return NextResponse.json({ message: "No courses found for this user" }, { status: 200 });
     }
   } catch (error) {
     console.error(error);
