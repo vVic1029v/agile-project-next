@@ -61,6 +61,8 @@ export default function UserCalendar() {
         // Assumes your API returns { events: [...] } with each event including a `startTime` field.
         console.log(data.events);
         setEvents(data.events);
+      
+          
       } catch (error) {
         console.error("Error fetching all events:", error);
         setEvents([]);
@@ -163,7 +165,7 @@ export default function UserCalendar() {
       )}
 
       <div
-        className={`relative flex h-screen max-h-screen w-full flex-col gap-4 px-4 pt-4 items-center justify-center ${
+        className={` mt-0 relative flex h-screen max-h-screen w-full flex-col gap-4   items-center justify-center ${
           isModalOpen ? "pointer-events-none" : ""
         }`}
       >
