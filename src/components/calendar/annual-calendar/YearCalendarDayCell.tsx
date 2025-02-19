@@ -72,7 +72,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
             {/* Render event icons at bottom right if events exist */}
             {events && events.length > 0 && (
                 <div
-                    className="absolute bottom-[-2px] flex flex-wrap-reverse flex-row-reverse overflow-hidden w-[100%] h-[90%] justify-between p-2 content-start"
+                    className="absolute bottom-[-2px] flex flex-wrap-reverse flex-row-reverse overflow-hidden w-[100%] h-[90%] justify-start p-2 content-start"
                     style={{
                         WebkitMaskImage: "linear-gradient(to top, black 50%, transparent 80%)",
                         maskImage: "linear-gradient(to top, black 50%, transparent 80%)",

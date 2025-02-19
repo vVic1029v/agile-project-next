@@ -129,19 +129,61 @@ export const chunkDaysIntoWeeks = (days: DayObj[]): DayObj[][] => {
 // }
 
 
-export function getWeekAndDay(year: number, month: number, day: number): { week: number, dayWeek: number } {
-  // Create a Date object from the input
+// export function getWeekAndDay(year: number, month: number, day: number): { week: number, dayWeek: number } {
+//   // Create a Date object from the input
+//   const date = new Date(year, month - 1, day);
+
+//   // Calculate the day of the week, making Monday 0 and Sunday 6
+//   const dayWeek = (date.getDay() + 6) % 7;
+
+//   // Calculate week number based on ISO week date system
+//   const jan4 = new Date(date.getFullYear(), 0, 4);
+//   const startOfYear = new Date(jan4.getFullYear(), 0, 1);
+//   const daysSinceStartOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
+//   const firstWeekDay = (jan4.getDay() + 6) % 7;
+//   const week = Math.floor((daysSinceStartOfYear + firstWeekDay) / 7) + 1;
+
+//   return { week, dayWeek };
+// }
+
+
+export function getWeekAndDay(year: number, month: number, day: number) {
   const date = new Date(year, month - 1, day);
+  const firstDay = new Date(year, 0, 1);
 
-  // Calculate the day of the week, making Monday 0 and Sunday 6
-  const dayWeek = (date.getDay() + 6) % 7;
+  // Adjust firstDay to make Monday the first day of the week
+  const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+  const dateDayIndex = date.getDay() === 0 ? 6 : date.getDay() - 1;
 
-  // Calculate week number based on ISO week date system
-  const jan4 = new Date(date.getFullYear(), 0, 4);
-  const startOfYear = new Date(jan4.getFullYear(), 0, 1);
-  const daysSinceStartOfYear = Math.floor((date.getTime() - startOfYear.getTime()) / (24 * 60 * 60 * 1000));
-  const firstWeekDay = (jan4.getDay() + 6) % 7;
-  const week = Math.floor((daysSinceStartOfYear + firstWeekDay) / 7) + 1;
+  // Calculate how many days have passed since the first Monday of the year
+  const pastDays = (date.getTime() - firstDay.getTime()) / 86400000;
+  const week = Math.ceil((pastDays + firstDayIndex + 1) / 7);
 
-  return { week, dayWeek };
+  return { week, dayWeek: dateDayIndex };
+}
+
+// week calendar
+
+export function getWeekStartDate(date: Date): Date {
+  // Adjust so that Monday is day 0. If date.getDay() returns 0 (Sunday), use 6.
+  const day = date.getDay() === 0 ? 6 : date.getDay() - 1;
+  const diff = date.getDate() - day;
+  return new Date(date.getFullYear(), date.getMonth(), diff);
+}
+
+export function getWeekStartDateFromYearWeek(year: number, weekIndex: number): Date {
+  // Get the first Monday of the year.
+  const firstDay = new Date(year, 0, 1);
+  // Adjust firstDay to Monday: if firstDay is not Monday, compute the difference.
+  const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+  const diff = firstDayIndex; // days to subtract to reach Monday (could be 0 if already Monday)
+  const firstMonday = new Date(year, 0, firstDay.getDate() - diff);
+  const weekStart = new Date(firstMonday);
+  weekStart.setDate(firstMonday.getDate() + weekIndex * 7);
+  return weekStart;
+}
+
+export function getWeeksInYear(year: number): number {
+  // This function depends on getWeekAndDay. Ensure getWeekAndDay is updated as well.
+  return getWeekAndDay(year, 12, 31).week;
 }

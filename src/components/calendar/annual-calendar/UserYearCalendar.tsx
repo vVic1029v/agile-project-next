@@ -45,6 +45,7 @@ export default function UserYearCalendar() {
     if (dateParam) {
       const [year, month, day] = dateParam.split("-").map(Number);
       const { week, dayWeek } = getWeekAndDay(year, month, day);
+      console.log(week)
       setSelectedDate({ dayMonth: day, month: month - 1, year, week: week - 1, dayWeek });
       setIsModalOpen(true);
     }
