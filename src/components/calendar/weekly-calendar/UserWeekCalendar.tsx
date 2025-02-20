@@ -53,18 +53,24 @@ export default function UserWeekCalendar() {
 
   const { timeCells } = useCalendar(userId);
 
-  // Helper to update the URL with current year and week
-  const updateWeekInUrl = (year: number, weekIdx: number, extraParams: Record<string, string> = {}) => {
-    const weekStr = String(weekIdx + 1).padStart(2, "0"); // 1-indexed week
-    const search = new URLSearchParams(searchParams.toString());
-    search.set("year", String(year));
-    search.set("week", `${year}-${weekStr}`);
-    // Add additional parameters (e.g., "date")
-    for (const key in extraParams) {
-      search.set(key, extraParams[key]);
-    }
-    router.replace(`${pathname}?${search.toString()}`, { scroll: false });
-  };
+  // Dedicated function for updating the URL.
+  // It sets the "year" and then removes "date" (or any extra params) if not explicitly provided.
+  const updateWeekUrl = useCallback(
+    (year: number, extraParams: Record<string, string> = {}) => {
+      const search = new URLSearchParams(searchParams.toString());
+      search.set("year", String(year));
+      // Remove known extra params if they aren't provided in extraParams.
+      if (!("date" in extraParams)) {
+        search.delete("date");
+      }
+      // In case you want to add more extra parameters, set them now.
+      for (const key in extraParams) {
+        search.set(key, extraParams[key]);
+      }
+      router.replace(`${pathname}?${search.toString()}`, { scroll: false });
+    },
+    [searchParams, router, pathname]
+  );
 
   useEffect(() => {
     if (!userId) return;
@@ -79,7 +85,7 @@ export default function UserWeekCalendar() {
       setWeekStart(getWeekStartDateFromYearWeek(weekYear, weekNumber - 1));
     } else {
       // If no parameters, update the URL with the current year and week
-      updateWeekInUrl(selectedDate.year, selectedDate.week);
+      updateWeekUrl(selectedDate.year);
     }
 
     // Handle the "date" parameter to open a modal for that day
@@ -89,11 +95,12 @@ export default function UserWeekCalendar() {
       const { week, dayWeek } = getWeekAndDay(year, month, day);
       setSelectedDate({ day: day, month: month - 1, year, week: week - 1, dayWeek, timeSlot: 0 });
       setIsModalOpen(true);
-      updateWeekInUrl(year, week - 1, { date: dateParam });
+      updateWeekUrl(year, { date: dateParam });
+      // Ensure the state is updated to reflect the URL change.
       setSelectedDate((prev) => ({ ...prev, year: year, week: week - 1 }));
       setWeekStart(getWeekStartDate(new Date(year, month - 1, day)));
     }
-  }, [searchParams, userId]);
+  }, [searchParams, userId, updateWeekUrl]);
 
   const handleCellClick = useCallback(
     (date: Date, timeSlot: number, dayIndex: number) => {
@@ -103,29 +110,30 @@ export default function UserWeekCalendar() {
       const year = date.getFullYear();
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const { week, dayWeek: computedDayWeek } = getWeekAndDay(year, month + 1, day);
-      updateWeekInUrl(year, week - 1, { date: dateString });
+      updateWeekUrl(year, { date: dateString });
       setSelectedDate({ day: day, month, year, week: week - 1, dayWeek: computedDayWeek, timeSlot });
       setIsModalOpen(true);
     },
-    [userId, router, pathname, searchParams]
+    [userId, updateWeekUrl]
   );
 
   const closeModal = useCallback(() => {
-    updateWeekInUrl(selectedDate.year, selectedDate.week);
+    // On modal close, call updateWeekUrl without extraParams to remove them.
+    updateWeekUrl(selectedDate.year);
     setIsModalOpen(false);
-  }, [router, pathname, selectedDate.year, selectedDate.week, searchParams]);
+  }, [selectedDate.year, updateWeekUrl]);
 
   // Navigation handlers for week view
   const handlePrevWeek = () => {
     let newWeek = selectedDate.week - 1;
-    let newYear = selectedDate.year
+    let newYear = selectedDate.year;
     if (newWeek < 0) {
       newYear = selectedDate.year - 1;
       newWeek = getWeeksInYear(newYear) - 1;
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
     setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
-    updateWeekInUrl(newYear, newWeek);
+    updateWeekUrl(newYear);
   };
 
   const handleNextWeek = () => {
@@ -137,7 +145,7 @@ export default function UserWeekCalendar() {
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
     setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
-    updateWeekInUrl(newYear, newWeek);
+    updateWeekUrl(newYear);
   };
 
   const handleTodayClick = () => {
@@ -147,7 +155,7 @@ export default function UserWeekCalendar() {
     const newWeek = week - 1;
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
     setWeekStart(getWeekStartDate(now));
-    updateWeekInUrl(newYear, newWeek);
+    updateWeekUrl(newYear);
   };
 
   // For the given currentYear and currentWeek, get the corresponding WeekCell.

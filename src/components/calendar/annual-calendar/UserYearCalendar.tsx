@@ -48,21 +48,34 @@ export default function UserYearCalendar() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  // Use a single state for all date values.
+  // Single state for all date values.
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { timeCells } = useCalendar(userId);
   const monthOptions = monthNames.map((month, index) => ({
     name: month,
     value: index.toString(),
   }));
-  
-  
+
   const today = new Date();
   const yearParam = searchParams.get("year");
-  
   const initialYear = yearParam ? Number(yearParam) : today.getFullYear();
-  
-  const [selectedDay, setSelectedDay] = useState<SelectedDay>({...getToday(), year: initialYear});
+  const [selectedDay, setSelectedDay] = useState<SelectedDay>({ ...getToday(), year: initialYear });
+
+  // Dedicated function for updating the URL.
+  const updateYearUrl = useCallback(
+    (year: number, extraParams: Record<string, string> = {}) => {
+      const search = new URLSearchParams(searchParams.toString());
+      search.set("year", String(year));
+      if (!("date" in extraParams)) {
+        search.delete("date");
+      }
+      for (const key in extraParams) {
+        search.set(key, extraParams[key]);
+      }
+      router.replace(`${pathname}?${search.toString()}`, { scroll: false });
+    },
+    [searchParams, router, pathname]
+  );
 
   useEffect(() => {
     if (!userId) return;
@@ -81,43 +94,44 @@ export default function UserYearCalendar() {
         setSelectedDay((prev) => ({ ...prev, year: parsedYear }));
       }
     } else {
-      router.replace(`${pathname}?year=${selectedDay.year}`, { scroll: false });
+      updateYearUrl(selectedDay.year);
     }
-  }, [searchParams, userId]);
+  }, [searchParams, userId, selectedDay.year, updateYearUrl]);
 
-const handlePrevYear = () => {
-  setSelectedDay((prev) => ({ ...prev, year: prev.year - 1 }));
-  router.replace(`${pathname}?year=${selectedDay.year-1}`, { scroll: false });
-};
+  const handlePrevYear = () => {
+    const newYear = selectedDay.year - 1;
+    setSelectedDay((prev) => ({ ...prev, year: newYear }));
+    updateYearUrl(newYear);
+  };
 
-const handleNextYear = () => {
-  setSelectedDay((prev) => ({ ...prev, year: prev.year + 1 }));
-  router.replace(`${pathname}?year=${selectedDay.year+1}`, { scroll: false });
-};
-
+  const handleNextYear = () => {
+    const newYear = selectedDay.year + 1;
+    setSelectedDay((prev) => ({ ...prev, year: newYear }));
+    updateYearUrl(newYear);
+  };
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const monthIndex = parseInt(event.target.value, 10);
     setSelectedDay((prev) => ({ ...prev, month: monthIndex }));
   };
 
-  // Updated to accept a SelectedDay object directly.
+  // Accepts a SelectedDay object directly.
   const handleDayClick = useCallback(
     (selected: SelectedDay) => {
       if (!userId) return;
       const { day, month, year } = selected;
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-      router.replace(`${pathname}?year=${year}&date=${dateString}`, { scroll: false });
+      updateYearUrl(year, { date: dateString });
       setSelectedDay(selected);
       setIsModalOpen(true);
     },
-    [userId, router, pathname]
+    [userId, updateYearUrl]
   );
 
   const closeModal = useCallback(() => {
-    router.replace(`${pathname}?year=${selectedDay.year}`, { scroll: false });
+    updateYearUrl(selectedDay.year);
     setIsModalOpen(false);
-  }, [router, pathname, selectedDay.year]);
+  }, [selectedDay.year, updateYearUrl]);
 
   if (status === "loading" || !userId) return null;
 
@@ -133,7 +147,11 @@ const handleNextYear = () => {
           selectedDay={selectedDay}
           monthOptions={monthOptions}
           onMonthChange={handleMonthChange}
-          onTodayClick={() => setSelectedDay(getToday())}
+          onTodayClick={() => {
+            const todayDate = getToday();
+            setSelectedDay(todayDate);
+            updateYearUrl(todayDate.year);
+          }}
           onPrevYear={handlePrevYear}
           onNextYear={handleNextYear}
         />
