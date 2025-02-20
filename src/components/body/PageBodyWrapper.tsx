@@ -3,14 +3,20 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
-import { HiCalendar, HiOutlineCalendar } from "react-icons/hi"; // Using icons from react-icons
-
+import { HiCalendar, HiOutlineCalendar } from "react-icons/hi";
+import { FaHome } from "react-icons/fa";
+import { GrAnnounce } from "react-icons/gr";
+import { MdMessage } from "react-icons/md";
+import { IoPersonSharp } from "react-icons/io5";
+import { usePathname } from "next/navigation";
 interface PageBodyWrapperProps {
   children: React.ReactNode;
 }
 
 const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const pathname = usePathname();
+  const isAuthPage = pathname.startsWith("/auth/login");
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -61,15 +67,24 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
         {/* Navigation Links */}
         <div className="flex-1 p-2">
           <ul>
+          <li>
+              <Link
+                href="/home"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
+                <FaHome className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`} >
+                 Home
+                </span>
+              </Link>
+            </li>
             <li>
               <Link
                 href="/calendar/year"
-                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"
-              >
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200" >
                 <HiCalendar className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
                 <span
-                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}
-                >
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`} >
                   Year Calendar
                 </span>
               </Link>
@@ -77,16 +92,52 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
             <li>
               <Link
                 href="/calendar/week"
-                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"
-              >
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"  >
                 <HiOutlineCalendar className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
                 <span
-                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}
-                >
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}  >
                   Week Calendar
                 </span>
               </Link>
+              
             </li>
+            <li>
+              <Link
+                href="/announcements"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"  >
+                <GrAnnounce className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}  >
+                 Announcements
+                </span>
+              </Link>
+              
+            </li>
+            <li>
+              <Link
+                href="/messages"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"  >
+                <MdMessage className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}  >
+                 Messages
+                </span>
+              </Link>
+              
+            </li>
+            <li>
+              <Link
+                href="/myaccount"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"  >
+                <IoPersonSharp className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}  >
+                 My account
+                </span>
+              </Link>
+              
+            </li>
+            
           </ul>
         </div>
 

@@ -1,8 +1,10 @@
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import BodyComponent from "@/components/Body/BodyComponent";
-
+import ClientWrapper from "@/components/Body/ClientWrapper";
+import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -19,11 +21,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout( {children}: Readonly<{ children: React.ReactNode; }>) {
+ 
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <BodyComponent children ={children}/>
-        
+      <SessionProviderWrapper>{children}</SessionProviderWrapper>
+       
       </body>
     </html>
   );

@@ -6,9 +6,9 @@ import { SessionProvider } from "next-auth/react";
 export default function Home() {
   return (
     <AuthContent>
-      <PageBodyWrapper>
+      
         <HomePage />
-      </PageBodyWrapper>
+     
     </AuthContent>
   );
 }
