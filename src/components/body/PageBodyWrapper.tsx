@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
 import React, { useState } from "react";
 import Link from "next/link";
 import { signOut } from "next-auth/react";
+import { HiCalendar, HiOutlineCalendar } from "react-icons/hi"; // Using icons from react-icons
 
 interface PageBodyWrapperProps {
   children: React.ReactNode;
@@ -15,17 +16,16 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
     <div className="flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
       <nav
-        className={`bg-gray-800 text-white transition-all duration-300 flex-shrink-0 ${
-          isExpanded ? "w-64" : "w-16"
-        } h-full flex flex-col`}
+        className={`bg-gray-800 text-white transition-all duration-300 flex-shrink-0 ${isExpanded ? "w-64" : "w-20"} h-full flex flex-col`}
       >
         {/* Toggle Button */}
-        <div className="flex items-center justify-center h-16 border-b border-gray-700">
-          <button
-            onClick={() => setIsExpanded((prev) => !prev)}
-            className="text-white focus:outline-none"
-            aria-label="Toggle Navigation"
-          >
+        <div className="flex items-center h-16 border-b border-gray-700 px-8">
+        <button
+  onClick={() => setIsExpanded((prev) => !prev)}
+  className="text-white focus:outline-none focus:ring-0 ml-auto"
+  aria-label="Toggle Navigation"
+>
+
             {isExpanded ? (
               <svg
                 className="h-6 w-6"
@@ -62,16 +62,29 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
         <div className="flex-1 p-2">
           <ul>
             <li>
-              <Link href="/dashboard" className="flex items-center space-x-3">
-                <svg className="h-6 w-6" stroke="currentColor" fill="none">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 12l2-2m0 0l7-7 7 7M13 5v6h6"
-                  />
-                </svg>
-                {isExpanded && <span>Dashboard</span>}
+              <Link
+                href="/calendar/year"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"
+              >
+                <HiCalendar className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}
+                >
+                  Year Calendar
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/calendar/week"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"
+              >
+                <HiOutlineCalendar className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}
+                >
+                  Week Calendar
+                </span>
               </Link>
             </li>
           </ul>
@@ -81,9 +94,9 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
         <div className="p-4 border-t border-gray-700">
           <button
             onClick={() => signOut()}
-            className="w-full flex items-center justify-center py-2 px-4 bg-red-500 hover:bg-red-600 rounded-md"
+            className="w-full flex items-center justify-center py-2 px-4 bg-gray-600 hover:bg-gray-700 rounded-md transition-all duration-200 ease-in-out"
           >
-            <svg className="h-5 w-5 mr-2" stroke="currentColor" fill="none">
+            <svg className="h-5 w-5 mr-2 flex-shrink-0" stroke="currentColor" fill="none">
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -91,7 +104,11 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
                 d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 01-2-2h6a2 2 0 012 2v1"
               />
             </svg>
-            {isExpanded && <span>Sign Out</span>}
+            <span
+              className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}
+            >
+              Sign Out
+            </span>
           </button>
         </div>
       </nav>
