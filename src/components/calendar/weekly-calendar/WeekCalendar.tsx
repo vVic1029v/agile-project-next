@@ -35,7 +35,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   }
 
   return (
-    <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">
+    <div className="w-full pt-[1vh]">
       {timeslots.map((timeslot, rowIndex) => (
         <div key={rowIndex} className="flex w-full">
           {Array.from({ length: 7 }, (_, dayIndex) => {
