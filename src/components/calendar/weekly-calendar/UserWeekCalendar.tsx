@@ -10,8 +10,8 @@ import { useCalendar } from "../useCalendar";
 import { getWeekAndDay, getWeekStartDate, getWeeksInYear, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 import type { ReactNode } from "react";
 
-interface SelectedWeekDate {
-  dayMonth: number;
+export interface SelectedWeekDate {
+  day: number;
   month: number;
   year: number;
   week: number;
@@ -89,7 +89,7 @@ export default function UserWeekCalendar() {
     if (dateParam) {
       const [year, month, day] = dateParam.split("-").map(Number);
       const { week, dayWeek } = getWeekAndDay(year, month, day);
-      setSelectedDate({ dayMonth: day, month: month - 1, year, week: week - 1, dayWeek, timeSlot: 0 });
+      setSelectedDate({ day: day, month: month - 1, year, week: week - 1, dayWeek, timeSlot: 0 });
       setIsModalOpen(true);
       updateWeekInUrl(year, week - 1, { date: dateParam });
       setCurrentYear(year);
@@ -107,7 +107,7 @@ export default function UserWeekCalendar() {
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const { week, dayWeek: computedDayWeek } = getWeekAndDay(year, month + 1, day);
       updateWeekInUrl(year, week - 1, { date: dateString });
-      setSelectedDate({ dayMonth: day, month, year, week: week - 1, dayWeek: computedDayWeek, timeSlot });
+      setSelectedDate({ day: day, month, year, week: week - 1, dayWeek: computedDayWeek, timeSlot });
       setIsModalOpen(true);
     },
     [userId, router, pathname, searchParams]
@@ -170,8 +170,7 @@ export default function UserWeekCalendar() {
       )}
       <CalendarContainer isModalOpen={isModalOpen}>
         <WeekCalendarHeader
-          currentYear={currentYear}
-          currentWeek={currentWeek}
+          selectedDate={selectedDate}
           onPrevWeek={handlePrevWeek}
           onNextWeek={handleNextWeek}
           onTodayClick={handleTodayClick}
@@ -180,8 +179,7 @@ export default function UserWeekCalendar() {
           onClick={handleCellClick}
           events={weekEvents}
           weekStart={weekStart}
-          currentYear={currentYear}
-          currentWeek={currentWeek}
+          selectedDate={selectedDate}
         />
       </CalendarContainer>
     </div>

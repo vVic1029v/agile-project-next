@@ -1,13 +1,14 @@
 import React from "react";
 import { EventTimeSlot, YearCell } from "./useCalendar";
+import { SelectedWeekDate } from "./weekly-calendar/UserWeekCalendar";
 
 
 interface CalendarDayModalProps {
-  selectedDate: { day: number; month: number; year: number; week: number; dayWeek: number}
+  selectedDate: SelectedWeekDate
   timeCells: Record<number, YearCell>;
 }
 
-function formatSelectedDate(selectedDate: { day: number; month: number; year: number; week: number; dayWeek: number}) {
+function formatSelectedDate(selectedDate: SelectedWeekDate) {
   const { day, month, year, week, dayWeek } = selectedDate;
   const monthNames = [
     "January", "February", "March", "April", "May", "June", 

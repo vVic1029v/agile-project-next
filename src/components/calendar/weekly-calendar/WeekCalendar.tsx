@@ -2,13 +2,13 @@
 import React from "react";
 import WeekCalendarCell from "./WeekCalendarCell";
 import type { WeekCell } from "@/components/calendar/useCalendar";
+import { SelectedWeekDate } from "./UserWeekCalendar";
 
 export interface WeekCalendarProps {
   onClick?: (date: Date, timeSlot: number, dayIndex: number) => void;
   events: WeekCell; // array of 7 DayCells (one per day; each DayCell is an array of EventTimeSlot or null)
   weekStart: Date;
-  currentYear: number;
-  currentWeek: number;
+  selectedDate: SelectedWeekDate | null
 }
 
 const WeekCalendar: React.FC<WeekCalendarProps> = ({

@@ -1,18 +1,17 @@
 'use client';
 import React from "react";
 import { daysOfWeek } from "@/lib/calendarUtils";
+import { SelectedWeekDate } from "./UserWeekCalendar";
 
 export interface WeekCalendarHeaderProps {
-  currentYear: number;
-  currentWeek: number; // 0-indexed (so display as currentWeek + 1)
+  selectedDate: SelectedWeekDate | null
   onPrevWeek: () => void;
   onNextWeek: () => void;
   onTodayClick: () => void;
 }
 
 const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
-  currentYear,
-  currentWeek,
+  selectedDate,
   onPrevWeek,
   onNextWeek,
   onTodayClick,
@@ -65,7 +64,7 @@ const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
               </svg>
             </button>
             <h1 className="min-w-40 text-center text-lg font-semibold sm:min-w-40 sm:text-xl">
-              Week {currentWeek + 1} – {currentYear}
+              Week {selectedDate && selectedDate.week + 1} – {selectedDate && selectedDate.year}
             </h1>
             <button
               onClick={onNextWeek}
