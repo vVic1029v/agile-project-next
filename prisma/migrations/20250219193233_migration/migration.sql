@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Event" ALTER COLUMN "weekNumber" DROP NOT NULL,
+ALTER COLUMN "yearNumber" DROP NOT NULL;

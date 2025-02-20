@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: emDvuwU6
       POSTGRES_DB: agile_db
     ports:
-      - '5432:5432'
+      - '5435:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

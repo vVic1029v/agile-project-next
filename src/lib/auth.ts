@@ -12,13 +12,14 @@ import type {
 import { UserType } from "@prisma/client";
 
 export async function verifyUser(email: string, password: string) {
+ 
   const user = await getExpensiveUserByEmail(email);
 
   if (!user) return null;
 
   const isValid = await bcrypt.compare(password, user.password);
   if (!isValid) return null;
-
+  
   return {
     id: user.id,
     firstName: user.firstName,

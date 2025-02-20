@@ -20,7 +20,7 @@ export async function GET(request: Request) {
     if (events && events.length > 0) {
       return NextResponse.json({ message: "User events fetched successfully", events }, { status: 200 });
     } else {
-      return NextResponse.json({ message: "No events found for this user" }, { status: 200 });
+      return NextResponse.json({ message: "No events found for this user",events: [] }, { status: 200 });
     }
   } catch (error) {
     console.error(error);
