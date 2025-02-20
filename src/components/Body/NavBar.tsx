@@ -89,7 +89,7 @@ const NavBar = () => {
                     </span>
                     <h1 className=" decoration-sky-500-black  text-2xl mb-3">EdConnect</h1>
                 {i.items.map((item)=>(
-                    <Link href={item.href} key={item.label} className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 text-base">
+                    <Link href={item.href} key={item.label} className="flex items-center justify-center lg:justify-start gap-4 text-gray-500 py-2 text-base transition hover:text-gray-800 ">
                         <span>{item.icon}</span>
                     
                         <span>{item.label}</span>
