@@ -7,6 +7,23 @@ interface CalendarDayModalProps {
   timeCells: Record<number, YearCell>;
 }
 
+function formatSelectedDate(selectedDate: { dayMonth: number; month: number; year: number; week: number; dayWeek: number}) {
+  const { dayMonth, month, year, week, dayWeek } = selectedDate;
+  const monthNames = [
+    "January", "February", "March", "April", "May", "June", 
+    "July", "August", "September", "October", "November", "December"
+  ];
+
+  // Define weekday names
+  const weekDayNames = [
+    "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"
+  ];
+
+  // Get formatted date string
+  return `${weekDayNames[dayWeek]}, ${monthNames[month - 1]} ${dayMonth}, ${year}`; //  (Week ${week})
+}
+
+
 const CalendarDayModal: React.FC<CalendarDayModalProps> = React.memo(({ selectedDate, timeCells }) => {
   const events: EventTimeSlot[] = timeCells[selectedDate.year]?.[selectedDate.week]?.[selectedDate.dayWeek] || [];
   console.log("Rendering ModalBody", events);
@@ -14,7 +31,7 @@ const CalendarDayModal: React.FC<CalendarDayModalProps> = React.memo(({ selected
   return (
     <div className="p-5 sm:p-6">
       {/* Selected Date Header */}
-      <h2 className="text-lg font-semibold text-gray-900">{selectedDate.dayMonth}</h2>
+      <h2 className="text-lg font-semibold text-gray-900">{formatSelectedDate(selectedDate)}</h2>
 
       {/* Event List - Scrollable */}
       <div className="mt-4 max-h-60 overflow-y-auto space-y-2">
