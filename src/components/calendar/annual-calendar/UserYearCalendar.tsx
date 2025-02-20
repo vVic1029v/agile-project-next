@@ -10,8 +10,9 @@ import { getWeekAndDay, monthNames } from "@/lib/calendarUtils";
 import YearCalendarHeader from "@/components/calendar/annual-calendar/YearCalendarHeader";
 import type { ReactNode } from "react";
 
-interface SelectedDate {
-  dayMonth: number;
+// Shared type for the unified date state.
+export interface SelectedDay {
+  day: number;
   month: number;
   year: number;
   week: number;
@@ -28,6 +29,18 @@ interface CalendarContainerProps {
   isModalOpen: boolean;
 }
 
+const getToday = (): SelectedDay => {
+  const now = new Date();
+  const { week, dayWeek } = getWeekAndDay(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  return {
+    day: now.getDate(),
+    month: now.getMonth(),
+    year: now.getFullYear(),
+    week: week - 1,
+    dayWeek,
+  };
+};
+
 export default function UserYearCalendar() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -35,10 +48,9 @@ export default function UserYearCalendar() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
+  // Use a single state for all date values.
+  const [selectedDay, setSelectedDay] = useState<SelectedDay>(getToday());
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<SelectedDate | null>(null);
-  const [currentYear, setCurrentYear] = useState<number | null>(null); // Initial state set to null
-  const [selectedMonth, setSelectedMonth] = useState<number>(0);
   const { timeCells } = useCalendar(userId);
   const monthOptions = monthNames.map((month, index) => ({
     name: month,
@@ -49,84 +61,74 @@ export default function UserYearCalendar() {
     if (!userId) return;
 
     const yearParam = searchParams.get("year");
-    if (yearParam) {
-      const parsedYear = Number(yearParam);
-      if (!isNaN(parsedYear)) {
-        setCurrentYear(parsedYear); // Use the year from the URL if available
-      } else {
-        setCurrentYear(new Date().getFullYear()); // Default to the current year if invalid
-      }
-    } else {
-      setCurrentYear(new Date().getFullYear()); // Default to the current year if no year param
-    }
-
     const dateParam = searchParams.get("date");
+
     if (dateParam) {
       const [year, month, day] = dateParam.split("-").map(Number);
       const { week, dayWeek } = getWeekAndDay(year, month, day);
-      setSelectedDate({ dayMonth: day, month: month - 1, year, week: week - 1, dayWeek });
+      setSelectedDay({ day, month: month - 1, year, week: week - 1, dayWeek });
       setIsModalOpen(true);
+    } else if (yearParam) {
+      const parsedYear = Number(yearParam);
+      if (!isNaN(parsedYear)) {
+        setSelectedDay((prev) => ({ ...prev, year: parsedYear }));
+      }
     }
   }, [searchParams, userId]);
 
-  const handlePrevYear = () => {
-    if (currentYear !== null) {
-      setCurrentYear(currentYear - 1);
-      router.replace(`${pathname}?year=${currentYear - 1}`, { scroll: false });
-    }
-  };
+const handlePrevYear = () => {
+  setSelectedDay((prev) => ({ ...prev, year: prev.year - 1 }));
+  router.replace(`${pathname}?year=${selectedDay.year-1}`, { scroll: false });
+};
 
-  const handleNextYear = () => {
-    if (currentYear !== null) {
-      setCurrentYear(currentYear + 1);
-      router.replace(`${pathname}?year=${currentYear + 1}`, { scroll: false });
-    }
-  };
+const handleNextYear = () => {
+  setSelectedDay((prev) => ({ ...prev, year: prev.year + 1 }));
+  router.replace(`${pathname}?year=${selectedDay.year+1}`, { scroll: false });
+};
+
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const monthIndex = parseInt(event.target.value, 10);
-    setSelectedMonth(monthIndex);
+    setSelectedDay((prev) => ({ ...prev, month: monthIndex }));
   };
 
+  // Updated to accept a SelectedDay object directly.
   const handleDayClick = useCallback(
-    (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => {
+    (selected: SelectedDay) => {
       if (!userId) return;
-      const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayMonth).padStart(2, "0")}`;
+      const { day, month, year } = selected;
+      const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       router.replace(`${pathname}?year=${year}&date=${dateString}`, { scroll: false });
-      setSelectedDate({ dayMonth, month, year, week: week - 1, dayWeek });
+      setSelectedDay(selected);
       setIsModalOpen(true);
     },
     [userId, router, pathname]
   );
 
   const closeModal = useCallback(() => {
-    if (currentYear !== null) {
-      router.replace(`${pathname}?year=${currentYear}`, { scroll: false });
-      setIsModalOpen(false);
-    }
-  }, [router, pathname, currentYear]);
+    router.replace(`${pathname}?year=${selectedDay.year}`, { scroll: false });
+    setIsModalOpen(false);
+  }, [router, pathname, selectedDay.year]);
 
-  if (status === "loading" || !userId || currentYear === null) return null; // Ensure currentYear is set
+  if (status === "loading" || !userId) return null;
 
   return (
     <div>
-
-      {isModalOpen && selectedDate && (
+      {isModalOpen && (
         <ModalOverlay onClose={closeModal}>
-          <CalendarDayModal selectedDate={selectedDate} timeCells={timeCells} />
+          <CalendarDayModal selectedDate={selectedDay} timeCells={timeCells} />
         </ModalOverlay>
       )}
       <CalendarContainer isModalOpen={isModalOpen}>
         <YearCalendarHeader
-          year={currentYear}
-          selectedMonth={selectedMonth}
+          selectedDay={selectedDay}
           monthOptions={monthOptions}
           onMonthChange={handleMonthChange}
-          onTodayClick={() => setCurrentYear(new Date().getFullYear())}
+          onTodayClick={() => setSelectedDay(getToday())}
           onPrevYear={handlePrevYear}
           onNextYear={handleNextYear}
         />
-        <YearCalendar year={currentYear} onClick={handleDayClick} events={timeCells} />
+        <YearCalendar selectedDay={selectedDay} onClick={handleDayClick} events={timeCells} />
       </CalendarContainer>
     </div>
   );
@@ -136,7 +138,10 @@ const ModalOverlay = ({ children, onClose }: ModalOverlayProps) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg w-96 relative">
-        <button className="absolute top-3 right-3 text-gray-500 hover:text-gray-700" onClick={onClose}>
+        <button
+          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+          onClick={onClose}
+        >
           ✕
         </button>
         {children}
@@ -147,14 +152,13 @@ const ModalOverlay = ({ children, onClose }: ModalOverlayProps) => {
 
 const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <div
-    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 px-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""}`}
+    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 px-4 pt-4 items-center justify-center ${
+      isModalOpen ? "pointer-events-none" : ""
+    }`}
   >
     <div className="relative h-full w-full overflow-auto mt-10">
-      <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl pl-10">
-        <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">
-
-          {children}
-        </div>
+      <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
+        <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">{children}</div>
       </div>
     </div>
   </div>

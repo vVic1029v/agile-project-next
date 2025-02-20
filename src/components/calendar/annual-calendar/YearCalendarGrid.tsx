@@ -1,11 +1,12 @@
 import React, { useMemo } from 'react';
 import YearCalendarRow from './YearCalendarRow';
 import { getDaysInYear, chunkDaysIntoWeeks } from '@/lib/calendarUtils';
+import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
 import { YearCell } from '../useCalendar';
 
 export interface YearCalendarGridProps {
   year: number;
-  onDayClick: (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => void;
+  onDayClick: (selected: SelectedDay) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   events?: Record<number, YearCell>;
 }

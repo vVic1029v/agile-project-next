@@ -1,29 +1,20 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import YearCalendarGrid from './YearCalendarGrid';
-import { monthNames } from '@/lib/calendarUtils';
+import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
 import { YearCell } from '../useCalendar';
 
 export interface YearCalendarProps {
-  onClick?: (dayMonth: number, month: number, week: number, year: number, dayWeek: number) => void;
+  onClick?: (selected: SelectedDay) => void;
   events: Record<number, YearCell>;
-  year: number;
+  selectedDay: SelectedDay;
 }
 
-export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, year }) => {
+export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, selectedDay }) => {
   const today = new Date();
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [selectedMonth, setSelectedMonth] = useState<number>(0);
 
-  const monthOptions = monthNames.map((month, index) => ({
-    name: month,
-    value: index.toString(),
-  }));
-
-  /* -----------------------------
-     EVENT HANDLERS & SCROLLING
-  ------------------------------ */
   const scrollToDay = (monthIndex: number, dayIndex: number) => {
     const targetElement = dayRefs.current.find(
       (ref) =>
@@ -39,62 +30,47 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, yea
 
       if (container) {
         const containerRect = container.getBoundingClientRect();
-        const offset = elementRect.top - containerRect.top - containerRect.height / offsetFactor + elementRect.height / 2;
+        const offset =
+          elementRect.top -
+          containerRect.top -
+          containerRect.height / offsetFactor +
+          elementRect.height / 2;
         container.scrollTo({ top: container.scrollTop + offset, behavior: 'smooth' });
       } else {
-        const offset = window.scrollY + elementRect.top - window.innerHeight / offsetFactor + elementRect.height / 2;
+        const offset =
+          window.scrollY +
+          elementRect.top -
+          window.innerHeight / offsetFactor +
+          elementRect.height / 2;
         window.scrollTo({ top: offset, behavior: 'smooth' });
       }
     }
   };
 
-  const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const monthIndex = parseInt(event.target.value, 10);
-    setSelectedMonth(monthIndex);
-    scrollToDay(monthIndex, 1);
-  };
-
-  const handleTodayClick = () => {
-    scrollToDay(today.getMonth(), today.getDate());
-  };
-
-  const handleDayClick = (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => {
+  // Now receives a SelectedDay object directly
+  const handleDayClick = (selected: SelectedDay) => {
     if (onClick) {
-      onClick(dayMonth, month < 0 ? 11 : month, month < 0 ? 0 : week, month < 0 ? year - 1 : year, dayWeek);
+      onClick(selected);
     }
   };
 
-  /* -----------------------------
-     INTERSECTION OBSERVER
-  ------------------------------ */
+  // Scroll to today's date on mount
   useEffect(() => {
-    handleTodayClick();
-    const calendarContainer = document.querySelector('.calendar-container');
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            const month = parseInt(entry.target.getAttribute('data-month') || '0', 10);
-            setSelectedMonth(month);
-          }
-        });
-      },
-      { root: calendarContainer, rootMargin: '-75% 0px -25% 0px', threshold: 0 }
-    );
-
-    dayRefs.current.forEach((ref) => {
-      if (ref?.getAttribute('data-day') === '15') {
-        observer.observe(ref);
-      }
-    });
-
-    return () => observer.disconnect();
+    scrollToDay(today.getMonth(), today.getDate());
   }, []);
 
-  return (
+  // Scroll to the selected day whenever it changes
+  useEffect(() => {
+    scrollToDay(selectedDay.month, selectedDay.day);
+  }, [selectedDay]);
 
-    <YearCalendarGrid onDayClick={handleDayClick} dayRefs={dayRefs} events={events} year={year} />
+  return (
+    <YearCalendarGrid
+      onDayClick={handleDayClick}
+      dayRefs={dayRefs}
+      events={events}
+      year={selectedDay.year}
+    />
   );
 };
 

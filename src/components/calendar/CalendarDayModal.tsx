@@ -3,12 +3,12 @@ import { EventTimeSlot, YearCell } from "./useCalendar";
 
 
 interface CalendarDayModalProps {
-  selectedDate: { dayMonth: number; month: number; year: number; week: number; dayWeek: number}
+  selectedDate: { day: number; month: number; year: number; week: number; dayWeek: number}
   timeCells: Record<number, YearCell>;
 }
 
-function formatSelectedDate(selectedDate: { dayMonth: number; month: number; year: number; week: number; dayWeek: number}) {
-  const { dayMonth, month, year, week, dayWeek } = selectedDate;
+function formatSelectedDate(selectedDate: { day: number; month: number; year: number; week: number; dayWeek: number}) {
+  const { day, month, year, week, dayWeek } = selectedDate;
   const monthNames = [
     "January", "February", "March", "April", "May", "June", 
     "July", "August", "September", "October", "November", "December"
@@ -20,7 +20,7 @@ function formatSelectedDate(selectedDate: { dayMonth: number; month: number; yea
   ];
 
   // Get formatted date string
-  return `${weekDayNames[dayWeek]}, ${monthNames[month - 1]} ${dayMonth}, ${year}`; //  (Week ${week})
+  return `${weekDayNames[dayWeek]}, ${monthNames[month]} ${day}, ${year}`; //  (Week ${week})
 }
 
 
