@@ -29,7 +29,7 @@ interface CalendarContainerProps {
   isModalOpen: boolean;
 }
 
-const getToday = (): SelectedDay => {
+export const getToday = (): SelectedDay => {
   const now = new Date();
   const { week, dayWeek } = getWeekAndDay(now.getFullYear(), now.getMonth() + 1, now.getDate());
   return {
