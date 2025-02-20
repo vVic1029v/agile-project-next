@@ -2,13 +2,13 @@
 import React from "react";
 import WeekCalendarCell from "./WeekCalendarCell";
 import type { WeekCell } from "@/components/calendar/useCalendar";
+import { SelectedWeekDate } from "./UserWeekCalendar";
 
 export interface WeekCalendarProps {
   onClick?: (date: Date, timeSlot: number, dayIndex: number) => void;
   events: WeekCell; // array of 7 DayCells (one per day; each DayCell is an array of EventTimeSlot or null)
   weekStart: Date;
-  currentYear: number;
-  currentWeek: number;
+  selectedDate: SelectedWeekDate | null
 }
 
 const WeekCalendar: React.FC<WeekCalendarProps> = ({
@@ -35,7 +35,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   }
 
   return (
-    <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">
+    <div className="w-full pt-[1vh]">
       {timeslots.map((timeslot, rowIndex) => (
         <div key={rowIndex} className="flex w-full">
           {Array.from({ length: 7 }, (_, dayIndex) => {

@@ -1,6 +1,7 @@
 import React from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
+import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
 import { DayCell } from '../useCalendar';
 import { useRouter, useSearchParams } from "next/navigation";
 
@@ -8,7 +9,7 @@ export interface YearCalendarRowProps {
   week: DayObj[];
   weekIndex: number;
   days: DayObj[];
-  onDayClick: (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => void;
+  onDayClick: (selected: SelectedDay) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   events?: DayCell[];
@@ -21,7 +22,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   onDayClick,
   dayRefs,
   year,
-  events
+  events,
 }) => {
   const now = new Date();
   const router = useRouter();
@@ -33,9 +34,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
     const weekStr = String(weekIdx + 1).padStart(2, "0");
     const newSearch = new URLSearchParams(searchParams.toString());
     newSearch.set("week", `${year}-${weekStr}`);
-    // Remove the "date" parameter if it exists.
-    newSearch.delete("date");
-    // Navigate to /calendar/week with the updated query parameters.
+    newSearch.delete("date"); // Remove the "date" parameter if it exists.
     router.push(`/calendar/week?${newSearch.toString()}`, { scroll: false });
   };
 
@@ -47,11 +46,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
           WebkitMaskImage: "linear-gradient(to left, black 1%, transparent 50%)",
           maskImage: "linear-gradient(to left, black 1%, transparent 50%)",
         }}
-        className="absolute left-0 -translate-x-full m-[-0.5px] group aspect-square grow cursor-pointer 
-                  border font-medium transition-all opacity-20 w-30
-                   hover:z-20 hover:border-cyan-400 hover:opacity-100
-                   sm:-m-px sm:border-2 
-                   rounded-3xl size-[15vh]"
+        className="absolute left-0 -translate-x-full m-[-0.5px] group aspect-square grow cursor-pointer border font-medium transition-all opacity-20 w-30 hover:z-20 hover:border-cyan-400 hover:opacity-100 sm:-m-px sm:border-2 rounded-3xl size-[15vh]"
         onClick={() => goToWeek(weekIndex)}
       >
         <span
@@ -65,7 +60,10 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
         {week.map((dayObj, dayIndex) => {
           const index = weekIndex * 7 + dayIndex;
           const isNewMonth = index === 0 || days[index - 1].month !== dayObj.month;
-          const isToday = dayObj.month === now.getMonth() && dayObj.day === now.getDate() && now.getFullYear() === year;
+          const isToday =
+            dayObj.month === now.getMonth() &&
+            dayObj.day === now.getDate() &&
+            now.getFullYear() === year;
           const dayEvents = events?.[dayIndex] ?? [];
 
           return (

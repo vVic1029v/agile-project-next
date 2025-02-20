@@ -9,19 +9,16 @@ import CalendarDayModal from "../CalendarDayModal";
 import { useCalendar } from "../useCalendar";
 import { getWeekAndDay, getWeekStartDate, getWeeksInYear, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 import type { ReactNode } from "react";
+import { getToday } from "../annual-calendar/UserYearCalendar";
+import { ModalOverlay } from "../event-modal/ModalOverlay";
 
-interface SelectedWeekDate {
-  dayMonth: number;
+export interface SelectedWeekDate {
+  day: number;
   month: number;
   year: number;
   week: number;
   dayWeek: number;
-  timeSlot: number;
-}
-
-interface ModalOverlayProps {
-  children: ReactNode;
-  onClose: () => void;
+  timeSlot?: number;
 }
 
 interface CalendarContainerProps {
@@ -47,25 +44,29 @@ export default function UserWeekCalendar() {
     : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week - 1;
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [selectedDate, setSelectedDate] = useState<SelectedWeekDate | null>(null);
-  const [currentYear, setCurrentYear] = useState<number>(initialYear);
-  const [currentWeek, setCurrentWeek] = useState<number>(initialWeek);
+  const [selectedDate, setSelectedDate] = useState<SelectedWeekDate>(getToday());
   const [weekStart, setWeekStart] = useState<Date>(getWeekStartDateFromYearWeek(initialYear, initialWeek));
 
   const { timeCells } = useCalendar(userId);
 
-  // Helper to update the URL with current year and week
-  const updateWeekInUrl = (year: number, weekIdx: number, extraParams: Record<string, string> = {}) => {
-    const weekStr = String(weekIdx + 1).padStart(2, "0"); // 1-indexed week
-    const search = new URLSearchParams(searchParams.toString());
-    search.set("year", String(year));
-    search.set("week", `${year}-${weekStr}`);
-    // Add additional parameters (e.g., "date")
-    for (const key in extraParams) {
-      search.set(key, extraParams[key]);
-    }
-    router.replace(`${pathname}?${search.toString()}`, { scroll: false });
-  };
+  // Dedicated function for updating the URL.
+  // It sets the "year" and then removes "date" (or any extra params) if not explicitly provided.
+  const updateWeekUrl = useCallback(
+    (year: number, extraParams: Record<string, string> = {}) => {
+      const search = new URLSearchParams(searchParams.toString());
+      search.set("year", String(year));
+      // Remove known extra params if they aren't provided in extraParams.
+      if (!("date" in extraParams)) {
+        search.delete("date");
+      }
+      // In case you want to add more extra parameters, set them now.
+      for (const key in extraParams) {
+        search.set(key, extraParams[key]);
+      }
+      router.replace(`${pathname}?${search.toString()}`, { scroll: false });
+    },
+    [searchParams, router, pathname]
+  );
 
   useEffect(() => {
     if (!userId) return;
@@ -76,12 +77,11 @@ export default function UserWeekCalendar() {
 
     if (weekParam && yearParam) {
       const [weekYear, weekNumber] = weekParam.split("-").map(Number);
-      setCurrentYear(weekYear);
-      setCurrentWeek(weekNumber - 1);
+      setSelectedDate((prev) => ({ ...prev, year: weekYear, week: weekNumber - 1 }));
       setWeekStart(getWeekStartDateFromYearWeek(weekYear, weekNumber - 1));
     } else {
       // If no parameters, update the URL with the current year and week
-      updateWeekInUrl(currentYear, currentWeek);
+      updateWeekUrl(selectedDate.year);
     }
 
     // Handle the "date" parameter to open a modal for that day
@@ -89,14 +89,14 @@ export default function UserWeekCalendar() {
     if (dateParam) {
       const [year, month, day] = dateParam.split("-").map(Number);
       const { week, dayWeek } = getWeekAndDay(year, month, day);
-      setSelectedDate({ dayMonth: day, month: month - 1, year, week: week - 1, dayWeek, timeSlot: 0 });
+      setSelectedDate({ day: day, month: month - 1, year, week: week - 1, dayWeek, timeSlot: 0 });
       setIsModalOpen(true);
-      updateWeekInUrl(year, week - 1, { date: dateParam });
-      setCurrentYear(year);
-      setCurrentWeek(week - 1);
+      updateWeekUrl(year, { date: dateParam });
+      // Ensure the state is updated to reflect the URL change.
+      setSelectedDate((prev) => ({ ...prev, year: year, week: week - 1 }));
       setWeekStart(getWeekStartDate(new Date(year, month - 1, day)));
     }
-  }, [searchParams, userId]);
+  }, [searchParams, userId, updateWeekUrl]);
 
   const handleCellClick = useCallback(
     (date: Date, timeSlot: number, dayIndex: number) => {
@@ -106,43 +106,42 @@ export default function UserWeekCalendar() {
       const year = date.getFullYear();
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       const { week, dayWeek: computedDayWeek } = getWeekAndDay(year, month + 1, day);
-      updateWeekInUrl(year, week - 1, { date: dateString });
-      setSelectedDate({ dayMonth: day, month, year, week: week - 1, dayWeek: computedDayWeek, timeSlot });
+      updateWeekUrl(year, { date: dateString });
+      setSelectedDate({ day: day, month, year, week: week - 1, dayWeek: computedDayWeek, timeSlot });
       setIsModalOpen(true);
     },
-    [userId, router, pathname, searchParams]
+    [userId, updateWeekUrl]
   );
 
   const closeModal = useCallback(() => {
-    updateWeekInUrl(currentYear, currentWeek);
+    // On modal close, call updateWeekUrl without extraParams to remove them.
+    updateWeekUrl(selectedDate.year);
     setIsModalOpen(false);
-  }, [router, pathname, currentYear, currentWeek, searchParams]);
+  }, [selectedDate.year, updateWeekUrl]);
 
   // Navigation handlers for week view
   const handlePrevWeek = () => {
-    let newWeek = currentWeek - 1;
-    let newYear = currentYear;
+    let newWeek = selectedDate.week - 1;
+    let newYear = selectedDate.year;
     if (newWeek < 0) {
-      newYear = currentYear - 1;
+      newYear = selectedDate.year - 1;
       newWeek = getWeeksInYear(newYear) - 1;
     }
-    setCurrentYear(newYear);
-    setCurrentWeek(newWeek);
+    setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
     setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
-    updateWeekInUrl(newYear, newWeek);
+    updateWeekUrl(newYear);
   };
 
   const handleNextWeek = () => {
-    let newWeek = currentWeek + 1;
-    let newYear = currentYear;
-    if (newWeek >= getWeeksInYear(currentYear)) {
-      newYear = currentYear + 1;
+    let newWeek = selectedDate.week + 1;
+    let newYear = selectedDate.year;
+    if (newWeek >= getWeeksInYear(selectedDate.year)) {
+      newYear = selectedDate.year + 1;
       newWeek = 0;
     }
-    setCurrentYear(newYear);
-    setCurrentWeek(newWeek);
+    setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
     setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
-    updateWeekInUrl(newYear, newWeek);
+    updateWeekUrl(newYear);
   };
 
   const handleTodayClick = () => {
@@ -150,28 +149,24 @@ export default function UserWeekCalendar() {
     const newYear = now.getFullYear();
     const { week } = getWeekAndDay(newYear, now.getMonth() + 1, now.getDate());
     const newWeek = week - 1;
-    setCurrentYear(newYear);
-    setCurrentWeek(newWeek);
+    setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
     setWeekStart(getWeekStartDate(now));
-    updateWeekInUrl(newYear, newWeek);
+    updateWeekUrl(newYear);
   };
 
   // For the given currentYear and currentWeek, get the corresponding WeekCell.
-  const weekEvents = timeCells[currentYear]?.[currentWeek] || [null, null, null, null, null, null, null];
+  const weekEvents = timeCells[selectedDate.year]?.[selectedDate.week] || [null, null, null, null, null, null, null];
 
   if (status === "loading" || !userId) return null;
 
   return (
     <div>
-      {isModalOpen && selectedDate && (
-        <ModalOverlay onClose={closeModal}>
-          <CalendarDayModal selectedDate={selectedDate} timeCells={timeCells} />
-        </ModalOverlay>
-      )}
+      <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
+        <CalendarDayModal selectedDate={selectedDate} timeCells={timeCells} />
+      </ModalOverlay>
       <CalendarContainer isModalOpen={isModalOpen}>
         <WeekCalendarHeader
-          currentYear={currentYear}
-          currentWeek={currentWeek}
+          selectedDate={selectedDate}
           onPrevWeek={handlePrevWeek}
           onNextWeek={handleNextWeek}
           onTodayClick={handleTodayClick}
@@ -180,31 +175,17 @@ export default function UserWeekCalendar() {
           onClick={handleCellClick}
           events={weekEvents}
           weekStart={weekStart}
-          currentYear={currentYear}
-          currentWeek={currentWeek}
+          selectedDate={selectedDate}
         />
       </CalendarContainer>
     </div>
   );
 }
 
-const ModalOverlay = ({ children, onClose }: ModalOverlayProps) => {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg w-96 relative">
-        <button className="absolute top-3 right-3 text-gray-500 hover:text-gray-700" onClick={onClose}>
-          ✕
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-};
-
 const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <div
-    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 px-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""}`}
+    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""}`}
   >
-    <div className="relative h-full w-full overflow-auto mt-10">{children}</div>
+    <div className="relative h-full w-full overflow-auto mt-10"><div className="w-full px-[5vw] pt-4">{children}</div></div>
   </div>
 );

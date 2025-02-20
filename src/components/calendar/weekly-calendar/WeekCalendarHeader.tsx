@@ -1,26 +1,25 @@
 'use client';
 import React from "react";
 import { daysOfWeek } from "@/lib/calendarUtils";
+import { SelectedWeekDate } from "./UserWeekCalendar";
 
 export interface WeekCalendarHeaderProps {
-  currentYear: number;
-  currentWeek: number; // 0-indexed (so display as currentWeek + 1)
+  selectedDate: SelectedWeekDate | null
   onPrevWeek: () => void;
   onNextWeek: () => void;
   onTodayClick: () => void;
 }
 
 const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
-  currentYear,
-  currentWeek,
+  selectedDate,
   onPrevWeek,
   onNextWeek,
   onTodayClick,
 }) => {
   return (
-    <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white px-5 pt-7 sm:px-8 sm:pt-8">
+    <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7">
       <div
-        className="sticky -top-px z-40 w-full rounded-t-2xl bg-white px-5 pt-7 sm:px-8 sm:pt-8"
+        className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7"
         style={{
           position: "absolute",
           top: 0,
@@ -38,7 +37,7 @@ const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
               type="button"
               className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:px-5 lg:py-2.5"
             >
-              Open This Week
+              This Week
             </button>
             <button
               type="button"
@@ -65,7 +64,7 @@ const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
               </svg>
             </button>
             <h1 className="min-w-40 text-center text-lg font-semibold sm:min-w-40 sm:text-xl">
-              Week {currentWeek + 1} – {currentYear}
+              Week {selectedDate && selectedDate.week + 1} – {selectedDate && selectedDate.year}
             </h1>
             <button
               onClick={onNextWeek}
