@@ -179,13 +179,13 @@ const ModalOverlay = ({ children, onClose }: ModalOverlayProps) => {
 
 const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <div
-    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 px-4 pt-4 items-center justify-center ${
+    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${
       isModalOpen ? "pointer-events-none" : ""
     }`}
   >
     <div className="relative h-full w-full overflow-auto mt-10">
       <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
-        <div className="w-full px-5 pt-4 sm:px-8 sm:pt-6">{children}</div>
+        <div className="w-full px-[5vw] pt-4">{children}</div>
       </div>
     </div>
   </div>

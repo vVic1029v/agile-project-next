@@ -30,8 +30,8 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
         style={{
           position: "absolute",
           top: 0,
-          left: -60,
-          width: "calc(100% + 120px)",
+          left: "-5vw",
+          width: "calc(100% + 5vw)",
           height: "100%",
           zIndex: -1,
         }}
