@@ -25,20 +25,20 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
     const router = useRouter();
 
     return (
-        <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white px-5 pt-7 sm:px-8 sm:pt-8">
+        <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7">
             <div
-                className="sticky -top-px z-40 w-full rounded-t-2xl bg-white px-5 pt-7 sm:px-8 sm:pt-8"
+                className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7"
                 style={{
                     position: "absolute",
                     top: 0,
-                    left: -30,
-                    width: "calc(100% + 30px)",
+                    left: -60,
+                    width: "calc(100% + 120px)",
                     height: "100%",
                     zIndex: -1,
                 }}
             />
             <div className="">
-                <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-6">
+                <div className="mb-4 flex w-full flex-wrap items-center justify-between ">
                     <div className="flex flex-wrap gap-2 sm:gap-3">
                         <button
                             onClick={() => router.push('/calendar/week')}
