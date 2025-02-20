@@ -9,6 +9,7 @@ import { useCalendar } from "../useCalendar";
 import { getWeekAndDay, monthNames } from "@/lib/calendarUtils";
 import YearCalendarHeader from "@/components/calendar/annual-calendar/YearCalendarHeader";
 import type { ReactNode } from "react";
+import { ModalOverlay } from "../event-modal/ModalOverlay";
 
 // Shared type for the unified date state.
 export interface SelectedDay {
@@ -18,12 +19,6 @@ export interface SelectedDay {
   week: number;
   dayWeek: number;
 }
-
-interface ModalOverlayProps {
-  children: ReactNode;
-  onClose: () => void;
-}
-
 interface CalendarContainerProps {
   children: ReactNode;
   isModalOpen: boolean;
@@ -137,11 +132,10 @@ export default function UserYearCalendar() {
 
   return (
     <div>
-      {isModalOpen && (
-        <ModalOverlay onClose={closeModal}>
-          <CalendarDayModal selectedDate={selectedDay} timeCells={timeCells} />
-        </ModalOverlay>
-      )}
+      <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
+        <CalendarDayModal selectedDate={selectedDay} timeCells={timeCells} />
+      </ModalOverlay>
+      
       <CalendarContainer isModalOpen={isModalOpen}>
         <YearCalendarHeader
           selectedDay={selectedDay}
@@ -160,23 +154,6 @@ export default function UserYearCalendar() {
     </div>
   );
 }
-
-const ModalOverlay = ({ children, onClose }: ModalOverlayProps) => {
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white rounded-lg shadow-lg w-96 relative">
-        <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
-          onClick={onClose}
-        >
-          ✕
-        </button>
-        {children}
-      </div>
-    </div>
-  );
-};
-
 const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <div
     className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${

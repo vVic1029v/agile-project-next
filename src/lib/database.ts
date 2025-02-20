@@ -1,11 +1,11 @@
 import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma } from "@prisma/client";
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/timeSlots"
-import { EventTimeSlot } from "calendar-types";
+import { EventTimeSlot } from "@/components/calendar/useCalendar";
 
 export const prisma = new PrismaClient();
 
 // for auth
-export async function getExpensiveUserByEmail(email: string): Promise<User & { student: Student | null, facultyMember: FacultyMember | null }|null> {
+export async function getExpensiveUserByEmail(email: string): Promise<User & { student: Student | null, facultyMember: FacultyMember | null } | null> {
   return prisma.user.findUnique({
     where: { email },
     include: { student: true, facultyMember: true },
@@ -13,7 +13,7 @@ export async function getExpensiveUserByEmail(email: string): Promise<User & { s
 }
 
 // for register
-export async function getCheapUserByEmail(email: string): Promise<User|null>  {
+export async function getCheapUserByEmail(email: string): Promise<User | null> {
   return prisma.user.findUnique({
     where: { email },
   });
@@ -25,8 +25,8 @@ export async function postNewUser(
   lastName: string,
   email: string,
   password: string,
-  userType : UserType,
-): Promise<User|null> {
+  userType: UserType,
+): Promise<User | null> {
   return prisma.user.create({
     data: {
       email: email,
@@ -45,7 +45,7 @@ export async function postNewHomeClass(
   teacherId: string,
   startYear: number,
   nameLetter: string
-): Promise<HomeClass|null> {
+): Promise<HomeClass | null> {
   return prisma.homeClass.create({
     data: {
       name: nameLetter,
@@ -61,7 +61,7 @@ export async function postNewHomeClass(
 }
 
 // for new Course
-export async function getCheapHomeClassById(homeClassId: string): Promise<HomeClass|null>  {
+export async function getCheapHomeClassById(homeClassId: string): Promise<HomeClass | null> {
   return prisma.homeClass.findUnique({
     where: { id: homeClassId },
   });
@@ -75,7 +75,7 @@ export async function postNewCourse(
   weekScheduleId: WeekScheduleIdentifier
 ): Promise<Course | null> {
   // Get the relative times (startHour, startMinute, endHour, endMinute) using the renamed getTimesOfIndex function
-  
+
   // Create the course in the database
   const course = await prisma.course.create({
     data: {
@@ -99,13 +99,9 @@ export async function postNewCourse(
   await prisma.timeSlot.createMany({
     data: timeSlotsData
   });
-  
+
   return course;
 }
-
-
-
-
 
 // for events api
 export async function getUserEvents(userId: string): Promise<EventTimeSlot[]> {
@@ -161,10 +157,10 @@ export async function getAllCourseUserIds(eventData: Event) {
   return userIds;
 }
 
-export async function postEventFloating(dayOfWeek: number, startHour: number, startMinute: number, endHour: number, endMinute: number, eventData: Event): Promise<Event | null>  {
+export async function postEventFloating(dayOfWeek: number, startHour: number, startMinute: number, endHour: number, endMinute: number, eventData: Event): Promise<Event | null> {
 
   const newTimeSlotId = await prisma.timeSlot.create({
-    data: createTimeSlot(eventData.courseId, {dayOfWeek, startHour, startMinute, endHour, endMinute})
+    data: createTimeSlot(eventData.courseId, { dayOfWeek, startHour, startMinute, endHour, endMinute })
   });
 
   const userIds = await getAllCourseUserIds(eventData)
@@ -174,8 +170,8 @@ export async function postEventFloating(dayOfWeek: number, startHour: number, st
       type: eventData.type,
       weekNumber: eventData.weekNumber,
       yearNumber: eventData.yearNumber,
-      course: { connect: {id: eventData.courseId }},
-      timeSlot: { connect: {id: newTimeSlotId.id }},
+      course: { connect: { id: eventData.courseId } },
+      timeSlot: { connect: { id: newTimeSlotId.id } },
       users: {
         connect: userIds.map(userId => ({ id: userId })) // Connect all users by their IDs
       }
@@ -222,8 +218,8 @@ export async function getUserCourses(userId: string, userType: UserType): Promis
     });
 
     return studentCourses.map(sc => sc.course); // Extract and return the courses
-  } 
-  
+  }
+
   if (userType === "FACULTYMEMBER") {
     return prisma.course.findMany({
       where: { facultyMemberId: userId },
@@ -231,4 +227,22 @@ export async function getUserCourses(userId: string, userType: UserType): Promis
   }
 
   return null;
+}
+
+
+
+
+
+// for search homeclass modal
+export type HomeClassSearchResult = {
+      name: string;
+      id: string;
+  };
+export async function getHomeClassesByName(name: string): Promise<HomeClassSearchResult[]> {
+
+  return prisma.homeClass.findMany({
+    where: { name: { contains: name, mode: "insensitive" } },
+    select: { id: true, name: true },
+    take: 5,
+  });
 }
