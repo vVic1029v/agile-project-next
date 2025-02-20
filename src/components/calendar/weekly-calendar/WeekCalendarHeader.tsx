@@ -41,13 +41,6 @@ const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
               Open This Week
             </button>
             <button
-              onClick={onTodayClick}
-              type="button"
-              className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:px-5 lg:py-2.5"
-            >
-              Today
-            </button>
-            <button
               type="button"
               className="whitespace-nowrap rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-1.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 sm:rounded-xl lg:px-5 lg:py-2.5"
             >
@@ -71,7 +64,7 @@ const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7" />
               </svg>
             </button>
-            <h1 className="min-w-16 text-center text-lg font-semibold sm:min-w-20 sm:text-xl">
+            <h1 className="min-w-40 text-center text-lg font-semibold sm:min-w-40 sm:text-xl">
               Week {currentWeek + 1} – {currentYear}
             </h1>
             <button

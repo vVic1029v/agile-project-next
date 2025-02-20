@@ -41,11 +41,11 @@ export default function UserYearCalendar() {
   useEffect(() => {
     if (!userId) return;
 
+    const yearParam = searchParams.get("year");
     const dateParam = searchParams.get("date");
     if (dateParam) {
       const [year, month, day] = dateParam.split("-").map(Number);
       const { week, dayWeek } = getWeekAndDay(year, month, day);
-      console.log(week)
       setSelectedDate({ dayMonth: day, month: month - 1, year, week: week - 1, dayWeek });
       setIsModalOpen(true);
     }
@@ -55,7 +55,7 @@ export default function UserYearCalendar() {
     (dayMonth: number, month: number, year: number, week: number, dayWeek: number) => {
       if (!userId) return;
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(dayMonth).padStart(2, "0")}`;
-      router.push(`${pathname}?date=${dateString}`, { scroll: false });
+      router.replace(`${pathname}?year=${year}&date=${dateString}`, { scroll: false });
       setSelectedDate({ dayMonth, month, year, week: week - 1, dayWeek });
       setIsModalOpen(true);
     },
@@ -63,7 +63,7 @@ export default function UserYearCalendar() {
   );
 
   const closeModal = useCallback(() => {
-    router.push(pathname, { scroll: false });
+    router.replace(`${pathname}?year=${new Date().getFullYear()}`, { scroll: false });
     setIsModalOpen(false);
   }, [router, pathname]);
 
@@ -84,7 +84,6 @@ export default function UserYearCalendar() {
 }
 
 const ModalOverlay = ({ children, onClose }: ModalOverlayProps) => {
-
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white rounded-lg shadow-lg w-96 relative">
@@ -94,13 +93,12 @@ const ModalOverlay = ({ children, onClose }: ModalOverlayProps) => {
         {children}
       </div>
     </div>
-  )
+  );
 };
 
 const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <div
-    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 px-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""
-      }`}
+    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 px-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""}`}
   >
     <div className="relative h-full w-full overflow-auto mt-10">{children}</div>
   </div>

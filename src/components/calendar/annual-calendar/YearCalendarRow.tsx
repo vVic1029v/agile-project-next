@@ -2,6 +2,7 @@ import React from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '../useCalendar';
+import { useRouter, useSearchParams } from "next/navigation";
 
 export interface YearCalendarRowProps {
   week: DayObj[];
@@ -23,6 +24,20 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   events
 }) => {
   const now = new Date();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // Helper function to navigate to a specific week on /calendar/week.
+  const goToWeek = (weekIdx: number) => {
+    // Convert the 0-indexed week to a 1-indexed string and pad it.
+    const weekStr = String(weekIdx + 1).padStart(2, "0");
+    const newSearch = new URLSearchParams(searchParams.toString());
+    newSearch.set("week", `${year}-${weekStr}`);
+    // Remove the "date" parameter if it exists.
+    newSearch.delete("date");
+    // Navigate to /calendar/week with the updated query parameters.
+    router.push(`/calendar/week?${newSearch.toString()}`, { scroll: false });
+  };
 
   return (
     <div className="relative flex w-full items-center" key={`week-${weekIndex}`}>
@@ -37,7 +52,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
                    hover:z-20 hover:border-cyan-400 hover:opacity-100
                    sm:-m-px sm:border-2 
                    rounded-3xl size-[15vh]"
-        onClick={() => {}}
+        onClick={() => goToWeek(weekIndex)}
       >
         <span
           className="absolute right-0 top-1/2 -translate-y-1/2 text-2xl"

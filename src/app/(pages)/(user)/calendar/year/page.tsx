@@ -1,22 +1,19 @@
-import { NextResponse } from "next/server";
 import React from "react"
 import UserYearCalendar from "@/components/calendar/annual-calendar/UserYearCalendar"
-import { getServerSession } from "next-auth/next"
-import { auth, authOptions } from "@/lib/auth"
+import { auth } from "@/lib/auth"
 import { SnackProvider } from "@/app/SnackProvider";
 
 import AuthContent from "@/components/auth/AuthContent";
-import SessionProviderWrapper from "@/components/auth/SessionProviderWrapper";
 
 export default async function CalendarPage(context: any) {
-    const sess = await getServerSession(authOptions)
+    const sess = await auth()
     if (sess) {
         return (
-            <SessionProviderWrapper>
+            <AuthContent>
                 <SnackProvider>
                     <UserYearCalendar />
                 </SnackProvider>
-            </SessionProviderWrapper>
+            </AuthContent>
         )
     } else {
         return (

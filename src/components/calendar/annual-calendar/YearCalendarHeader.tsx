@@ -1,7 +1,7 @@
-// /components/Calendar/CalendarHeader.tsx
 import React from 'react';
 import Select from '../../Common/Select';
 import { daysOfWeek } from '@/lib/calendarUtils';
+import { useRouter } from 'next/navigation';
 
 export interface YearCalendarHeaderProps {
     selectedMonth: number;
@@ -22,6 +22,8 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
     onNextYear,
     year,
 }) => {
+    const router = useRouter();
+
     return (
         <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white px-5 pt-7 sm:px-8 sm:pt-8">
             <div
@@ -35,11 +37,11 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
                     zIndex: -1,
                 }}
             />
-            <div className="" >
+            <div className="">
                 <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-6">
                     <div className="flex flex-wrap gap-2 sm:gap-3">
                         <button
-                            onClick={onTodayClick}
+                            onClick={() => router.push('/calendar/week')}
                             type="button"
                             className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:px-5 lg:py-2.5"
                         >
@@ -61,7 +63,7 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
                     </div>
                     <div className="flex w-fit items-center justify-between">
                         <Select
-                            className='mx-5'
+                            className="mx-5"
                             name="month"
                             value={`${selectedMonth}`}
                             options={monthOptions}
