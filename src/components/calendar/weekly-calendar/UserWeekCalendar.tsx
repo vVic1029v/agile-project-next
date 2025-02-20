@@ -49,8 +49,6 @@ export default function UserWeekCalendar() {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<SelectedWeekDate>(getToday());
-  // const [currentYear, setCurrentYear] = useState<number>(initialYear); REMOVE THESE
-  // const [currentWeek, setCurrentWeek] = useState<number>(initialWeek);
   const [weekStart, setWeekStart] = useState<Date>(getWeekStartDateFromYearWeek(initialYear, initialWeek));
 
   const { timeCells } = useCalendar(userId);

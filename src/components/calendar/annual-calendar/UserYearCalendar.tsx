@@ -49,13 +49,20 @@ export default function UserYearCalendar() {
   const userId = session?.user?.id;
 
   // Use a single state for all date values.
-  const [selectedDay, setSelectedDay] = useState<SelectedDay>(getToday());
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { timeCells } = useCalendar(userId);
   const monthOptions = monthNames.map((month, index) => ({
     name: month,
     value: index.toString(),
   }));
+  
+  
+  const today = new Date();
+  const yearParam = searchParams.get("year");
+  
+  const initialYear = yearParam ? Number(yearParam) : today.getFullYear();
+  
+  const [selectedDay, setSelectedDay] = useState<SelectedDay>({...getToday(), year: initialYear});
 
   useEffect(() => {
     if (!userId) return;
@@ -73,6 +80,8 @@ export default function UserYearCalendar() {
       if (!isNaN(parsedYear)) {
         setSelectedDay((prev) => ({ ...prev, year: parsedYear }));
       }
+    } else {
+      router.replace(`${pathname}?year=${selectedDay.year}`, { scroll: false });
     }
   }, [searchParams, userId]);
 
