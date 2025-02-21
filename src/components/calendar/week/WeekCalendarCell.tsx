@@ -1,16 +1,15 @@
 'use client';
+import { TimeSlotCell } from "@/lib/getCalendarData";
 import React from "react";
-import type { EventTimeSlot } from "@/components/calendar/useCalendar";
+import { Event } from "@prisma/client";
 
 export interface WeekCalendarCellProps {
-  date: Date;
   timeslot: number;
-  events: EventTimeSlot[];
+  events: Event[];
   onClick: () => void;
 }
 
 const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
-  date,
   timeslot,
   events,
   onClick,

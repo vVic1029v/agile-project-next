@@ -21,7 +21,7 @@ export default function UserYearCalendar() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  const { selectedDate: selectedDay, setSelectedDate: setSelectedDay, updateUrl: updateYearUrl, isModalOpen, setIsModalOpen } = useCalendarState(false);
+  const { selectedDate, setSelectedDate, updateUrl: updateYearUrl, isModalOpen, setIsModalOpen } = useCalendarState(false);
 
   const monthOptions = monthNames.map((month, index) => ({
     name: month,
@@ -29,20 +29,20 @@ export default function UserYearCalendar() {
   }));
 
   const handlePrevYear = () => {
-    const newYear = selectedDay.year - 1;
-    setSelectedDay((prev) => ({ ...prev, year: newYear }));
+    const newYear = selectedDate.year - 1;
+    setSelectedDate((prev) => ({ ...prev, year: newYear }));
     updateYearUrl(newYear);
   };
 
   const handleNextYear = () => {
-    const newYear = selectedDay.year + 1;
-    setSelectedDay((prev) => ({ ...prev, year: newYear }));
+    const newYear = selectedDate.year + 1;
+    setSelectedDate((prev) => ({ ...prev, year: newYear }));
     updateYearUrl(newYear);
   };
 
   const handleMonthChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const monthIndex = parseInt(event.target.value, 10);
-    setSelectedDay((prev) => ({ ...prev, month: monthIndex }));
+    setSelectedDate((prev) => ({ ...prev, month: monthIndex }));
   };
 
   const handleDayClick = useCallback(
@@ -51,39 +51,39 @@ export default function UserYearCalendar() {
       const { day, month, year } = selected;
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       updateYearUrl(year, undefined, { date: dateString });
-      setSelectedDay(selected);
+      setSelectedDate(selected);
       setIsModalOpen(true);
     },
-    [userId, updateYearUrl, setSelectedDay, setIsModalOpen]
+    [userId, updateYearUrl, setSelectedDate, setIsModalOpen]
   );
 
   const closeModal = useCallback(() => {
-    updateYearUrl(selectedDay.year);
+    updateYearUrl(selectedDate.year);
     setIsModalOpen(false);
-  }, [selectedDay.year, updateYearUrl, setIsModalOpen]);
+  }, [selectedDate.year, updateYearUrl, setIsModalOpen]);
 
   if (status === "loading" || !userId) return null;
 
   return (
     <div>
       <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
-        <CalendarDayModal selectedDate={selectedDay} events={events} />
+        <CalendarDayModal selectedDate={selectedDate} events={events} />
       </ModalOverlay>
 
       <YearCalendarContainer isModalOpen={isModalOpen}>
         <YearCalendarHeader
-          selectedDay={selectedDay}
+          selectedDay={selectedDate}
           monthOptions={monthOptions}
           onMonthChange={handleMonthChange}
           onTodayClick={() => {
             const todayDate = getToday();
-            setSelectedDay(todayDate);
+            setSelectedDate(todayDate);
             updateYearUrl(todayDate.year);
           }}
           onPrevYear={handlePrevYear}
           onNextYear={handleNextYear}
         />
-        <YearCalendar selectedDay={selectedDay} onClick={handleDayClick} events={events} />
+        <YearCalendar selectedDay={selectedDate} onClick={handleDayClick} events={events} />
       </YearCalendarContainer>
     </div>
   );

@@ -6,7 +6,7 @@ import { getWeekAndDay } from "./calendarUtils";
 export type EventTimeSlot = Prisma.EventGetPayload<{ include: { timeSlot: true } }>;
 
 export type Event = Prisma.EventGetPayload<{}>;
-export type TimeSlotCell = EventTimeSlot[];
+export type TimeSlotCell = {events: Event[], timeslot: TimeSlot};
 export type DayCell = Record<string, TimeSlotCell>;
 export type WeekCell = Record<number, DayCell>;
 export type YearCell = Record<number, WeekCell>;
@@ -38,9 +38,9 @@ export async function getCalendarData(userId: string): Promise<{
         structuredEvents[yearNumber][weekNumber][dayOfWeek] = {};
       }
       if (!structuredEvents[yearNumber][weekNumber][dayOfWeek][timeSlotId]) {
-        structuredEvents[yearNumber][weekNumber][dayOfWeek][timeSlotId] = [];
+        structuredEvents[yearNumber][weekNumber][dayOfWeek][timeSlotId] = { events: [], timeslot: event.timeSlot };
       }
-      structuredEvents[yearNumber][weekNumber][dayOfWeek][timeSlotId].push(event);
+      structuredEvents[yearNumber][weekNumber][dayOfWeek][timeSlotId].events.push(event);
     });
 
     return { events: structuredEvents, courses };

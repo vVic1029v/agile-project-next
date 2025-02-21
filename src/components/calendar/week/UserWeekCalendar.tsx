@@ -9,7 +9,7 @@ import WeekCalendar from "@/components/calendar/week/WeekCalendar";
 import CalendarDayModal from "../event-modal/CalendarDayModal";
 import CalendarContainter from "../CalendarContainer";
 import { getWeekAndDay, getWeeksInYear, getWeekStartDate, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
-import { useCalendarState } from "../useCalendarState";
+import { SelectedDate, useCalendarState } from "../useCalendarState";
 
 interface CalendarContainerProps {
   children: ReactNode;
@@ -21,28 +21,27 @@ export default function UserWeekCalendar() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  const { selectedDate, setSelectedDate, weekStart, setWeekStart, updateUrl: updateWeekUrl, isModalOpen, setIsModalOpen } = useCalendarState(true);
-
+  const { selectedDate, setSelectedDate, updateUrl: updateWeekUrl, isModalOpen, setIsModalOpen } = useCalendarState(true);
+  console.log(selectedDate)
+  
   const handleCellClick = useCallback(
-    (date: Date, timeSlot: number, dayIndex: number) => {
-      if (!userId) return;
-      const day = date.getDate();
-      const month = date.getMonth();
-      const year = date.getFullYear();
-      const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-      const { week, dayWeek: computedDayWeek } = getWeekAndDay(year, month + 1, day);
-      updateWeekUrl(year, week - 1, { date: dateString });
-      setSelectedDate({ day, month, year, week: week - 1, dayWeek: computedDayWeek, timeSlot });
+    (date: SelectedDate) => {
+      
+      const dateString = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
+      // const { week, dayWeek: computedDayWeek } = getWeekAndDay(year, month + 1, day);
+      
+      updateWeekUrl(date.year, date.week, { date: dateString });
+      setSelectedDate(date);
       setIsModalOpen(true);
     },
     [userId, updateWeekUrl, setIsModalOpen, setSelectedDate]
   );
-
+  
   const closeModal = useCallback(() => {
     updateWeekUrl(selectedDate.year, selectedDate.week);
     setIsModalOpen(false);
   }, [selectedDate.year, selectedDate.week, updateWeekUrl, setIsModalOpen]);
-
+  
   const handlePrevWeek = () => {
     let newWeek = selectedDate.week - 1;
     let newYear = selectedDate.year;
@@ -51,10 +50,10 @@ export default function UserWeekCalendar() {
       newWeek = getWeeksInYear(newYear) - 1;
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
+    // setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
     updateWeekUrl(newYear, newWeek);
   };
-
+  
   const handleNextWeek = () => {
     let newWeek = selectedDate.week + 1;
     let newYear = selectedDate.year;
@@ -63,21 +62,22 @@ export default function UserWeekCalendar() {
       newWeek = 0;
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
+    // setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
     updateWeekUrl(newYear, newWeek);
   };
-
+  
   const handleTodayClick = () => {
     const now = new Date();
     const newYear = now.getFullYear();
     const { week } = getWeekAndDay(newYear, now.getMonth() + 1, now.getDate());
     const newWeek = week - 1;
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    setWeekStart(getWeekStartDate(now));
+    // setWeekStart(getWeekStartDate(now));
     updateWeekUrl(newYear, newWeek);
   };
 
-  const weekEvents = events[selectedDate.year]?.[selectedDate.week] || [null, null, null, null, null, null, null];
+  const weekEvents = events[selectedDate.year]?.[selectedDate.week];
+
 
   if (status === "loading" || !userId) return null;
 
@@ -93,7 +93,7 @@ export default function UserWeekCalendar() {
           onNextWeek={handleNextWeek}
           onTodayClick={handleTodayClick}
         />
-        <WeekCalendar onClick={handleCellClick} events={weekEvents} weekStart={weekStart} selectedDate={selectedDate} />
+        <WeekCalendar onClick={handleCellClick} events={weekEvents} selectedDate={selectedDate} />
       </WeekCalendarContainer>
     </div>
   );

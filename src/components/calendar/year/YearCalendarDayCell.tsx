@@ -29,7 +29,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
 }) => {
 
   // console.log("Day events", dayEvents, selectedDate.year, selectedDate.week, selectedDate.dayWeek);
-  const modalEvents = Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell);
+  const modalTimeSlotCells = Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell);
   return (
     <div
       ref={(el) => {
@@ -92,7 +92,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
         </svg>
       </button>
       {/* Render event icons – each stops propagation */}
-      {modalEvents && modalEvents.length > 0 && (
+      {modalTimeSlotCells && modalTimeSlotCells.length > 0 && (
         <div
           className="absolute bottom-[-2px] flex flex-wrap-reverse flex-row-reverse overflow-hidden w-[100%] h-[90%] justify-start p-2 content-start"
           style={{
@@ -100,7 +100,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
             maskImage: "linear-gradient(to top, black 50%, transparent 80%)",
           }}
         >
-          {modalEvents.map((event, idx) => (
+          {modalTimeSlotCells.flatMap((timeSlotCell, idx) => timeSlotCell.events).map((event, idx) => (
             <button
               key={idx}
               onClick={(e) => {e.stopPropagation(); console.log("STOPPED")}}

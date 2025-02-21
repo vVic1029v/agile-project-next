@@ -25,26 +25,32 @@ export const getToday = (): SelectedDate => {
 
 const initializeState = (yearParam: string | null, weekParam: string | null, dateParam: string | null) => {
   const today = new Date();
-  const initialYear = yearParam ? Number(yearParam) : today.getFullYear();
-  const initialWeek = weekParam
-    ? Number(weekParam.split("W")[1]) - 1 // Convert to 0-indexed
-    : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week - 1;
-
+  let initialYear = yearParam ? Number(yearParam) : today.getFullYear();
+  let initialWeek = weekParam ? Number(weekParam.split("W")[1]) - 1 : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week - 1;
   let initialSelectedDate = getToday();
 
   if (dateParam) {
     const [year, month, day] = dateParam.split("-").map(Number);
     const { week, dayWeek } = getWeekAndDay(year, month, day);
+    initialYear = year;
+    initialWeek = week - 1;
+
     initialSelectedDate = {
       day,
       month: month - 1,
-      year,
-      week: week - 1,
+      year: initialYear,
+      week: initialWeek,
       dayWeek,
     };
+  } else {
+    initialSelectedDate = {
+      ...initialSelectedDate,
+      year: initialYear,
+      week: initialWeek,
+    }
   }
 
-  return { initialYear, initialWeek, initialSelectedDate };
+  return { initialSelectedDate };
 };
 
 export const useCalendarState = (isWeekView: boolean) => {
@@ -52,14 +58,14 @@ export const useCalendarState = (isWeekView: boolean) => {
   const searchParams = useSearchParams();
   const pathname = usePathname();
 
-  const { initialYear, initialWeek, initialSelectedDate } = initializeState(
+  const { initialSelectedDate } = initializeState(
     searchParams.get("year"),
     searchParams.get("week"),
     searchParams.get("date")
   );
+  console.log(initialSelectedDate)
 
   const [selectedDate, setSelectedDate] = useState<SelectedDate>(initialSelectedDate);
-  const [weekStart, setWeekStart] = useState<Date>(getWeekStartDateFromYearWeek(initialYear, initialWeek));
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!searchParams.get("date"));
 
   useEffect(() => {
@@ -90,8 +96,6 @@ export const useCalendarState = (isWeekView: boolean) => {
   return {
     selectedDate,
     setSelectedDate,
-    weekStart,
-    setWeekStart,
     updateUrl,
     isModalOpen,
     setIsModalOpen,

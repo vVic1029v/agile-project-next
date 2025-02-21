@@ -31,7 +31,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   // Helper function to navigate to a specific week on /calendar/week.
   const goToWeek = (weekIdx: number) => {
     // Convert the 0-indexed week to a 1-indexed string and pad it.
-    const weekStr = String(weekIdx).padStart(2, "0");
+    const weekStr = String(weekIdx + 1).padStart(2, "0");
     const newSearch = new URLSearchParams(searchParams.toString());
     newSearch.set("year", String(year));
     newSearch.set("week", `W${weekStr}`);
