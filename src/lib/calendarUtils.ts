@@ -1,6 +1,5 @@
 import { TimeSlot } from "@prisma/client";
 
-// /utils/calendarUtils.ts
 export interface DayObj {
   month: number;
   week: number;
@@ -24,6 +23,12 @@ export const monthNames = [
 
 export const daysOfWeek = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
 
+// Helper function to get the first Monday of the year
+function getFirstMondayOfYear(year: number): Date {
+  const firstDay = new Date(year, 0, 1);
+  const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+  return new Date(year, 0, firstDay.getDate() - firstDayIndex);
+}
 
 // CALENDAR GRID 
 
@@ -103,28 +108,15 @@ export const chunkDaysIntoWeeks = (days: DayObj[]): DayObj[][] => {
   
     return days;
 };
-  
-  export const chunkDaysIntoWeeks = (days: DayObj[]): DayObj[][] => {
-    const weeks: DayObj[][] = [];
-    for (let i = 0; i < days.length; i += 7) {
-      weeks.push(days.slice(i, i + 7));
-    }
-    return weeks;
-  };
 */
-
 
 export function getWeekAndDay(year: number, month: number, day: number) {
   const date = new Date(year, month - 1, day);
-  const firstDay = new Date(year, 0, 1);
-
-  // Adjust firstDay to make Monday the first day of the week
-  const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
+  const firstMonday = getFirstMondayOfYear(year);
   const dateDayIndex = date.getDay() === 0 ? 6 : date.getDay() - 1;
 
-  // Calculate how many days have passed since the first Monday of the year
-  const pastDays = (date.getTime() - firstDay.getTime()) / 86400000;
-  const week = Math.ceil((pastDays + firstDayIndex + 1) / 7);
+  const pastDays = (date.getTime() - firstMonday.getTime()) / 86400000;
+  const week = Math.ceil((pastDays + 1) / 7);
 
   return { week, dayWeek: dateDayIndex };
 }
@@ -132,37 +124,25 @@ export function getWeekAndDay(year: number, month: number, day: number) {
 // week calendar
 
 export function getWeekStartDate(date: Date): Date {
-  // Adjust so that Monday is day 0. If date.getDay() returns 0 (Sunday), use 6.
   const day = date.getDay() === 0 ? 6 : date.getDay() - 1;
   const diff = date.getDate() - day;
   return new Date(date.getFullYear(), date.getMonth(), diff);
 }
 
 export function getWeekStartDateFromYearWeek(year: number, weekIndex: number): Date {
-  // Get the first Monday of the year.
-  const firstDay = new Date(year, 0, 1);
-  // Adjust firstDay to Monday: if firstDay is not Monday, compute the difference.
-  const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-  const diff = firstDayIndex; // days to subtract to reach Monday (could be 0 if already Monday)
-  const firstMonday = new Date(year, 0, firstDay.getDate() - diff);
+  const firstMonday = getFirstMondayOfYear(year);
   const weekStart = new Date(firstMonday);
   weekStart.setDate(firstMonday.getDate() + weekIndex * 7);
   return weekStart;
 }
 
 export function getWeeksInYear(year: number): number {
-  // This function depends on getWeekAndDay. Ensure getWeekAndDay is updated as well.
   return getWeekAndDay(year, 12, 31).week;
 }
 
-
-
-
 // conversions
 export function convertTimeSlotYearWeekToDate(timeSlot: TimeSlot, year: number, week: number): { startDate: Date, endDate: Date } {
-  const firstDay = new Date(year, 0, 1);
-  const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-  const firstMonday = new Date(year, 0, firstDay.getDate() - firstDayIndex);
+  const firstMonday = getFirstMondayOfYear(year);
   const weekStart = new Date(firstMonday);
   weekStart.setDate(firstMonday.getDate() + (week - 1) * 7 + (timeSlot.dayOfWeek - 1));
 
@@ -177,10 +157,9 @@ export function convertTimeSlotYearWeekToDate(timeSlot: TimeSlot, year: number, 
 
 export function convertDateToTimeSlotYearWeek(date: Date): { timeSlot: Partial<TimeSlot>, year: number, week: number } {
   const year = date.getFullYear();
-  const firstDay = new Date(year, 0, 1);
-  const firstDayIndex = firstDay.getDay() === 0 ? 6 : firstDay.getDay() - 1;
-  const pastDays = (date.getTime() - firstDay.getTime()) / 86400000;
-  const week = Math.ceil((pastDays + firstDayIndex + 1) / 7);
+  const firstMonday = getFirstMondayOfYear(year);
+  const pastDays = (date.getTime() - firstMonday.getTime()) / 86400000;
+  const week = Math.ceil((pastDays + 1) / 7);
 
   const timeSlot: Partial<TimeSlot> = {
     dayOfWeek: date.getDay() === 0 ? 7 : date.getDay(),

@@ -2,7 +2,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { getWeekAndDay, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 
-export interface SelectedDate {
+export type SelectedDate = {
   day: number;
   month: number;
   year: number;

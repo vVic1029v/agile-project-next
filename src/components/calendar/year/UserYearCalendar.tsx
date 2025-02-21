@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, ReactNode } from "react";
+import { useState, useCallback, useMemo, ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { YearCalendar } from "@/components/calendar/year/YearCalendar";
 import { monthNames } from "@/lib/calendarUtils";
@@ -23,19 +23,13 @@ export default function UserYearCalendar() {
 
   const { selectedDate, setSelectedDate, updateUrl: updateYearUrl, isModalOpen, setIsModalOpen } = useCalendarState(false);
 
-  const monthOptions = monthNames.map((month, index) => ({
+  const monthOptions = useMemo(() => monthNames.map((month, index) => ({
     name: month,
     value: index.toString(),
-  }));
+  })), []);
 
-  const handlePrevYear = () => {
-    const newYear = selectedDate.year - 1;
-    setSelectedDate((prev) => ({ ...prev, year: newYear }));
-    updateYearUrl(newYear);
-  };
-
-  const handleNextYear = () => {
-    const newYear = selectedDate.year + 1;
+  const handleYearChange = (offset: number) => {
+    const newYear = selectedDate.year + offset;
     setSelectedDate((prev) => ({ ...prev, year: newYear }));
     updateYearUrl(newYear);
   };
@@ -57,10 +51,16 @@ export default function UserYearCalendar() {
     [userId, updateYearUrl, setSelectedDate, setIsModalOpen]
   );
 
-  const closeModal = useCallback(() => {
+  const closeModal = useMemo(() => () => {
     updateYearUrl(selectedDate.year);
     setIsModalOpen(false);
   }, [selectedDate.year, updateYearUrl, setIsModalOpen]);
+
+  const handleTodayClick = () => {
+    const todayDate = getToday();
+    setSelectedDate(todayDate);
+    updateYearUrl(todayDate.year);
+  };
 
   if (status === "loading" || !userId) return null;
 
@@ -75,13 +75,9 @@ export default function UserYearCalendar() {
           selectedDay={selectedDate}
           monthOptions={monthOptions}
           onMonthChange={handleMonthChange}
-          onTodayClick={() => {
-            const todayDate = getToday();
-            setSelectedDate(todayDate);
-            updateYearUrl(todayDate.year);
-          }}
-          onPrevYear={handlePrevYear}
-          onNextYear={handleNextYear}
+          onTodayClick={handleTodayClick}
+          onPrevYear={() => handleYearChange(-1)}
+          onNextYear={() => handleYearChange(1)}
         />
         <YearCalendar selectedDay={selectedDate} onClick={handleDayClick} events={events} />
       </YearCalendarContainer>

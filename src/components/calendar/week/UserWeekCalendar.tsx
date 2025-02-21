@@ -8,7 +8,7 @@ import WeekCalendarHeader from "@/components/calendar/week/WeekCalendarHeader";
 import WeekCalendar from "@/components/calendar/week/WeekCalendar";
 import CalendarDayModal from "../event-modal/CalendarDayModal";
 import CalendarContainter from "../CalendarContainer";
-import { getWeekAndDay, getWeeksInYear, getWeekStartDate, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
+import { getWeekAndDay, getWeeksInYear } from "@/lib/calendarUtils";
 import { SelectedDate, useCalendarState } from "../useCalendarState";
 
 interface CalendarContainerProps {
@@ -28,8 +28,6 @@ export default function UserWeekCalendar() {
     (date: SelectedDate) => {
       
       const dateString = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
-      // const { week, dayWeek: computedDayWeek } = getWeekAndDay(year, month + 1, day);
-      
       updateWeekUrl(date.year, date.week, { date: dateString });
       setSelectedDate(date);
       setIsModalOpen(true);
@@ -50,7 +48,6 @@ export default function UserWeekCalendar() {
       newWeek = getWeeksInYear(newYear) - 1;
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    // setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
     updateWeekUrl(newYear, newWeek);
   };
   
@@ -62,7 +59,6 @@ export default function UserWeekCalendar() {
       newWeek = 0;
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    // setWeekStart(getWeekStartDateFromYearWeek(newYear, newWeek));
     updateWeekUrl(newYear, newWeek);
   };
   
@@ -72,7 +68,6 @@ export default function UserWeekCalendar() {
     const { week } = getWeekAndDay(newYear, now.getMonth() + 1, now.getDate());
     const newWeek = week - 1;
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    // setWeekStart(getWeekStartDate(now));
     updateWeekUrl(newYear, newWeek);
   };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '@/lib/getCalendarData';
@@ -27,9 +27,22 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   dayWeek,
   dayEvents,
 }) => {
+  const modalTimeSlotCells = useMemo(() => Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell), [dayEvents]);
 
-  // console.log("Day events", dayEvents, selectedDate.year, selectedDate.week, selectedDate.dayWeek);
-  const modalTimeSlotCells = Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell);
+  const handleClick = () => {
+    onClick({
+      day: dayObj.day,
+      month: dayObj.month,
+      year: year,
+      week: dayObj.week,
+      dayWeek: dayWeek,
+    });
+  };
+
+  const handleButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
     <div
       ref={(el) => {
@@ -37,24 +50,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
       }}
       data-month={dayObj.month}
       data-day={dayObj.day}
-      onClick={() =>
-      {
-        onClick({
-          day: dayObj.day,
-          month: dayObj.month,
-          year: year,
-          week: dayObj.week,
-          dayWeek: dayWeek,
-        })
-        // console.log("CLICKED", {
-        //   day: dayObj.day,
-        //   month: dayObj.month,
-        //   year: year,
-        //   week: dayObj.week,
-        //   dayWeek: dayWeek,
-        // })
-      }
-      }
+      onClick={handleClick}
       className="relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-3xl size-[15vh]"
     >
       <span
@@ -72,7 +68,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
       {/* Plus Icon Button – stops propagation so it does not trigger the day click */}
       <button
         type="button"
-        onClick={(e) => {e.stopPropagation()}}
+        onClick={handleButtonClick}
         className="flex absolute right-2 top-2 rounded-full opacity-0 transition-all focus:opacity-100 group-hover:opacity-100 z-50"
       >
         <svg
@@ -103,7 +99,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
           {modalTimeSlotCells.flatMap((timeSlotCell, idx) => timeSlotCell.events).map((event, idx) => (
             <button
               key={idx}
-              onClick={(e) => {e.stopPropagation(); console.log("STOPPED")}}
+              onClick={handleButtonClick}
               className="flex items-center justify-center w-[25%] aspect-square bg-gradient-to-bl from-cyan-500 to-blue-500 rounded-2xl hover:border-double border-white self-start"
               style={{ borderWidth: "0.2rem" }}
             >

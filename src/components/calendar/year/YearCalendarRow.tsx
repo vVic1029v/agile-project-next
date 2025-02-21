@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
 import { useRouter, useSearchParams } from "next/navigation";
@@ -24,7 +24,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   year,
   events,
 }) => {
-  const now = new Date();
+  const now = useMemo(() => new Date(), []);
   const router = useRouter();
   const searchParams = useSearchParams();
 

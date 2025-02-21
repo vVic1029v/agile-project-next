@@ -9,6 +9,12 @@ export interface CalendarHeaderProps {
   onTodayClick: () => void;
   additionalButtonsLeft?: React.ReactNode;
   additionalButtonsRight?: React.ReactNode;
+  dayOfWeek?: React.FC<DayOfWeekProps>;
+}
+
+interface DayOfWeekProps {
+  day: string;
+  index: number;
 }
 
 const CalendarHeader: React.FC<CalendarHeaderProps> = ({
@@ -18,6 +24,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   onTodayClick,
   additionalButtonsLeft,
   additionalButtonsRight,
+  dayOfWeek,
 }) => {
   return (
     <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7">
@@ -85,9 +92,13 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
         </div>
         <div className="grid w-full grid-cols-7 justify-between text-slate-500">
           {daysOfWeek.map((day, index) => (
-            <div key={index} className="w-full border-b border-slate-200 py-2 text-center font-semibold">
-              {day}
-            </div>
+            dayOfWeek ? (
+              React.createElement(dayOfWeek, { key: day, day, index })
+            ) : (
+              <div key={index} className="w-full border-b border-slate-200 py-2 text-center font-semibold">
+                {day}
+              </div>
+            )
           ))}
         </div>
       </div>

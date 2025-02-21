@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import YearCalendarGrid from './YearCalendarGrid';
 import { StructuredEvents } from '@/lib/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
@@ -12,10 +12,10 @@ export interface YearCalendarProps {
 }
 
 export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, selectedDay }) => {
-  const today = new Date();
+  const today = useMemo(() => new Date(), []);
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
-  const scrollToDay = (monthIndex: number, dayIndex: number) => {
+  const scrollToDay = useCallback((monthIndex: number, dayIndex: number) => {
     const targetElement = dayRefs.current.find(
       (ref) =>
         ref?.getAttribute('data-month') === monthIndex.toString() &&
@@ -28,41 +28,33 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, sel
       const is2xl = window.matchMedia('(min-width: 1536px)').matches;
       const offsetFactor = is2xl ? 3 : 2.5;
 
+      const offset =
+        elementRect.top - 
+        (container ? container.getBoundingClientRect().top : window.scrollY) - 
+        (container ? container.getBoundingClientRect().height : window.innerHeight) / offsetFactor + 
+        elementRect.height / 2;
+
       if (container) {
-        const containerRect = container.getBoundingClientRect();
-        const offset =
-          elementRect.top -
-          containerRect.top -
-          containerRect.height / offsetFactor +
-          elementRect.height / 2;
         container.scrollTo({ top: container.scrollTop + offset, behavior: 'smooth' });
       } else {
-        const offset =
-          window.scrollY +
-          elementRect.top -
-          window.innerHeight / offsetFactor +
-          elementRect.height / 2;
-        window.scrollTo({ top: offset, behavior: 'smooth' });
+        window.scrollTo({ top: window.scrollY + offset, behavior: 'smooth' });
       }
     }
-  };
+  }, []);
 
-  // Now receives a SelectedDay object directly
-  const handleDayClick = (selected: SelectedDate) => {
+  const handleDayClick = useCallback((selected: SelectedDate) => {
     if (onClick) {
       onClick(selected);
     }
-  };
+  }, [onClick]);
 
-  // Scroll to today's date on mount
-  useEffect(() => {
-    scrollToDay(today.getMonth(), today.getDate());
-  }, []);
+  // useEffect(() => {
+  //   scrollToDay(today.getMonth(), today.getDate());
+  // }, [scrollToDay, today]);
 
-  // Scroll to the selected day whenever it changes
   useEffect(() => {
     scrollToDay(selectedDay.month, selectedDay.day);
-  }, [selectedDay]);
+  }, [scrollToDay, selectedDay]);
 
   return (
     <YearCalendarGrid
