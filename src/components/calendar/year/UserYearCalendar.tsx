@@ -8,8 +8,9 @@ import { getWeekAndDay, monthNames } from "@/lib/calendarUtils";
 import YearCalendarHeader from "@/components/calendar/year/YearCalendarHeader";
 import type { ReactNode } from "react";
 import { useCalendarContext } from "../CalendarProvider";
-import { ModalOverlay } from "@/components/calendar/event-modal/ModalOverlay";
-import CalendarDayModal from "@/components/calendar/CalendarDayModal";
+import { ModalOverlay } from "@/components/ModalOverlay";
+import CalendarDayModal from "../event-modal/CalendarDayModal";
+import CalendarContainter from "../CalendarContainer";
 
 // Shared type for the unified date state.
 export interface SelectedDay {
@@ -136,7 +137,7 @@ export default function UserYearCalendar() {
                 <CalendarDayModal selectedDate={selectedDay} timeCells={timeCells} />
             </ModalOverlay>
 
-            <CalendarContainer isModalOpen={isModalOpen}>
+            <YearCalendarContainer isModalOpen={isModalOpen}>
                 <YearCalendarHeader
                     selectedDay={selectedDay}
                     monthOptions={monthOptions}
@@ -150,19 +151,15 @@ export default function UserYearCalendar() {
                     onNextYear={handleNextYear}
                 />
                 <YearCalendar selectedDay={selectedDay} onClick={handleDayClick} events={timeCells} />
-            </CalendarContainer>
+            </YearCalendarContainer>
         </div>
     );
 }
-const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
-    <div
-        className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""
-            }`}
-    >
-        <div className="relative h-full w-full overflow-auto mt-10">
-            <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
-                <div className="w-full px-[5vw] pt-4">{children}</div>
-            </div>
-        </div>
+
+const YearCalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
+    <CalendarContainter isModalOpen={isModalOpen}>
+    <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
+      <div className="w-full px-[5vw] pt-4">{children}</div>
     </div>
+  </CalendarContainter>
 );

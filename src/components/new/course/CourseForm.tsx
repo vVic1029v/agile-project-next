@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import SearchHomeClassModal from "./SearchHomeClassModal";
-import { ModalOverlay } from "@/components/calendar/event-modal/ModalOverlay";
+import { ModalOverlay } from "@/components/ModalOverlay";
 
 const CourseForm: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

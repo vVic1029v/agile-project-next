@@ -6,12 +6,13 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getWeekAndDay, getWeekStartDate, getWeeksInYear, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 import type { ReactNode } from "react";
-import { ModalOverlay } from "@/components/calendar/event-modal/ModalOverlay";
-import CalendarDayModal from "@/components/calendar/CalendarDayModal";
+import { ModalOverlay } from "@/components/ModalOverlay";
 import WeekCalendarHeader from "@/components/calendar/week/WeekCalendarHeader";
 import WeekCalendar from "@/components/calendar/week/WeekCalendar";
 import { useCalendarContext } from "../CalendarProvider";
 import { getToday } from "../year/UserYearCalendar";
+import CalendarDayModal from "../event-modal/CalendarDayModal";
+import CalendarContainter from "../CalendarContainer";
 
 export interface SelectedWeekDate {
   day: number;
@@ -158,7 +159,7 @@ export default function UserWeekCalendar() {
       <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
         <CalendarDayModal selectedDate={selectedDate} timeCells={timeCells} />
       </ModalOverlay>
-      <CalendarContainer isModalOpen={isModalOpen}>
+      <WeekCalendarContainer isModalOpen={isModalOpen}>
         <WeekCalendarHeader
           selectedDate={selectedDate}
           onPrevWeek={handlePrevWeek}
@@ -171,18 +172,13 @@ export default function UserWeekCalendar() {
           weekStart={weekStart}
           selectedDate={selectedDate}
         />
-      </CalendarContainer>
+      </WeekCalendarContainer>
     </div>
   );
 }
 
-const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
-  <div
-    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""
-      }`}
-  >
-    <div className="relative h-full w-full overflow-auto mt-10">
-      <div className="w-full px-[5vw] pt-4">{children}</div>
-    </div>
-  </div>
+const WeekCalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
+  <CalendarContainter isModalOpen={isModalOpen}>
+    <div className="w-full px-[5vw] pt-4">{children}</div>
+  </CalendarContainter>
 );

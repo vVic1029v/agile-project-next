@@ -2,22 +2,32 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { SessionProvider, signOut } from "next-auth/react";
 import { HiCalendar, HiOutlineCalendar } from "react-icons/hi";
 import { FaHome } from "react-icons/fa";
 import { GrAnnounce } from "react-icons/gr";
 import { MdMessage } from "react-icons/md";
 import { IoPersonSharp } from "react-icons/io5";
-import { usePathname } from "next/navigation";
+import { Session } from "inspector/promises";
+
 interface PageBodyWrapperProps {
   children: React.ReactNode;
 }
 
-const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
-  const [isExpanded, setIsExpanded] = useState(false);
-  const pathname = usePathname();
-  const isAuthPage = pathname.startsWith("/auth/login");
 
+
+const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
+    return (
+      <SessionProvider>
+        <SideBarHolder>
+          {children}
+        </SideBarHolder>
+      </SessionProvider>
+    )
+};
+
+const SideBarHolder: React.FC<PageBodyWrapperProps> = ({ children }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   return (
     <div className="flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
@@ -26,11 +36,11 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
       >
         {/* Toggle Button */}
         <div className="flex items-center h-16 border-b border-gray-700 px-8">
-        <button
-  onClick={() => setIsExpanded((prev) => !prev)}
-  className="text-white focus:outline-none focus:ring-0 ml-auto"
-  aria-label="Toggle Navigation"
->
+          <button
+            onClick={() => setIsExpanded((prev) => !prev)}
+            className="text-white focus:outline-none focus:ring-0 ml-auto"
+            aria-label="Toggle Navigation"
+          >
 
             {isExpanded ? (
               <svg
@@ -67,14 +77,14 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
         {/* Navigation Links */}
         <div className="flex-1 p-2">
           <ul>
-          <li>
+            <li>
               <Link
                 href="/home"
                 className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
                 <FaHome className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
                 <span
                   className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`} >
-                 Home
+                  Home
                 </span>
               </Link>
             </li>
@@ -99,7 +109,7 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
                   Week Calendar
                 </span>
               </Link>
-              
+
             </li>
             <li>
               <Link
@@ -108,10 +118,10 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
                 <GrAnnounce className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
                 <span
                   className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}  >
-                 Announcements
+                  Announcements
                 </span>
               </Link>
-              
+
             </li>
             <li>
               <Link
@@ -120,10 +130,10 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
                 <MdMessage className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
                 <span
                   className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}  >
-                 Messages
+                  Messages
                 </span>
               </Link>
-              
+
             </li>
             <li>
               <Link
@@ -132,12 +142,12 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
                 <IoPersonSharp className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
                 <span
                   className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`}  >
-                 My account
+                  My account
                 </span>
               </Link>
-              
+
             </li>
-            
+
           </ul>
         </div>
 
@@ -165,11 +175,11 @@ const PageBodyWrapper: React.FC<PageBodyWrapperProps> = ({ children }) => {
       </nav>
 
       {/* Main Content Area */}
-      <main className="flex-1 h-full overflow-auto bg-gray-100">
+      <main className="flex-1 h-full overflow-auto"> {/*bg-gray-100*/}
         {children}
       </main>
     </div>
   );
-};
+}
 
 export default PageBodyWrapper;
