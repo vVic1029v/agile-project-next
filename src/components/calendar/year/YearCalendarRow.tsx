@@ -1,7 +1,7 @@
 import React from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
-import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
+import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
 import { DayCell } from '../useCalendar';
 import { useRouter, useSearchParams } from "next/navigation";
 

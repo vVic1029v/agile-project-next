@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import YearCalendarRow from './YearCalendarRow';
 import { getDaysInYear, chunkDaysIntoWeeks } from '@/lib/calendarUtils';
-import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
+import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
 import { YearCell } from '../useCalendar';
 
 export interface YearCalendarGridProps {

@@ -210,7 +210,7 @@ export async function getTimeSlot(timeSlotId: string): Promise<TimeSlot | null> 
 }
 
 
-export async function getUserCourses(userId: string, userType: UserType): Promise<Course[] | null> {
+export async function getUserCourses(userId: string, userType: UserType): Promise<Course[]> {
   if (userType === "STUDENT") {
     const studentCourses = await prisma.studentCourse.findMany({
       where: { studentId: userId },
@@ -226,7 +226,7 @@ export async function getUserCourses(userId: string, userType: UserType): Promis
     });
   }
 
-  return null;
+  return [];
 }
 
 

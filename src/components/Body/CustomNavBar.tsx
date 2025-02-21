@@ -76,7 +76,7 @@ const menuItems=[
       ]
     }
 ];
-const NavBar = () => {
+const CustomNavBar = () => {
 
    
   return (
@@ -101,4 +101,4 @@ const NavBar = () => {
   )
 }
 
-export default NavBar
+export default CustomNavBar

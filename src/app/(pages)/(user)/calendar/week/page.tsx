@@ -5,7 +5,7 @@ import { auth } from "@/lib/auth"
 import { SnackProvider } from "@/app/SnackProvider";
 
 import AuthContent from "@/components/auth/AuthContent";
-import UserWeekCalendar from "@/components/calendar/weekly-calendar/UserWeekCalendar";
+import UserWeekCalendar from "@/components/calendar/week/UserWeekCalendar";
 
 export default async function CalendarPage(context: any) {
     const sess = await auth()

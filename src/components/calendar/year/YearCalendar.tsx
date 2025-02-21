@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef } from 'react';
 import YearCalendarGrid from './YearCalendarGrid';
-import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
+import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
 import { YearCell } from '../useCalendar';
 
 export interface YearCalendarProps {

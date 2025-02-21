@@ -2,7 +2,7 @@ import React from 'react';
 import Select from '../../Common/Select';
 import { daysOfWeek } from '@/lib/calendarUtils';
 import { useRouter } from 'next/navigation';
-import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
+import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
 
 export interface YearCalendarHeaderProps {
   selectedDay: SelectedDay;

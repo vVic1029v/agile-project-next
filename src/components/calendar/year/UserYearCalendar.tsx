@@ -3,11 +3,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { YearCalendar } from "@/components/calendar/annual-calendar/YearCalendar";
+import { YearCalendar } from "@/components/calendar/year/YearCalendar";
 import CalendarDayModal from "../CalendarDayModal";
 import { useCalendar } from "../useCalendar";
 import { getWeekAndDay, monthNames } from "@/lib/calendarUtils";
-import YearCalendarHeader from "@/components/calendar/annual-calendar/YearCalendarHeader";
+import YearCalendarHeader from "@/components/calendar/year/YearCalendarHeader";
 import type { ReactNode } from "react";
 import { ModalOverlay } from "../event-modal/ModalOverlay";
 
