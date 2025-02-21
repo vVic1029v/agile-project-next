@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { getCalendarData } from "@/lib/getCalendarData";
 import { auth } from "@/lib/auth";
 import { SessionProvider } from "next-auth/react";
-import CalendarProvider from "@/components/calendar-server/CalendarProvider";
-import UserYearCalendar from "@/components/calendar-server/year/UserYearCalendar";
+import CalendarProvider from "@/components/calendar/CalendarProvider";
+import UserYearCalendar from "@/components/calendar/year/UserYearCalendar";
 
 export default async function CalendarPage() {
   const session = await auth();

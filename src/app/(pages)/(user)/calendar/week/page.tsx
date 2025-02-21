@@ -1,10 +1,9 @@
 // app/calendar/page.tsx (server component)
 import { redirect } from "next/navigation";
 import { getCalendarData } from "@/lib/getCalendarData";
-import UserWeekCalendar from "@/components/calendar-server/week/UserWeekCalendar";
+import UserWeekCalendar from "@/components/calendar/week/UserWeekCalendar";
 import { auth } from "@/lib/auth";
-import { SessionProvider } from "next-auth/react";
-import CalendarProvider from "@/components/calendar-server/CalendarProvider";
+import CalendarProvider from "@/components/calendar/CalendarProvider";
 
 export default async function CalendarPage() {
   const session = await auth();
