@@ -2,13 +2,13 @@
 
 import React, { useEffect, useRef } from 'react';
 import YearCalendarGrid from './YearCalendarGrid';
-import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
-import { YearCell } from '../useCalendar';
+import { StructuredEvents } from '@/lib/getCalendarData';
+import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarProps {
-  onClick?: (selected: SelectedDay) => void;
-  events: Record<number, YearCell>;
-  selectedDay: SelectedDay;
+  onClick?: (selected: SelectedDate) => void;
+  events: StructuredEvents;
+  selectedDay: SelectedDate;
 }
 
 export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, selectedDay }) => {
@@ -48,7 +48,7 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, sel
   };
 
   // Now receives a SelectedDay object directly
-  const handleDayClick = (selected: SelectedDay) => {
+  const handleDayClick = (selected: SelectedDate) => {
     if (onClick) {
       onClick(selected);
     }

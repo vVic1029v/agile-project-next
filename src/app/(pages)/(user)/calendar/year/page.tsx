@@ -10,10 +10,10 @@ export default async function CalendarPage() {
   const session = await authMiddleware();
 
   // Fetch calendar data on the server
-  const { timeCells, courses } = await getCalendarData(session.user.id);
+  const { events, courses } = await getCalendarData(session.user.id);
 
   return (
-    <CalendarProvider timeCells={timeCells} courses={courses}>
+    <CalendarProvider events={events} courses={courses}>
       <UserYearCalendar/>
     </CalendarProvider>
 );

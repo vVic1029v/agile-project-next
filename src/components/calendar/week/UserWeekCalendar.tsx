@@ -8,8 +8,8 @@ import WeekCalendarHeader from "@/components/calendar/week/WeekCalendarHeader";
 import WeekCalendar from "@/components/calendar/week/WeekCalendar";
 import CalendarDayModal from "../event-modal/CalendarDayModal";
 import CalendarContainter from "../CalendarContainer";
-import { useCalendarState } from "../useCalendarState";
 import { getWeekAndDay, getWeeksInYear, getWeekStartDate, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
+import { useCalendarState } from "../useCalendarState";
 
 interface CalendarContainerProps {
   children: ReactNode;
@@ -17,13 +17,11 @@ interface CalendarContainerProps {
 }
 
 export default function UserWeekCalendar() {
-  const { timeCells, courses } = useCalendarContext();
+  const { events, courses } = useCalendarContext();
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  const { selectedDate, setSelectedDate, weekStart, setWeekStart, updateUrl: updateWeekUrl } = useCalendarState(true);
-
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { selectedDate, setSelectedDate, weekStart, setWeekStart, updateUrl: updateWeekUrl, isModalOpen, setIsModalOpen } = useCalendarState(true);
 
   const handleCellClick = useCallback(
     (date: Date, timeSlot: number, dayIndex: number) => {
@@ -37,13 +35,13 @@ export default function UserWeekCalendar() {
       setSelectedDate({ day, month, year, week: week - 1, dayWeek: computedDayWeek, timeSlot });
       setIsModalOpen(true);
     },
-    [userId, updateWeekUrl]
+    [userId, updateWeekUrl, setIsModalOpen, setSelectedDate]
   );
 
   const closeModal = useCallback(() => {
     updateWeekUrl(selectedDate.year, selectedDate.week);
     setIsModalOpen(false);
-  }, [selectedDate.year, selectedDate.week, updateWeekUrl]);
+  }, [selectedDate.year, selectedDate.week, updateWeekUrl, setIsModalOpen]);
 
   const handlePrevWeek = () => {
     let newWeek = selectedDate.week - 1;
@@ -79,14 +77,14 @@ export default function UserWeekCalendar() {
     updateWeekUrl(newYear, newWeek);
   };
 
-  const weekEvents = timeCells[selectedDate.year]?.[selectedDate.week] || [null, null, null, null, null, null, null];
+  const weekEvents = events[selectedDate.year]?.[selectedDate.week] || [null, null, null, null, null, null, null];
 
   if (status === "loading" || !userId) return null;
 
   return (
     <div>
       <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
-        <CalendarDayModal selectedDate={selectedDate} timeCells={timeCells} />
+        <CalendarDayModal selectedDate={selectedDate} events={events} />
       </ModalOverlay>
       <WeekCalendarContainer isModalOpen={isModalOpen}>
         <WeekCalendarHeader

@@ -17,13 +17,12 @@ interface CalendarContainerProps {
 }
 
 export default function UserYearCalendar() {
-  const { timeCells, courses } = useCalendarContext();
+  const { events, courses } = useCalendarContext();
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  const { selectedDate: selectedDay, setSelectedDate: setSelectedDay, updateUrl: updateYearUrl } = useCalendarState(false);
+  const { selectedDate: selectedDay, setSelectedDate: setSelectedDay, updateUrl: updateYearUrl, isModalOpen, setIsModalOpen } = useCalendarState(false);
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const monthOptions = monthNames.map((month, index) => ({
     name: month,
     value: index.toString(),
@@ -55,20 +54,20 @@ export default function UserYearCalendar() {
       setSelectedDay(selected);
       setIsModalOpen(true);
     },
-    [userId, updateYearUrl]
+    [userId, updateYearUrl, setSelectedDay, setIsModalOpen]
   );
 
   const closeModal = useCallback(() => {
     updateYearUrl(selectedDay.year);
     setIsModalOpen(false);
-  }, [selectedDay.year, updateYearUrl]);
+  }, [selectedDay.year, updateYearUrl, setIsModalOpen]);
 
   if (status === "loading" || !userId) return null;
 
   return (
     <div>
       <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
-        <CalendarDayModal selectedDate={selectedDay} timeCells={timeCells} />
+        <CalendarDayModal selectedDate={selectedDay} events={events} />
       </ModalOverlay>
 
       <YearCalendarContainer isModalOpen={isModalOpen}>
@@ -84,7 +83,7 @@ export default function UserYearCalendar() {
           onPrevYear={handlePrevYear}
           onNextYear={handleNextYear}
         />
-        <YearCalendar selectedDay={selectedDay} onClick={handleDayClick} events={timeCells} />
+        <YearCalendar selectedDay={selectedDay} onClick={handleDayClick} events={events} />
       </YearCalendarContainer>
     </div>
   );

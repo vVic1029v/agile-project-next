@@ -1,6 +1,6 @@
 import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma } from "@prisma/client";
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/timeSlots"
-import { EventTimeSlot } from "@/components/calendar/useCalendar";
+import { EventTimeSlot } from "./getCalendarData";
 
 export const prisma = new PrismaClient();
 

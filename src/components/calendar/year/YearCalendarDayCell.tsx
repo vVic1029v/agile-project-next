@@ -1,19 +1,19 @@
 import React from 'react';
 import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
-import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
-import { EventTimeSlot } from '../useCalendar';
+import { DayCell } from '@/lib/getCalendarData';
+import { SelectedDate } from '../useCalendarState';
 
 export interface YearDayCellProps {
   dayObj: DayObj;
   index: number;
   isNewMonth: boolean;
   isToday: boolean;
-  onClick: (selected: SelectedDay) => void;
+  onClick: (selected: SelectedDate) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   dayWeek: number;
-  events?: EventTimeSlot[];
+  dayEvents: DayCell;
 }
 
 const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
@@ -25,8 +25,11 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   dayRefs,
   year,
   dayWeek,
-  events,
+  dayEvents,
 }) => {
+
+  // console.log("Day events", dayEvents, selectedDate.year, selectedDate.week, selectedDate.dayWeek);
+  const modalEvents = Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell);
   return (
     <div
       ref={(el) => {
@@ -35,13 +38,22 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
       data-month={dayObj.month}
       data-day={dayObj.day}
       onClick={() =>
+      {
         onClick({
           day: dayObj.day,
           month: dayObj.month,
           year: year,
-          week: dayObj.week - 1,
+          week: dayObj.week,
           dayWeek: dayWeek,
         })
+        // console.log("CLICKED", {
+        //   day: dayObj.day,
+        //   month: dayObj.month,
+        //   year: year,
+        //   week: dayObj.week,
+        //   dayWeek: dayWeek,
+        // })
+      }
       }
       className="relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-3xl size-[15vh]"
     >
@@ -80,7 +92,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
         </svg>
       </button>
       {/* Render event icons – each stops propagation */}
-      {events && events.length > 0 && (
+      {modalEvents && modalEvents.length > 0 && (
         <div
           className="absolute bottom-[-2px] flex flex-wrap-reverse flex-row-reverse overflow-hidden w-[100%] h-[90%] justify-start p-2 content-start"
           style={{
@@ -88,7 +100,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
             maskImage: "linear-gradient(to top, black 50%, transparent 80%)",
           }}
         >
-          {events.map((event, idx) => (
+          {modalEvents.map((event, idx) => (
             <button
               key={idx}
               onClick={(e) => {e.stopPropagation(); console.log("STOPPED")}}

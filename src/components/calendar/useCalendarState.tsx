@@ -23,22 +23,26 @@ export const getToday = (): SelectedDate => {
   };
 };
 
-const initializeState = (yearParam: string | null, weekParam: string | null) => {
+const initializeState = (yearParam: string | null, weekParam: string | null, dateParam: string | null) => {
   const today = new Date();
   const initialYear = yearParam ? Number(yearParam) : today.getFullYear();
   const initialWeek = weekParam
     ? Number(weekParam.split("W")[1]) - 1 // Convert to 0-indexed
     : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week - 1;
 
-  const initialSelectedDate = weekParam
-    ? {
-        day: today.getDate(),
-        month: today.getMonth(),
-        year: initialYear,
-        week: initialWeek,
-        dayWeek: getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).dayWeek,
-      }
-    : getToday();
+  let initialSelectedDate = getToday();
+
+  if (dateParam) {
+    const [year, month, day] = dateParam.split("-").map(Number);
+    const { week, dayWeek } = getWeekAndDay(year, month, day);
+    initialSelectedDate = {
+      day,
+      month: month - 1,
+      year,
+      week: week - 1,
+      dayWeek,
+    };
+  }
 
   return { initialYear, initialWeek, initialSelectedDate };
 };
@@ -50,11 +54,13 @@ export const useCalendarState = (isWeekView: boolean) => {
 
   const { initialYear, initialWeek, initialSelectedDate } = initializeState(
     searchParams.get("year"),
-    searchParams.get("week")
+    searchParams.get("week"),
+    searchParams.get("date")
   );
 
   const [selectedDate, setSelectedDate] = useState<SelectedDate>(initialSelectedDate);
   const [weekStart, setWeekStart] = useState<Date>(getWeekStartDateFromYearWeek(initialYear, initialWeek));
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(!!searchParams.get("date"));
 
   useEffect(() => {
     if (searchParams.get("year")) {
@@ -87,5 +93,7 @@ export const useCalendarState = (isWeekView: boolean) => {
     weekStart,
     setWeekStart,
     updateUrl,
+    isModalOpen,
+    setIsModalOpen,
   };
 };

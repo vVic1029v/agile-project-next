@@ -2,6 +2,7 @@
 import React from "react";
 import CalendarHeader from "../CalendarHeader";
 import { SelectedDate } from "../useCalendarState";
+import AddEventButton from "../AddEventButton";
 
 export interface WeekCalendarHeaderProps {
   selectedDate: SelectedDate | null;
@@ -22,14 +23,7 @@ const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
       onPrev={onPrevWeek}
       onNext={onNextWeek}
       onTodayClick={onTodayClick}
-      additionalButtonsLeft={
-        <button
-          type="button"
-          className="whitespace-nowrap rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 px-3 py-1.5 text-center text-sm font-medium text-white hover:bg-gradient-to-bl focus:outline-none focus:ring-4 focus:ring-cyan-300 sm:rounded-xl lg:px-5 lg:py-2.5"
-        >
-          + Add Event
-        </button>
-      }
+      additionalButtonsLeft={selectedDate && <AddEventButton selectedDate={selectedDate} />}
     />
   );
 };

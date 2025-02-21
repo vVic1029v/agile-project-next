@@ -1,18 +1,18 @@
 import React from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
-import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
-import { DayCell } from '../useCalendar';
 import { useRouter, useSearchParams } from "next/navigation";
+import { DayCell, WeekCell } from '@/lib/getCalendarData';
+import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarRowProps {
   week: DayObj[];
   weekIndex: number;
   days: DayObj[];
-  onDayClick: (selected: SelectedDay) => void;
+  onDayClick: (selected: SelectedDate) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
-  events?: DayCell[];
+  events?: WeekCell;
 }
 
 const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
@@ -33,7 +33,8 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
     // Convert the 0-indexed week to a 1-indexed string and pad it.
     const weekStr = String(weekIdx + 1).padStart(2, "0");
     const newSearch = new URLSearchParams(searchParams.toString());
-    newSearch.set("week", `${year}-${weekStr}`);
+    newSearch.set("year", String(year));
+    newSearch.set("week", `W${weekStr}`);
     newSearch.delete("date"); // Remove the "date" parameter if it exists.
     router.push(`/calendar/week?${newSearch.toString()}`, { scroll: false });
   };
@@ -64,7 +65,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
             dayObj.month === now.getMonth() &&
             dayObj.day === now.getDate() &&
             now.getFullYear() === year;
-          const dayEvents = events?.[dayIndex] ?? [];
+          const dayEvents: DayCell = events?.[dayIndex] ?? {};
 
           return (
             <YearCalendarDayCell
@@ -77,7 +78,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
               dayRefs={dayRefs}
               year={year}
               dayWeek={dayIndex}
-              events={dayEvents}
+              dayEvents={dayEvents}
             />
           );
         })}
