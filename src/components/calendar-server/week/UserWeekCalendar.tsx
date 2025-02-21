@@ -6,8 +6,6 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getWeekAndDay, getWeekStartDate, getWeeksInYear, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 import type { ReactNode } from "react";
-import type { Course } from "@prisma/client";
-import type { YearCell } from "@/lib/getCalendarData";
 import { getToday } from "@/components/calendar/year/UserYearCalendar";
 import { ModalOverlay } from "@/components/calendar/event-modal/ModalOverlay";
 import CalendarDayModal from "@/components/calendar/CalendarDayModal";
@@ -180,9 +178,8 @@ export default function UserWeekCalendar() {
 
 const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <div
-    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${
-      isModalOpen ? "pointer-events-none" : ""
-    }`}
+    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""
+      }`}
   >
     <div className="relative h-full w-full overflow-auto mt-10">
       <div className="w-full px-[5vw] pt-4">{children}</div>
