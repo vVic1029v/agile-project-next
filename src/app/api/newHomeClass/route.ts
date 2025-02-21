@@ -1,7 +1,5 @@
 import { NextResponse } from "next/server";
 import { getCheapUserByEmail, postNewHomeClass } from "@/lib/database";
-import bcrypt from "bcrypt";
-import { auth } from "@/lib/auth";
 import { UserType } from "@prisma/client";
 
 export async function POST(req: Request) {
