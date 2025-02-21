@@ -1,23 +1,26 @@
-import React from "react"
-import UserYearCalendar from "@/components/calendar/annual-calendar/UserYearCalendar"
-import { auth } from "@/lib/auth"
-import { SnackProvider } from "@/app/SnackProvider";
+// app/calendar/page.tsx (server component)
+import { redirect } from "next/navigation";
+import { getCalendarData } from "@/lib/getCalendarData";
+import { auth } from "@/lib/auth";
+import { SessionProvider } from "next-auth/react";
+import CalendarProvider from "@/components/calendar-server/CalendarProvider";
+import UserYearCalendar from "@/components/calendar-server/year/UserYearCalendar";
 
-import AuthContent from "@/components/auth/AuthContent";
+export default async function CalendarPage() {
+  const session = await auth();
+  if (!session || !session.user?.id) {
+    // Redirect to login if no session is found
+    redirect("/login");
+  }
+  const userId = session.user.id;
 
-export default async function CalendarPage(context: any) {
-    const sess = await auth()
-    if (sess) {
-        return (
-            <AuthContent>
-                <SnackProvider>
-                    <UserYearCalendar />
-                </SnackProvider>
-            </AuthContent>
-        )
-    } else {
-        return (
-            <AuthContent tryingToAccess={"the calendar"} />
-        )
-    }
+  // Fetch calendar data on the server
+  const { timeCells, courses } = await getCalendarData(userId);
+
+  return (
+      <CalendarProvider timeCells={timeCells} courses={courses}>
+        <UserYearCalendar/>
+      </CalendarProvider>
+  
+);
 }

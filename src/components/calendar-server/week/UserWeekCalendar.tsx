@@ -6,12 +6,12 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getWeekAndDay, getWeekStartDate, getWeeksInYear, getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 import type { ReactNode } from "react";
-import { getToday } from "@/components/calendar/year/UserYearCalendar";
 import { ModalOverlay } from "@/components/calendar/event-modal/ModalOverlay";
 import CalendarDayModal from "@/components/calendar/CalendarDayModal";
 import WeekCalendarHeader from "@/components/calendar/week/WeekCalendarHeader";
 import WeekCalendar from "@/components/calendar/week/WeekCalendar";
 import { useCalendarContext } from "../CalendarProvider";
+import { getToday } from "../year/UserYearCalendar";
 
 export interface SelectedWeekDate {
   day: number;
