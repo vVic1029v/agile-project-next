@@ -2,11 +2,11 @@
 import React from 'react';
 import Select from '../../Common/Select';
 import { useRouter } from 'next/navigation';
-import type { SelectedDay } from "@/components/calendar/year/UserYearCalendar"; // adjust path as needed
 import CalendarHeader from '../CalendarHeader';
+import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarHeaderProps {
-  selectedDay: SelectedDay;
+  selectedDay: SelectedDate;
   monthOptions: { name: string; value: string }[];
   onMonthChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   onTodayClick: () => void;

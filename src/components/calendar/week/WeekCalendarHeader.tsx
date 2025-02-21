@@ -1,10 +1,10 @@
 'use client';
 import React from "react";
-import { SelectedWeekDate } from "./UserWeekCalendar";
 import CalendarHeader from "../CalendarHeader";
+import { SelectedDate } from "../useCalendarState";
 
 export interface WeekCalendarHeaderProps {
-  selectedDate: SelectedWeekDate | null;
+  selectedDate: SelectedDate | null;
   onPrevWeek: () => void;
   onNextWeek: () => void;
   onTodayClick: () => void;

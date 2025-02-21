@@ -1,6 +1,5 @@
 
 import React, { ReactNode } from "react";
-import { EventTimeSlot, YearCell } from "../useCalendar";
 import { SelectedWeekDate } from "../week/UserWeekCalendar";
 
 
