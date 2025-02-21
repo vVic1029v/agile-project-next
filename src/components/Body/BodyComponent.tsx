@@ -2,13 +2,13 @@
 
 import React from "react";
 import { SessionProvider } from "next-auth/react";
-import CustomNavBar from "./CustomNavBar";
+import NavBar from "./NavBar";
 
 const BodyComponent = ({children}: Readonly<{ children: React.ReactNode; }>) => {
   return (
     <div className="w-full h-screen flex">
       <div className="w-1/6">
-        <CustomNavBar />
+        <NavBar />
       </div>
       <div className="w-5/6">
         <SessionProvider>

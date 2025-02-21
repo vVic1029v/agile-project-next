@@ -71,7 +71,7 @@ const menuItems = [
   },
 ];
 
-const CustomNavBar = () => {
+const NavBar = () => {
   return (
     <div className="mt-[-50] text-sm mt-28 ml-[-17] rounded-md p-3">
       {menuItems.map((menuItem, index) => (
@@ -94,4 +94,4 @@ const CustomNavBar = () => {
   );
 };
 
-export default CustomNavBar;
+export default NavBar;
