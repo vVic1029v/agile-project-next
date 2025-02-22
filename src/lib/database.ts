@@ -3,7 +3,7 @@ import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSl
 
 // Internal Imports
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/timeSlots";
-import { EventTimeSlot } from "./getCalendarData";
+import { CourseTimeSlots, EventTimeSlot } from "./getCalendarData";
 
 // Initialize Prisma Client
 export const prisma = new PrismaClient();
@@ -107,11 +107,11 @@ export async function postNewCourse(
   return course;
 }
 
-export async function getUserCourses(userId: string, userType: UserType): Promise<Course[]> {
+export async function getUserCourses(userId: string, userType: UserType): Promise<CourseTimeSlots[]> {
   if (userType === "STUDENT") {
     const studentCourses = await prisma.studentCourse.findMany({
       where: { studentId: userId },
-      include: { course: true },
+      include: { course: {include: {timeSlots: true} } },
     });
 
     return studentCourses.map(sc => sc.course);
@@ -120,6 +120,7 @@ export async function getUserCourses(userId: string, userType: UserType): Promis
   if (userType === "FACULTYMEMBER") {
     return prisma.course.findMany({
       where: { facultyMemberId: userId },
+      include: {timeSlots: true}
     });
   }
 

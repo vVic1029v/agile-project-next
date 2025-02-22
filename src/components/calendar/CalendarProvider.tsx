@@ -1,13 +1,12 @@
 // components/calendar/CalendarProvider.tsx
 'use client';
 import React, { createContext, useContext, useState } from "react";
-import type { Course } from "@prisma/client";
-import type { StructuredEvents } from "@/lib/getCalendarData";
+import type { StructuredEvents, StructuredWeekCourses } from "@/lib/getCalendarData";
 
 // Define the context type.
 interface CalendarContextType {
   events: StructuredEvents;
-  courses: Course[];
+  courses: StructuredWeekCourses;
   // You can add dynamic state setters here.
 }
 
@@ -21,7 +20,7 @@ export default function CalendarProvider({
   children,
 }: {
   events: StructuredEvents;
-  courses: Course[];
+  courses: StructuredWeekCourses;
   children: React.ReactNode;
 }) {
   // Any client-side state or logic can be handled here.

@@ -85,7 +85,7 @@ export default function UserWeekCalendar() {
           onNextWeek={handleNextWeek}
           onTodayClick={handleTodayClick}
         />
-        <WeekCalendar onClick={handleCellClick} events={weekEvents} selectedDate={selectedDate} />
+        <WeekCalendar onClick={handleCellClick} events={weekEvents} courses={courses} selectedDate={selectedDate} />
       </WeekCalendarContainer>
     </div>
   );
