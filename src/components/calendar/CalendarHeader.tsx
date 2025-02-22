@@ -13,7 +13,7 @@ export interface CalendarHeaderProps {
 }
 
 interface DayOfWeekProps {
-  day: string;
+  weekDay: string;
   index: number;
 }
 
@@ -91,12 +91,12 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
           </div>
         </div>
         <div className="grid w-full grid-cols-7 justify-between text-slate-500">
-          {daysOfWeek.map((day, index) => (
+          {daysOfWeek.map((weekDay, index) => (
             dayOfWeek ? (
-              React.createElement(dayOfWeek, { key: day, day, index })
+              React.createElement(dayOfWeek, { key: weekDay, weekDay, index })
             ) : (
               <div key={index} className="w-full border-b border-slate-200 py-2 text-center font-semibold">
-                {day}
+                {weekDay}
               </div>
             )
           ))}

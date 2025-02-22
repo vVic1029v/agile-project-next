@@ -7,7 +7,7 @@ export interface WeekCalendarCellProps {
   period: number;
   events: Event[];
   onClick: () => void;
-  color: string;
+  color?: string | null;
 }
 
 const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({

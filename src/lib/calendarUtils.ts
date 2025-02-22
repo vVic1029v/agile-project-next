@@ -83,7 +83,7 @@ export function getWeekAndDay(year: number, month: number, day: number) {
   const pastDays = (date.getTime() - firstMonday.getTime()) / 86400000;
   const week = Math.ceil((pastDays + 1) / 7);
 
-  return { week, dayWeek: dateDayIndex };
+  return { week: week-1, dayWeek: dateDayIndex };
 }
 
 // week calendar

@@ -11,4 +11,4 @@ export default withAuth({
   },
 });
 
-export const config = { matcher: ["/:path*"] }; //["/home/:path*", "/calendar/:path*"]
+export const config = { matcher: ["/home/:path*", "/calendar/:path*"] }; //["/home/:path*", "/calendar/:path*"]

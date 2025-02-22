@@ -38,7 +38,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
                 period={timeslotPeriod}
                 events={cellEvents}
                 onClick={() => onClick && onClick(selectedDateForDay)}
-                color="#FF0000"  //{timeslotRecords[timeslotPeriod]?.[dayIndex]?.course?.color}
+                color={timeslotRecords[timeslotPeriod]?.[dayIndex]?.course?.color}
               />
             );
           })}

@@ -26,8 +26,10 @@ export default function UserWeekCalendar() {
   const handleCellClick = useCallback(
     (date: SelectedDate) => {
       const dateString = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
-      updateWeekUrl(date.year, date.week, { date: dateString });
-      setSelectedDate(date);
+      const weekAndDay = getWeekAndDay(date.year, date.month + 1, date.day);
+      console.log(weekAndDay);
+      updateWeekUrl(date.year, weekAndDay.week, { date: dateString });
+      setSelectedDate({ ...date, week: weekAndDay.week });
       setIsModalOpen(true);
     },
     [updateWeekUrl, setIsModalOpen, setSelectedDate]

@@ -58,6 +58,8 @@ model Course {
   events          Event[]
   students        StudentCourse[]
   timeSlots       TimeSlot[]
+
+  color           String?
 }
 
 model StudentCourse {
