@@ -27,7 +27,6 @@ export default function UserWeekCalendar() {
     (date: SelectedDate) => {
       const dateString = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
       updateWeekUrl(date.year, date.week, { date: dateString });
-      console.log(date)
       setSelectedDate(date);
       setIsModalOpen(true);
     },

@@ -75,41 +75,6 @@ export const chunkDaysIntoWeeks = (days: DayObj[]): DayObj[][] => {
   return weeks;
 };
 
-/* STARTING WITH SUNDAY
-  export const getDaysInYear = (year: number): DayObj[] => {
-    const days: DayObj[] = [];
-    const startDayOfWeek = new Date(year, 0, 1).getDay();
-    let week = 1;
-  
-    // Fill in days from previous year if needed
-    if (startDayOfWeek < 6) {
-      for (let i = 0; i < startDayOfWeek; i++) {
-        days.push({ month: -1, week: 0, day: 32 - startDayOfWeek + i });
-      }
-    }
-  
-    // Add all days for each month of the year
-    for (let month = 0; month < 12; month++) {
-      const daysInMonth = new Date(year, month + 1, 0).getDate();
-      for (let day = 1; day <= daysInMonth; day++) {
-        days.push({ month, week, day });
-        if (days.length % 7 === 0) week++;
-      }
-    }
-  
-    // Fill the last week with extra days (from next month)
-    const lastWeekDayCount = days.length % 7;
-    if (lastWeekDayCount > 0) {
-      const extraDaysNeeded = 7 - lastWeekDayCount;
-      for (let day = 1; day <= extraDaysNeeded; day++) {
-        days.push({ month: 0, week, day });
-      }
-    }
-  
-    return days;
-};
-*/
-
 export function getWeekAndDay(year: number, month: number, day: number) {
   const date = new Date(year, month - 1, day);
   const firstMonday = getFirstMondayOfYear(year);
@@ -134,10 +99,6 @@ export function getWeekStartDateFromYearWeek(year: number, weekIndex: number): D
   const weekStart = new Date(firstMonday);
   weekStart.setDate(firstMonday.getDate() + weekIndex * 7);
   return weekStart;
-}
-
-export function getWeeksInYear(year: number): number {
-  return getWeekAndDay(year, 12, 31).week;
 }
 
 // conversions
@@ -170,4 +131,12 @@ export function convertDateToTimeSlotYearWeek(date: Date): { timeSlot: Partial<T
   };
 
   return { timeSlot, year, week };
+}
+
+// New function to get the number of weeks in a year
+export function getWeeksInYear(year: number): number {
+  const firstMonday = getFirstMondayOfYear(year);
+  const lastDay = new Date(year, 11, 31);
+  const pastDays = (lastDay.getTime() - firstMonday.getTime()) / 86400000;
+  return Math.ceil((pastDays + 1) / 7);
 }
