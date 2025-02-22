@@ -66,6 +66,11 @@ export async function getCalendarData(userId: string): Promise<{
           structuredCourses[day][timeSlotKey] = { courses: [], timeslot };
         }
         structuredCourses[day][timeSlotKey].courses.push(course);
+
+        if (structuredCourses[day][timeSlotKey].courses.length > 1) {
+          console.warn("Multiple courses found for the same timeslot:", structuredCourses[day][timeSlotKey]);
+          throw new Error("Multiple courses found for the same timeslot");
+        }
       });
     });
 

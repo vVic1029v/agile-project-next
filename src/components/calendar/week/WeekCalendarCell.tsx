@@ -7,22 +7,34 @@ export interface WeekCalendarCellProps {
   period: number;
   events: Event[];
   onClick: () => void;
+  color: string;
 }
 
 const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
   period,
   events,
   onClick,
+  color,
 }) => {
   return (
     <div
       onClick={onClick}
       className="relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-3xl size-[15vh]"
     >
+      {/* Tint overlay */}
+      <div
+        className="absolute inset-0 rounded-3xl"
+        style={{
+          background: `radial-gradient(circle, transparent 50%, ${color} 95%)`,
+          opacity: 0.2,
+        }}
+      ></div>
+      
       {/* Optionally display the time slot label */}
       <span className="absolute left-1 top-1 flex items-center justify-center text-xs sm:text-sm lg:text-base">
         {period ? `Period ${period}` : ""}
       </span>
+      
       {/* Render event icons if there are events in this cell */}
       {events && events.length > 0 && (
         <div
