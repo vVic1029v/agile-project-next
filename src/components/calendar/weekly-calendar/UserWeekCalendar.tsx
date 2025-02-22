@@ -186,6 +186,6 @@ const CalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) =>
   <div
     className={`relative flex h-screen max-h-screen w-full flex-col gap-4 pt-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""}`}
   >
-    <div className="relative h-full w-full overflow-auto mt-10"><div className="w-full px-[5vw] pt-4">{children}</div></div>
+    <div className="relative h-full w-full overflow-auto mt-10"><div className="w-full px-[2vw] pt-0">{children}</div></div>
   </div>
 );

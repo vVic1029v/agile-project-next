@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import PageBodyWrapper from "@/components/body/PageBodyWrapper";
+import PageBodyWrapper from "@/components/Body/PageBodyWrapper";
 
 
 export default function ClientWrapper({ children }: { children: React.ReactNode }) {
