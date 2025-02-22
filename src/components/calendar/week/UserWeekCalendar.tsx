@@ -22,17 +22,16 @@ export default function UserWeekCalendar() {
   const userId = session?.user?.id;
 
   const { selectedDate, setSelectedDate, updateUrl: updateWeekUrl, isModalOpen, setIsModalOpen } = useCalendarState(true);
-  console.log(selectedDate)
   
   const handleCellClick = useCallback(
     (date: SelectedDate) => {
-      
       const dateString = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(date.day).padStart(2, "0")}`;
       updateWeekUrl(date.year, date.week, { date: dateString });
+      console.log(date)
       setSelectedDate(date);
       setIsModalOpen(true);
     },
-    [userId, updateWeekUrl, setIsModalOpen, setSelectedDate]
+    [updateWeekUrl, setIsModalOpen, setSelectedDate]
   );
   
   const closeModal = useCallback(() => {
@@ -72,7 +71,6 @@ export default function UserWeekCalendar() {
   };
 
   const weekEvents = events[selectedDate.year]?.[selectedDate.week];
-
 
   if (status === "loading" || !userId) return null;
 

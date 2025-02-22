@@ -4,6 +4,7 @@ import WeekCalendarCell from "./WeekCalendarCell";
 import { SelectedDate } from "../useCalendarState";
 import { WeekCell, DayCell, TimeSlotCell } from "@/lib/getCalendarData";
 import { Event } from "@prisma/client";
+import { getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 
 export interface WeekCalendarProps {
   onClick?: (date: SelectedDate) => void;
@@ -55,14 +56,21 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
           {Array.from({ length: 7 }, (_, dayIndex) => {
             // Get the events for the current day and time slot from timeslotRecords.
             const cellEvents = timeslotRecords[timeslotperiod]?.[dayIndex]?.events || [];
-            
-
+            const weekStartDate = getWeekStartDateFromYearWeek(selectedDate.year, selectedDate.week);
+            const selectedDateForDay = {
+              ...selectedDate,
+              day: weekStartDate.getDate() + dayIndex,
+              month: weekStartDate.getMonth(),
+              year: weekStartDate.getFullYear(),
+              dayWeek: dayIndex,
+              timeSlot: timeslotperiod,
+            };
             return (
               <WeekCalendarCell
                 key={dayIndex}
-                timeslot={timeslotperiod}
+                period={timeslotperiod}
                 events={cellEvents}
-                onClick={() => onClick && onClick({ ...selectedDate, dayWeek: dayIndex, timeSlot: timeslotperiod })}
+                onClick={() => onClick && onClick(selectedDateForDay)}
               />
             );
           })}

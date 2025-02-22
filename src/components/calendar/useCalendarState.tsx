@@ -36,11 +36,12 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
     initialWeek = week - 1;
 
     initialSelectedDate = {
-      day,
+      ...initialSelectedDate,
+      day: day,
       month: month - 1,
       year: initialYear,
       week: initialWeek,
-      dayWeek,
+      dayWeek: dayWeek,
     };
   } else {
     initialSelectedDate = {
@@ -63,7 +64,6 @@ export const useCalendarState = (isWeekView: boolean) => {
     searchParams.get("week"),
     searchParams.get("date")
   );
-  console.log(initialSelectedDate)
 
   const [selectedDate, setSelectedDate] = useState<SelectedDate>(initialSelectedDate);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(!!searchParams.get("date"));

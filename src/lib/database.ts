@@ -1,10 +1,17 @@
+// External Imports
 import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma } from "@prisma/client";
-import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/timeSlots"
+
+// Internal Imports
+import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/timeSlots";
 import { EventTimeSlot } from "./getCalendarData";
 
+// Initialize Prisma Client
 export const prisma = new PrismaClient();
 
-// for auth
+// User-related Functions
+// ======================
+
+// For authentication
 export async function getExpensiveUserByEmail(email: string): Promise<User & { student: Student | null, facultyMember: FacultyMember | null } | null> {
   return prisma.user.findUnique({
     where: { email },
@@ -12,14 +19,13 @@ export async function getExpensiveUserByEmail(email: string): Promise<User & { s
   });
 }
 
-// for register
+// For registration
 export async function getCheapUserByEmail(email: string): Promise<User | null> {
   return prisma.user.findUnique({
     where: { email },
   });
 }
 
-// for register
 export async function postNewUser(
   firstName: string,
   lastName: string,
@@ -40,7 +46,9 @@ export async function postNewUser(
   });
 }
 
-// for new HomeClass
+// HomeClass-related Functions
+// ===========================
+
 export async function postNewHomeClass(
   teacherId: string,
   startYear: number,
@@ -55,28 +63,25 @@ export async function postNewHomeClass(
           id: teacherId,
         },
       },
-
     },
   });
 }
 
-// for new Course
 export async function getCheapHomeClassById(homeClassId: string): Promise<HomeClass | null> {
   return prisma.homeClass.findUnique({
     where: { id: homeClassId },
   });
 }
 
-// for new Course
+// Course-related Functions
+// ========================
+
 export async function postNewCourse(
   homeClassId: string,
   teacherId: string,
   subject: string,
   weekScheduleId: WeekScheduleIdentifier
 ): Promise<Course | null> {
-  // Get the relative times (startHour, startMinute, endHour, endMinute) using the renamed getTimesOfIndex function
-
-  // Create the course in the database
   const course = await prisma.course.create({
     data: {
       subject: subject,
@@ -92,10 +97,9 @@ export async function postNewCourse(
       }
     }
   });
-  // Prepare the time slot data
-  const timeSlotsData = createScheduleTimeSlots(weekScheduleId, course.id, homeClassId)
 
-  // Create multiple time slots in the database
+  const timeSlotsData = createScheduleTimeSlots(weekScheduleId, course.id, homeClassId);
+
   await prisma.timeSlot.createMany({
     data: timeSlotsData
   });
@@ -103,13 +107,34 @@ export async function postNewCourse(
   return course;
 }
 
-// for events api
+export async function getUserCourses(userId: string, userType: UserType): Promise<Course[]> {
+  if (userType === "STUDENT") {
+    const studentCourses = await prisma.studentCourse.findMany({
+      where: { studentId: userId },
+      include: { course: true },
+    });
+
+    return studentCourses.map(sc => sc.course);
+  }
+
+  if (userType === "FACULTYMEMBER") {
+    return prisma.course.findMany({
+      where: { facultyMemberId: userId },
+    });
+  }
+
+  return [];
+}
+
+// Event-related Functions
+// =======================
+
 export async function getUserEvents(userId: string): Promise<EventTimeSlot[]> {
   const events = await prisma.event.findMany({
     where: {
       users: {
         some: {
-          id: userId, // Check if the user is associated with the event
+          id: userId,
         }
       }
     },
@@ -117,7 +142,7 @@ export async function getUserEvents(userId: string): Promise<EventTimeSlot[]> {
       timeSlot: true
     }
   });
-  return events; // Return the events, or null if none found
+  return events;
 }
 
 export async function getAllCourseUserIds(eventData: Event) {
@@ -145,25 +170,19 @@ export async function getAllCourseUserIds(eventData: Event) {
     })
   ]);
 
-  // Extract the faculty member user ID
   const facultyUserId = courseData?.facultyMember?.user?.id;
-
-  // Extract the student user IDs
   const studentUserIds = studentCourseData.map(sc => sc.student.user.id);
-
-  // Combine them into a single array, ensuring facultyUserId is included if it exists
   const userIds = facultyUserId ? [facultyUserId, ...studentUserIds] : studentUserIds;
 
   return userIds;
 }
 
 export async function postEventFloating(dayOfWeek: number, startHour: number, startMinute: number, endHour: number, endMinute: number, eventData: Event): Promise<Event | null> {
-
   const newTimeSlotId = await prisma.timeSlot.create({
     data: createTimeSlot(eventData.courseId, { dayOfWeek, startHour, startMinute, endHour, endMinute })
   });
 
-  const userIds = await getAllCourseUserIds(eventData)
+  const userIds = await getAllCourseUserIds(eventData);
   return prisma.event.create({
     data: {
       title: eventData.title,
@@ -173,18 +192,14 @@ export async function postEventFloating(dayOfWeek: number, startHour: number, st
       course: { connect: { id: eventData.courseId } },
       timeSlot: { connect: { id: newTimeSlotId.id } },
       users: {
-        connect: userIds.map(userId => ({ id: userId })) // Connect all users by their IDs
+        connect: userIds.map(userId => ({ id: userId }))
       }
     }
   }).then(event => event ?? null);
-
 }
 
-
-//{ title: string; type: EventType; description?: string; courseId: string; timeSlotId: string; weekNumber: number, yearNumber: number }
-// for events api
 export async function postEventTimeSlot(eventData: Event): Promise<Event | null> {
-  const userIds = await getAllCourseUserIds(eventData)
+  const userIds = await getAllCourseUserIds(eventData);
 
   return prisma.event.create({
     data: {
@@ -195,51 +210,30 @@ export async function postEventTimeSlot(eventData: Event): Promise<Event | null>
       courseId: eventData.courseId,
       timeSlotId: eventData.timeSlotId,
       users: {
-        connect: userIds.map(userId => ({ id: userId })) // Connect all users by their IDs
+        connect: userIds.map(userId => ({ id: userId }))
       }
     }
   }).then(event => event ?? null);
 }
 
+// TimeSlot-related Functions
+// ==========================
 
-//get the TimeSlot's startTime and endTime
 export async function getTimeSlot(timeSlotId: string): Promise<TimeSlot | null> {
   return prisma.timeSlot.findUnique({
     where: { id: timeSlotId },
   });
 }
 
+// HomeClass Search Function
+// =========================
 
-export async function getUserCourses(userId: string, userType: UserType): Promise<Course[]> {
-  if (userType === "STUDENT") {
-    const studentCourses = await prisma.studentCourse.findMany({
-      where: { studentId: userId },
-      include: { course: true }, // Include the related course data
-    });
-
-    return studentCourses.map(sc => sc.course); // Extract and return the courses
-  }
-
-  if (userType === "FACULTYMEMBER") {
-    return prisma.course.findMany({
-      where: { facultyMemberId: userId },
-    });
-  }
-
-  return [];
-}
-
-
-
-
-
-// for search homeclass modal
 export type HomeClassSearchResult = {
-      name: string;
-      id: string;
-  };
-export async function getHomeClassesByName(name: string): Promise<HomeClassSearchResult[]> {
+  name: string;
+  id: string;
+};
 
+export async function getHomeClassesByName(name: string): Promise<HomeClassSearchResult[]> {
   return prisma.homeClass.findMany({
     where: { name: { contains: name, mode: "insensitive" } },
     select: { id: true, name: true },
