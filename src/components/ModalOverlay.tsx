@@ -1,12 +1,14 @@
+
 import { ReactNode, useEffect } from "react";
 
 interface ModalOverlayProps {
   children: ReactNode;
   onClose?: () => void;
   isOpen: boolean;
+  title?: string;
 }
 
-export const ModalOverlay = ({ children, onClose, isOpen }: ModalOverlayProps) => {
+export const ModalOverlay = ({ children, onClose, isOpen, title }: ModalOverlayProps) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && onClose) onClose(); // Close on ESC key
@@ -26,12 +28,13 @@ export const ModalOverlay = ({ children, onClose, isOpen }: ModalOverlayProps) =
       role="dialog"
     >
       <div
-        className="bg-white rounded-lg shadow-lg w-96 relative p-6 transition-transform animate-scaleIn"
+        className="bg-white rounded-lg shadow-lg w-96 relative p-5 transition-transform animate-scaleIn"
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
       >
+        {title && <h1 className="text-lg font-semibold mb-2">{title}</h1>}
         {/* Close Button */}
         <button
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+          className="absolute top-6 right-8 text-gray-500 hover:text-gray-700"
           onClick={onClose}
           aria-label="Close modal"
         >

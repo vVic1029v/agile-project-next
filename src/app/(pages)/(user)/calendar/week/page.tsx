@@ -1,25 +1,21 @@
-import { NextResponse } from "next/server";
-import React from "react"
-import { getServerSession } from "next-auth/next"
-import { auth } from "@/lib/auth"
-import { SnackProvider } from "@/app/SnackProvider";
+// app/calendar/page.tsx (server component)
+import { redirect } from "next/navigation";
+import { getCalendarData } from "@/lib/getCalendarData";
+import UserWeekCalendar from "@/components/calendar/week/UserWeekCalendar";
+import { authMiddleware } from "@/lib/auth";
+import CalendarProvider from "@/components/calendar/CalendarProvider";
 
-import AuthContent from "@/components/auth/AuthContent";
-import UserWeekCalendar from "@/components/calendar/weekly-calendar/UserWeekCalendar";
+export default async function CalendarPage() {
+  const session = await authMiddleware();
+  const userId = session.user.id;
 
-export default async function CalendarPage(context: any) {
-    const sess = await auth()
-    if (sess) {
-        return (
-            <AuthContent>
-                <SnackProvider>
-                    <UserWeekCalendar />
-                </SnackProvider>
-            </AuthContent>
-        )
-    } else {
-        return (
-            <AuthContent tryingToAccess={"the calendar"} />
-        )
-    }
+  // Fetch calendar data on the server
+  const { events, courses } = await getCalendarData(userId);
+
+  return (
+      <CalendarProvider events={events} courses={courses}>
+        <UserWeekCalendar/>
+      </CalendarProvider>
+  
+);
 }

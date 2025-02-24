@@ -1,17 +1,16 @@
 'use client';
+import { TimeSlotCell } from "@/lib/getCalendarData";
 import React from "react";
-import type { EventTimeSlot } from "@/components/calendar/useCalendar";
+import { Event } from "@prisma/client";
 
 export interface WeekCalendarCellProps {
-  date: Date;
-  timeslot: number;
-  events: EventTimeSlot[];
+  period: number;
+  events: Event[];
   onClick: () => void;
 }
 
 const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
-  date,
-  timeslot,
+  period,
   events,
   onClick,
 }) => {
@@ -22,7 +21,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
     >
       {/* Optionally display the time slot label */}
       <span className="absolute left-1 top-1 flex items-center justify-center text-xs sm:text-sm lg:text-base">
-        {timeslot ? `Period ${timeslot}` : ""}
+        {period ? `Period ${period}` : ""}
       </span>
       {/* Render event icons if there are events in this cell */}
       {events && events.length > 0 && (

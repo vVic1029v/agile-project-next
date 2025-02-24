@@ -1,14 +1,14 @@
 import React, { useMemo } from 'react';
 import YearCalendarRow from './YearCalendarRow';
 import { getDaysInYear, chunkDaysIntoWeeks } from '@/lib/calendarUtils';
-import type { SelectedDay } from "@/components/calendar/annual-calendar/UserYearCalendar"; // adjust path as needed
-import { YearCell } from '../useCalendar';
+import { StructuredEvents } from '@/lib/getCalendarData';
+import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarGridProps {
   year: number;
-  onDayClick: (selected: SelectedDay) => void;
+  onDayClick: (selected: SelectedDate) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
-  events?: Record<number, YearCell>;
+  events?: StructuredEvents;
 }
 
 const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({ year, onDayClick, dayRefs, events }) => {
