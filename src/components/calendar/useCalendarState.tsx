@@ -14,11 +14,12 @@ export type SelectedDate = {
 export const getToday = (): SelectedDate => {
   const now = new Date();
   const { week, dayWeek } = getWeekAndDay(now.getFullYear(), now.getMonth() + 1, now.getDate());
+  // console.log(getWeekAndDay(now.getFullYear(), now.getMonth() + 1, now.getDate()))
   return {
     day: now.getDate(),
     month: now.getMonth(),
     year: now.getFullYear(),
-    week: week - 1,
+    week: week,
     dayWeek,
   };
 };
@@ -26,14 +27,14 @@ export const getToday = (): SelectedDate => {
 const initializeState = (yearParam: string | null, weekParam: string | null, dateParam: string | null) => {
   const today = new Date();
   let initialYear = yearParam ? Number(yearParam) : today.getFullYear();
-  let initialWeek = weekParam ? Number(weekParam.split("W")[1]) - 1 : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week - 1;
+  let initialWeek = weekParam ? Number(weekParam.split("W")[1]) - 1 : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week;
   let initialSelectedDate = getToday();
 
   if (dateParam) {
     const [year, month, day] = dateParam.split("-").map(Number);
     const { week, dayWeek } = getWeekAndDay(year, month, day);
     initialYear = year;
-    initialWeek = week - 1;
+    initialWeek = week;
 
     initialSelectedDate = {
       ...initialSelectedDate,

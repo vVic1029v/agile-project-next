@@ -9,7 +9,7 @@ import WeekCalendar from "@/components/calendar/week/WeekCalendar";
 import CalendarDayModal from "../event-modal/CalendarDayModal";
 import CalendarContainter from "../CalendarContainer";
 import { getWeekAndDay, getWeeksInYear } from "@/lib/calendarUtils";
-import { SelectedDate, useCalendarState } from "../useCalendarState";
+import { getToday, SelectedDate, useCalendarState } from "../useCalendarState";
 
 interface CalendarContainerProps {
   children: ReactNode;
@@ -63,12 +63,10 @@ export default function UserWeekCalendar() {
   };
   
   const handleTodayClick = () => {
-    const now = new Date();
-    const newYear = now.getFullYear();
-    const { week } = getWeekAndDay(newYear, now.getMonth() + 1, now.getDate());
-    const newWeek = week - 1;
-    setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    updateWeekUrl(newYear, newWeek);
+    const todayDate = getToday();
+    console.log(todayDate);
+    setSelectedDate(todayDate);
+    updateWeekUrl(todayDate.year, todayDate.week);
   };
 
   const weekEvents = events[selectedDate.year]?.[selectedDate.week];

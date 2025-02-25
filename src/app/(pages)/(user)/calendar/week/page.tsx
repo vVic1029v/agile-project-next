@@ -10,7 +10,7 @@ export default async function CalendarPage() {
   const userId = session.user.id;
 
   // Fetch calendar data on the server
-  const { events, courses } = await getCalendarData("64c4013d-37f8-4e04-aae0-fcfdee4b8c78");
+  const { events, courses } = await getCalendarData(userId);
 
   return (
       <CalendarProvider events={events} courses={courses}>
