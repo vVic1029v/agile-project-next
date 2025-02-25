@@ -8,9 +8,11 @@ import { Course } from "@prisma/client";
 
 export interface WeekCalendarProps {
   onClick?: (date: SelectedDate) => void;
-  events: WeekCell;
+  events?: WeekCell;
   courses: StructuredWeekCourses;
-  selectedDate: SelectedDate;
+  selectedDate?: SelectedDate;
+  showAllPeriods?: boolean;
+  highlightedPeriods?: SelectedDate[];
 }
 
 const WeekCalendar: React.FC<WeekCalendarProps> = ({
@@ -18,6 +20,8 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   events = {}, // Default to an empty object if events is undefined
   courses,
   selectedDate,
+  showAllPeriods = false,
+  highlightedPeriods = [],
 }) => {
 
   // Collect all time slot identifiers across the week.
@@ -28,17 +32,29 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
     <div className="w-full pt-[1vh]">
       {timeslotsPeriods.map((timeslotPeriod, rowIndex) => (
         <div key={rowIndex} className="flex w-full">
-          {Array.from({ length: 7 }, (_, dayIndex) => {
+          {Array.from({ length: 7 }, (_, dayWeek) => {
             // Get the events for the current day and time slot from timeslotRecords.
-            const cellEvents = timeslotRecords[timeslotPeriod]?.[dayIndex]?.events || [];
-            const selectedDateForDay = getSelectedDateForDay(selectedDate, dayIndex, timeslotPeriod);
+            const cellEvents = timeslotRecords[timeslotPeriod]?.[dayWeek]?.events || [];
+            const selectedDateForDay = selectedDate ? getSelectedDateForDay(selectedDate, dayWeek, timeslotPeriod) : 
+            {
+              day: 0,
+              month: 0,
+              year: 0,
+              week: 0,
+              dayWeek: dayWeek,
+              period: timeslotPeriod,
+            };
+
+            // if it is a highlighted date, set highlighted to true
+            const isHighlighted = highlightedPeriods.some((date) => date.dayWeek === dayWeek && date.period === timeslotPeriod );
             return (
               <WeekCalendarCell
-                key={dayIndex}
-                courseName={timeslotRecords[timeslotPeriod]?.[dayIndex]?.course?.subject}
+                key={dayWeek}
+                courseName={timeslotRecords[timeslotPeriod]?.[dayWeek]?.course?.subject}
                 events={cellEvents}
                 onClick={() => onClick && onClick(selectedDateForDay)}
-                color={timeslotRecords[timeslotPeriod]?.[dayIndex]?.course?.color}
+                color={timeslotRecords[timeslotPeriod]?.[dayWeek]?.course?.color}
+                highlighted={isHighlighted}
               />
             );
           })}

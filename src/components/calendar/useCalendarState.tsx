@@ -8,7 +8,7 @@ export type SelectedDate = {
   year: number;
   week: number;
   dayWeek: number;
-  timeSlot?: number;
+  period?: number;
 }
 
 export const getToday = (): SelectedDate => {

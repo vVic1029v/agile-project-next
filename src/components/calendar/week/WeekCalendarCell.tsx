@@ -8,6 +8,7 @@ export interface WeekCalendarCellProps {
   events: Event[];
   onClick: () => void;
   color?: string | null;
+  highlighted?: boolean;
 }
 
 const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
@@ -15,11 +16,14 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
   events,
   onClick,
   color,
+  highlighted = false,
 }) => {
   return (
     <div
       onClick={onClick}
-      className="relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-3xl size-[15vh]"
+      className={`relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all rounded-3xl size-[15vh] hover:z-20 hover:border-cyan-400 ${
+        highlighted ? 'border-blue-700' : ''
+      }`}
     >
       {/* Tint overlay */}
       <div
@@ -32,7 +36,6 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
       
       {/* Optionally display the time slot label */}
       <span className="absolute left-1 top-1 flex items-center justify-center text-xs sm:text-sm lg:text-base">
-        {/* {period ? `Period ${period}` : ""} */}
         {courseName ? `${courseName}` : ""}
       </span>
       

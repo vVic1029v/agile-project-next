@@ -12,7 +12,7 @@ export type WeekScheduleIdentifier = {
     period: number;
 }[]
   
-const daySchedule: DaySchedule = [
+export const daySchedule: DaySchedule = [
     { start: { hour: 7, minute: 30 },  end: { hour: 8,  minute: 15 } }, // 7:30–8:15
     { start: { hour: 8, minute: 20 },  end: { hour: 9,  minute: 5 }  }, // 8:20–9:05 (5 min break, then 10 min)
     { start: { hour: 9, minute: 15 },  end: { hour: 10, minute: 0 }  }, // 9:15–10:00
