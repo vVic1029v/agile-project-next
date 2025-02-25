@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useState, useCallback, ReactNode } from "react";
 import { useSession } from "next-auth/react";
 import { useCalendarContext } from "../CalendarProvider";
@@ -13,7 +11,6 @@ import { getToday, SelectedDate, useCalendarState } from "../useCalendarState";
 
 interface CalendarContainerProps {
     children: ReactNode;
-    isModalOpen: boolean;
 }
 
 export default function PeriodSelectWeekCalendar() {
@@ -22,24 +19,23 @@ export default function PeriodSelectWeekCalendar() {
     const [selectedTimeSlots, setSelectedTimeSlots] = useState<SelectedDate[]>([]);
 
     function handleCellClick(date: SelectedDate): void {
-        // add date to selectedTimeSlots or remove if already selected
         setSelectedTimeSlots(prevSlots => {
-            const index = prevSlots.indexOf(date);
-            if (index === -1) {
-                return [...prevSlots, date];
+            const isSelected = prevSlots.some(slot => slot.dayWeek === date.dayWeek && slot.period === date.period);
+            if (isSelected) {
+                return prevSlots.filter(slot => !(slot.dayWeek === date.dayWeek && slot.period === date.period));
             } else {
-                return prevSlots.filter(slot => slot !== date);
+                return [...prevSlots, date];
             }
         });
     }
 
     return (
-        <WeekCalendar onClick={handleCellClick} courses={courses} showAllPeriods={true} highlightedPeriods={selectedTimeSlots}/>
+        <WeekCalendarContainer>
+            <WeekCalendar onClick={handleCellClick} courses={courses} showAllPeriods={true} highlightedPeriods={selectedTimeSlots}/>
+        </WeekCalendarContainer>
     );
 }
 
-const WeekCalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
-    <CalendarContainter isModalOpen={isModalOpen}>
-        <div className="w-full px-[5vw] pt-4">{children}</div>
-    </CalendarContainter>
+const WeekCalendarContainer = ({ children }: CalendarContainerProps) => (
+    <div className="">{children}</div>
 );
