@@ -25,7 +25,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
 }) => {
 
   // Collect all time slot identifiers across the week.
-  const timeslotRecords = collectTimeSlotRecords(events, courses);
+  const timeslotRecords = collectTimeSlotRecords(events, courses, showAllPeriods);
   const timeslotsPeriods = sortTimeSlotPeriods(timeslotRecords);
 
   return (
