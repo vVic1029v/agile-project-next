@@ -35,7 +35,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
             return (
               <WeekCalendarCell
                 key={dayIndex}
-                period={timeslotPeriod}
+                courseName={timeslotRecords[timeslotPeriod]?.[dayIndex]?.course?.subject}
                 events={cellEvents}
                 onClick={() => onClick && onClick(selectedDateForDay)}
                 color={timeslotRecords[timeslotPeriod]?.[dayIndex]?.course?.color}

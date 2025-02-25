@@ -12,3 +12,9 @@ export async function SearchHomeClasses(formData: FormData): Promise<{ results: 
   console.log(results);
   return { results };
 }
+
+
+
+export async function NewCourse(formData: FormData) {
+  
+}

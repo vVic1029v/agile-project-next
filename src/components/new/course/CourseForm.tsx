@@ -2,13 +2,16 @@
 import React, { useState } from "react";
 import SearchHomeClassModal from "./SearchHomeClassModal";
 import { ModalOverlay } from "@/components/ModalOverlay";
+import Form from "next/form";
+import { NewCourse } from "@/lib/actions";
 
 const CourseForm: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedHomeClass, setSelectedHomeClass] = useState<{ id: string; name: string } | null>(null);
 
+
   return (
-    <div className="p-6">
+    <Form className="p-6" action={(formData: FormData ) => {formData.append("homeClassId", selectedHomeClass?.id || ""); NewCourse(formData) }}>
 
       {/* Selected Home Class Display */}
       {selectedHomeClass ? (
@@ -38,7 +41,12 @@ const CourseForm: React.FC = () => {
           }}
         />
       </ModalOverlay>
-    </div>
+      
+      {/* Submit Button */}
+      <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md">
+        Create Course
+      </button>
+    </Form>
   );
 };
 

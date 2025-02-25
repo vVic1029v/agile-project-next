@@ -4,14 +4,14 @@ import React from "react";
 import { Event } from "@prisma/client";
 
 export interface WeekCalendarCellProps {
-  period: number;
+  courseName?: string;
   events: Event[];
   onClick: () => void;
   color?: string | null;
 }
 
 const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
-  period,
+  courseName,
   events,
   onClick,
   color,
@@ -32,7 +32,8 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
       
       {/* Optionally display the time slot label */}
       <span className="absolute left-1 top-1 flex items-center justify-center text-xs sm:text-sm lg:text-base">
-        {period ? `Period ${period}` : ""}
+        {/* {period ? `Period ${period}` : ""} */}
+        {courseName ? `${courseName}` : ""}
       </span>
       
       {/* Render event icons if there are events in this cell */}

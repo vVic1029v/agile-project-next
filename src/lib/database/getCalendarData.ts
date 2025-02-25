@@ -18,6 +18,8 @@ export type TimeSlotCourse = {courses: Course[], timeslot: TimeSlot};
 export type DayCourse = Record<string, TimeSlotCourse>;
 export type StructuredWeekCourses = Record<number, DayCourse>;
 
+
+// TODO: Add caching to this function
 export async function getCalendarData(userId: string): Promise<{
   events: StructuredEvents;
   courses: StructuredWeekCourses;
@@ -28,7 +30,6 @@ export async function getCalendarData(userId: string): Promise<{
       getUserEvents(userId),
       getUserCourses(userId, session.user.userType)
     ]);
-    
 
     const structuredEvents: StructuredEvents = {};
     const structuredCourses: StructuredWeekCourses = {};
