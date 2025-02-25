@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useMemo, useCallback } from 'react';
 import YearCalendarGrid from './YearCalendarGrid';
-import { StructuredEvents } from '@/lib/getCalendarData';
+import { StructuredEvents } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarProps {

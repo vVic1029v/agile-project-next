@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
-import { DayCell } from '@/lib/getCalendarData';
+import { DayCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
 
 export interface YearDayCellProps {

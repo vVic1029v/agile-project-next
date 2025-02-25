@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getUserCourses } from "@/lib/database";
+import { getUserCourses } from "@/lib/database/database";
 import { auth, isAuthorized } from "@/lib/auth";
 import { Course } from "@prisma/client";
 

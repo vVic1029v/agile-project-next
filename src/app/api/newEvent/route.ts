@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { postEventTimeSlot, postEventFloating } from "@/lib/database";
 import { auth, isAuthorized } from "@/lib/auth";
-import { getDateRangeFromTimeSlot } from "@/lib/timeSlots";
+import { getDateRangeFromTimeSlot } from "@/lib/database/timeSlots";
 import {Event} from "@prisma/client";
 
 export async function POST(request: Request) {

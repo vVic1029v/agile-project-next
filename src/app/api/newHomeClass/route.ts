@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getCheapUserByEmail, postNewHomeClass } from "@/lib/database";
 import { UserType } from "@prisma/client";
+import { getCheapUserByEmail, postNewHomeClass } from "@/lib/database/database";
 
 export async function POST(req: Request) {
   try {

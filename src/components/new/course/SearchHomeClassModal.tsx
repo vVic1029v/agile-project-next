@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SearchHomeClasses } from "@/lib/actions";
-import { HomeClassSearchResult } from "@/lib/database";
+import { HomeClassSearchResult } from "@/lib/database/database";
 import Form from "next/form";
 import SearchInput from "@/components/Common/Form/SearchInput";
 import SearchResultList from "@/components/Common/Form/SearchResultsList";

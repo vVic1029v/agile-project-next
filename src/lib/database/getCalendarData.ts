@@ -1,6 +1,6 @@
 import { Course, Prisma, TimeSlot } from "@prisma/client";
 import { getUserCourses, getUserEvents } from "./database";
-import { authMiddleware } from "./auth";
+import { authMiddleware } from "../auth";
 
 export type EventTimeSlot = Prisma.EventGetPayload<{ include: { timeSlot: true } }>;
 

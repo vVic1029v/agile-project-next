@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCheapUserByEmail, postNewCourse } from "@/lib/database";
+import { getCheapUserByEmail, postNewCourse } from "@/lib/database/database";
 import { UserType } from "@prisma/client";
 
 // POST request handler

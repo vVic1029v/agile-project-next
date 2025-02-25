@@ -1,5 +1,4 @@
 import bcrypt from "bcryptjs";
-import {getExpensiveUserByEmail} from "./database";
 
 import { NextAuthOptions, getServerSession, Session, User, JWT as CustonJWT } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -10,6 +9,7 @@ import type {
   NextApiResponse,
 } from "next"
 import { UserType } from "@prisma/client";
+import { getExpensiveUserByEmail } from "@/lib/database/database";
 
 // You'll need to import and pass this
 // to `NextAuth` in `app/api/auth/[...nextauth]/route.ts`
@@ -102,6 +102,7 @@ export function auth(
   return getServerSession(...args, authOptions)
 }
 
+// Checks if the user is authorized to access a resource. Change behaviour in the future to allow for more granular permissions.
 export function isAuthorized(session: Session | null, userId: string | null): boolean {
   return !!session && !!session.user.id && (userId === session.user.id || session.user.userType === "ADMIN");
 }

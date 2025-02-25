@@ -1,5 +1,5 @@
 'use client';
-import { TimeSlotCell } from "@/lib/getCalendarData";
+import { TimeSlotCell } from "@/lib/database/getCalendarData";
 import React from "react";
 import { Event } from "@prisma/client";
 

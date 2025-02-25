@@ -1,6 +1,6 @@
 // app/calendar/page.tsx (server component)
 import { redirect } from "next/navigation";
-import { getCalendarData } from "@/lib/getCalendarData";
+import { getCalendarData } from "@/lib/database/getCalendarData";
 import { authMiddleware } from "@/lib/auth";
 import { SessionProvider } from "next-auth/react";
 import CalendarProvider from "@/components/calendar/CalendarProvider";

@@ -2,7 +2,7 @@
 import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma } from "@prisma/client";
 
 // Internal Imports
-import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/timeSlots";
+import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/database/timeSlots";
 import { CourseTimeSlots, EventTimeSlot } from "./getCalendarData";
 
 // Initialize Prisma Client

@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult } from "./database";
+import { getHomeClassesByName, HomeClassSearchResult } from "@/lib/database/database";
 
 export async function SearchHomeClasses(formData: FormData): Promise<{ results: HomeClassSearchResult[] }> {
   const query = formData.get("query") as string;

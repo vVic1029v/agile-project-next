@@ -1,5 +1,5 @@
 import React from "react";
-import { StructuredEvents } from "@/lib/getCalendarData";
+import { StructuredEvents } from "@/lib/database/getCalendarData";
 import { SelectedDate } from "../useCalendarState";
 
 interface CalendarDayModalProps {

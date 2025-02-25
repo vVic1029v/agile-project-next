@@ -1,4 +1,4 @@
-import { TimeSlotCell, DayCell, WeekCell, StructuredWeekCourses } from "@/lib/getCalendarData";
+import { TimeSlotCell, DayCell, WeekCell, StructuredWeekCourses } from "@/lib/database/getCalendarData";
 import { SelectedDate } from "../components/calendar/useCalendarState";
 import { getWeekStartDateFromYearWeek } from "@/lib/calendarUtils";
 

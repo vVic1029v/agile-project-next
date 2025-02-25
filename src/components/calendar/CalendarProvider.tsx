@@ -1,7 +1,7 @@
 // components/calendar/CalendarProvider.tsx
 'use client';
 import React, { createContext, useContext, useState } from "react";
-import type { StructuredEvents, StructuredWeekCourses } from "@/lib/getCalendarData";
+import type { StructuredEvents, StructuredWeekCourses } from "@/lib/database/getCalendarData";
 
 // Define the context type.
 interface CalendarContextType {

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
 import type { DayObj } from '@/lib/calendarUtils';
 import { useRouter, useSearchParams } from "next/navigation";
-import { DayCell, WeekCell } from '@/lib/getCalendarData';
+import { DayCell, WeekCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarRowProps {

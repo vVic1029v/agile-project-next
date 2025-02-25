@@ -2,7 +2,7 @@
 import React from "react";
 import WeekCalendarCell from "./WeekCalendarCell";
 import { SelectedDate } from "../useCalendarState";
-import { StructuredWeekCourses, WeekCell } from "@/lib/getCalendarData";
+import { StructuredWeekCourses, WeekCell } from "@/lib/database/getCalendarData";
 import { collectTimeSlotRecords, sortTimeSlotPeriods, getSelectedDateForDay } from "@/lib/weekCalendarUtils";
 import { Course } from "@prisma/client";
 
