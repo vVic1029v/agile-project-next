@@ -31,7 +31,7 @@ export default function SearchHomeClassModal({ onClose, onSelect }: SearchModalP
   }
 
   return (
-    <Form action={() => {}}>
+   <div>
       <div className="p-6">
         {/* <h2 className="text-lg font-semibold mb-2">Select a class</h2> */}
         <p className="text-sm text-gray-500 mb-4">Search and select a class.</p>
@@ -69,6 +69,6 @@ export default function SearchHomeClassModal({ onClose, onSelect }: SearchModalP
           </button>
         </div>
       </div>
-    </Form>
+    </div>
   );
 }
