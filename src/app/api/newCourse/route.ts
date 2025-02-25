@@ -6,7 +6,7 @@ import { UserType } from "@prisma/client";
 export async function POST(req: Request) {
   try {
     // Extract the request body
-    const { homeClassId, teacherEmail, subject, weekScheduleIdentifier } = await req.json();
+    const { homeClassId, teacherEmail, subject, weekScheduleIdentifier, color } = await req.json();
 
     // Get the teacher details from the database by email
     const teacher = await getCheapUserByEmail(teacherEmail);
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     }
 
     // Create the course by passing necessary details to the function
-    const course = await postNewCourse(homeClassId, teacher.id, subject, weekScheduleIdentifier);
+    const course = await postNewCourse(homeClassId, teacher.id, subject, weekScheduleIdentifier, color);
     if (!course) {
       return NextResponse.json({ error: "Course creation failed" }, { status: 500 });
     }

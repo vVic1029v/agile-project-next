@@ -13,25 +13,16 @@ interface CalendarContainerProps {
     children: ReactNode;
 }
 
-export default function PeriodSelectWeekCalendar() {
+interface PeriodSelectWeekCalendarProps {
+    selectedTimeSlots: SelectedDate[];
+    handleSelectTimeSlot: (slots: SelectedDate) => void;
+}
+
+export default function PeriodSelectWeekCalendar({ selectedTimeSlots, handleSelectTimeSlot }: PeriodSelectWeekCalendarProps) {
     const { events, courses } = useCalendarContext();
-
-    const [selectedTimeSlots, setSelectedTimeSlots] = useState<SelectedDate[]>([]);
-
-    function handleCellClick(date: SelectedDate): void {
-        setSelectedTimeSlots(prevSlots => {
-            const isSelected = prevSlots.some(slot => slot.dayWeek === date.dayWeek && slot.period === date.period);
-            if (isSelected) {
-                return prevSlots.filter(slot => !(slot.dayWeek === date.dayWeek && slot.period === date.period));
-            } else {
-                return [...prevSlots, date];
-            }
-        });
-    }
-
     return (
         <WeekCalendarContainer>
-            <WeekCalendar onClick={handleCellClick} courses={courses} showAllPeriods={true} highlightedPeriods={selectedTimeSlots}/>
+            <WeekCalendar onClick={handleSelectTimeSlot} courses={courses} showAllPeriods={true} highlightedPeriods={selectedTimeSlots}/>
         </WeekCalendarContainer>
     );
 }

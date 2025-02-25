@@ -5,10 +5,25 @@ import { ModalOverlay } from "@/components/ModalOverlay";
 import Form from "next/form";
 import { NewCourse } from "@/lib/actions";
 import PeriodSelectWeekCalendar from "@/components/calendar/week/PeriodSelectWeekCalendar";
+import { SelectedDate } from "@/components/calendar/useCalendarState";
 
 const CourseForm: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenSearchHomeClass, setIsModalOpenSearchHomeClass] = useState(false);
+  const [isModalOpenPeriodSelect, setIsModalOpenPeriodSelect] = useState(false);
   const [selectedHomeClass, setSelectedHomeClass] = useState<{ id: string; name: string } | null>(null);
+
+  // Period Select
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<SelectedDate[]>([]);
+  function handleSelectTimeSlot(date: SelectedDate): void {
+      setSelectedTimeSlots(prevSlots => {
+          const isSelected = prevSlots.some(slot => slot.dayWeek === date.dayWeek && slot.period === date.period);
+          if (isSelected) {
+              return prevSlots.filter(slot => !(slot.dayWeek === date.dayWeek && slot.period === date.period));
+          } else {
+              return [...prevSlots, date];
+          }
+      });
+  }
 
   return (
     <Form className="p-6" action={(formData: FormData ) => {formData.append("homeClassId", selectedHomeClass?.id || ""); NewCourse(formData) }}>
@@ -16,7 +31,7 @@ const CourseForm: React.FC = () => {
         <button
           type="button"
           className="px-4 py-2 bg-blue-600 text-white rounded-md size-[5vh] w-[20vh] min-h-10 min-w-10 max-w-30 max-h-20"
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsModalOpenSearchHomeClass(true)}
         >
           Select Class
         </button>
@@ -29,21 +44,33 @@ const CourseForm: React.FC = () => {
         )}
 
         {/* Modal */}
-        <ModalOverlay onClose={() => setIsModalOpen(false)} isOpen={isModalOpen} title={"Select a class"}>
+        <ModalOverlay onClose={() => setIsModalOpenSearchHomeClass(false)} isOpen={isModalOpenSearchHomeClass} title={"Select a class"}>
           <SearchHomeClassModal
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => setIsModalOpenSearchHomeClass(false)}
             onSelect={(item) => {
               setSelectedHomeClass(item);
-              setIsModalOpen(false);
+              setIsModalOpenSearchHomeClass(false);
             }}
           />
         </ModalOverlay>
       </span>
 
       {/* Period Select Week Calendar */}
-      <div className="mt-6">
-        <PeriodSelectWeekCalendar />
-      </div>
+      <span className="flex">
+        <button
+          type="button"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md size-[5vh] w-[20vh] min-h-10 min-w-10 max-w-30 max-h-20"
+          onClick={() => setIsModalOpenPeriodSelect(true)}
+        >
+          Select Period
+        </button>
+        <div className="mt-6">
+          <ModalOverlay onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect} title={"Select a class"}>
+
+            <PeriodSelectWeekCalendar selectedTimeSlots={selectedTimeSlots} handleSelectTimeSlot={handleSelectTimeSlot} />
+          </ModalOverlay>
+        </div>
+      </span>
 
       {/* Submit Button */}
       <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md mt-6 size-[5vh] w-[20vh] min-h-11 min-w-10 max-w-26 max-h-20">

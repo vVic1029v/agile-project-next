@@ -80,10 +80,12 @@ export async function postNewCourse(
   homeClassId: string,
   teacherId: string,
   subject: string,
-  weekScheduleId: WeekScheduleIdentifier
+  weekScheduleId: WeekScheduleIdentifier,
+  color: string
 ): Promise<Course | null> {
   const course = await prisma.course.create({
     data: {
+      color: color,
       subject: subject,
       facultyMember: {
         connect: {
