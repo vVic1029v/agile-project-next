@@ -21,12 +21,15 @@ interface PeriodSelectWeekCalendarProps {
 export default function PeriodSelectWeekCalendar({ selectedTimeSlots, handleSelectTimeSlot }: PeriodSelectWeekCalendarProps) {
     const { events, courses } = useCalendarContext();
     return (
-        <WeekCalendarContainer>
-            <WeekCalendar onClick={handleSelectTimeSlot} courses={courses} showAllPeriods={true} highlightedPeriods={selectedTimeSlots}/>
-        </WeekCalendarContainer>
-    );
+        <div className="grid grid-cols-7 gap-2 p-2 w-[410px] h-[400px] overflow-auto">
+            <WeekCalendarContainer>
+                <WeekCalendar onClick={handleSelectTimeSlot} courses={courses} showAllPeriods={true} highlightedPeriods={selectedTimeSlots}/>
+            </WeekCalendarContainer>
+        </div>
+
+        );
 }
 
 const WeekCalendarContainer = ({ children }: CalendarContainerProps) => (
-    <div className="">{children}</div>
+    <div className="h-[200px]">{children}</div>
 );

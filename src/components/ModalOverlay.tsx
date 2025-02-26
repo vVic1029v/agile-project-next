@@ -22,13 +22,13 @@ export const ModalOverlay = ({ children, onClose, isOpen, title }: ModalOverlayP
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity animate-fadeIn"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity animate-fadeIn "
       onClick={onClose}
       aria-modal="true"
       role="dialog"
     >
       <div
-        className="bg-white rounded-lg shadow-lg w-96 relative p-5 transition-transform animate-scaleIn"
+        className="bg-white rounded-lg shadow-lg relative p-9 transition-transform animate-scaleIn min-w-[300px]"
         onClick={(e) => e.stopPropagation()} // Prevent closing when clicking inside modal
       >
         {title && <h1 className="text-lg font-semibold mb-2">{title}</h1>}

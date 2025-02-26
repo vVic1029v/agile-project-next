@@ -59,13 +59,13 @@ const CourseForm: React.FC = () => {
       <span className="flex">
         <button
           type="button"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md size-[5vh] w-[20vh] min-h-10 min-w-10 max-w-30 max-h-20"
+          className="px-4 py-2 bg-blue-600 text-white rounded-md size-[5vh] w-[20vh] min-h-10 min-w-10 max-w-30 max-h-20 mt-5"
           onClick={() => setIsModalOpenPeriodSelect(true)}
         >
           Select Period
         </button>
-        <div className="mt-6">
-          <ModalOverlay onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect} title={"Select a class"}>
+        <div className="mt-6 ">
+          <ModalOverlay onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect} title={"Select a period"}>
 
             <PeriodSelectWeekCalendar selectedTimeSlots={selectedTimeSlots} handleSelectTimeSlot={handleSelectTimeSlot} />
           </ModalOverlay>
