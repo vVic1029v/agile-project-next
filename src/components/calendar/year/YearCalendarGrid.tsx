@@ -9,9 +9,10 @@ export interface YearCalendarGridProps {
   onDayClick: (selected: SelectedDate) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   events?: StructuredEvents;
+  selectedDate : SelectedDate;
 }
 
-const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({ year, onDayClick, dayRefs, events }) => {
+const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({ year, onDayClick, dayRefs, events,selectedDate }) => {
   const days = useMemo(() => getDaysInYear(year), [year]);
   const weeks = useMemo(() => chunkDaysIntoWeeks(days), [days]);
 
@@ -27,6 +28,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({ year, onDayClick, d
           dayRefs={dayRefs}
           year={year}
           events={events?.[year]?.[weekIndex] ?? []}
+          selectedDate={selectedDate}
         />
       ))}
     </>

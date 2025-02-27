@@ -1,9 +1,12 @@
-import React, { useMemo } from 'react';
+"use client"
+import React, { useMemo,useState } from 'react';
 import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
-
+import { ModalOverlay } from "@/components/ModalOverlay";
+import AddEventButton from "@/components/calendar/AddEventButton"
+import AddEventYearCalendar from '../AddEventYearCalendar';
 export interface YearDayCellProps {
   dayObj: DayObj;
   index: number;
@@ -14,6 +17,7 @@ export interface YearDayCellProps {
   year: number;
   dayWeek: number;
   dayEvents: DayCell;
+  selectedDate:SelectedDate;
 }
 
 const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
@@ -26,7 +30,17 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   year,
   dayWeek,
   dayEvents,
+  selectedDate
 }) => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isYearCalendarModalOpen, setIsYearCalendarModalOpen] = useState(false);
+    const handleOpenModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleCloseModal = () => {
+      setIsModalOpen(false);
+    };
   const modalTimeSlotCells = useMemo(() => Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell), [dayEvents]);
 
   const handleClick = () => {
@@ -38,7 +52,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
       dayWeek: dayWeek,
     });
   };
-
+  
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -66,7 +80,9 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
         </span>
       )}
       {/* Plus Icon Button – stops propagation so it does not trigger the day click */}
+      {/* <AddEventButton selectedDate={selectedDate}/>
       <button
+      
         type="button"
         onClick={handleButtonClick}
         className="flex absolute right-2 top-2 rounded-full opacity-0 transition-all focus:opacity-100 group-hover:opacity-100 z-50"
@@ -87,6 +103,14 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
           />
         </svg>
       </button>
+      */}
+   
+
+      {/* Afisează modalul YearCalendar doar când starea este true */}
+ 
+        <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar>
+
+
       {/* Render event icons – each stops propagation */}
       {modalTimeSlotCells && modalTimeSlotCells.length > 0 && (
         <div

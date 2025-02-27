@@ -9,6 +9,7 @@ export interface YearCalendarProps {
   onClick?: (selected: SelectedDate) => void;
   events: StructuredEvents;
   selectedDay: SelectedDate;
+  
 }
 
 export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, selectedDay }) => {
@@ -62,6 +63,7 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, sel
       dayRefs={dayRefs}
       events={events}
       year={selectedDay.year}
+      selectedDate={selectedDay}
     />
   );
 };

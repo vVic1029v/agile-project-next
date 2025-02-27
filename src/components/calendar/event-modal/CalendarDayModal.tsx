@@ -50,4 +50,4 @@ const CalendarDayModal: React.FC<CalendarDayModalProps> = React.memo(({ selected
   );
 });
 
-export default CalendarDayModal;
+export default CalendarDayModal;``

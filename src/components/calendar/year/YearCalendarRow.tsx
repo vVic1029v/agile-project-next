@@ -13,6 +13,7 @@ export interface YearCalendarRowProps {
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   events?: WeekCell;
+  selectedDate:SelectedDate
 }
 
 const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
@@ -23,6 +24,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   dayRefs,
   year,
   events,
+  selectedDate
 }) => {
   const now = useMemo(() => new Date(), []);
   const router = useRouter();
@@ -79,6 +81,8 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
               year={year}
               dayWeek={dayIndex}
               dayEvents={dayEvents}
+              selectedDate={selectedDate}
+              
             />
           );
         })}
