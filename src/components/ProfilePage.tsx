@@ -47,7 +47,7 @@ export default function ProfilePage() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -74,7 +74,7 @@ export default function ProfilePage() {
   }
   if (!session?.user || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -135,7 +135,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">
     <motion.div 
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
@@ -143,32 +143,31 @@ export default function ProfilePage() {
       className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between"
     >
 
-      {/* Info User */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.8 }}
         className="w-full sm:w-3/5 mb-8 sm:mb-0"
       >
-        <motion.h1 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-blue-600 mb-4"
-        >
-          My Account
-        </motion.h1>
+         <motion.h1
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.6, ease: "easeOut" }}
+                whileHover={{ scale: 1.05 }}
+                className="text-1xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8"
+              >
+            My account             
+             </motion.h1>
 
-        <h2 className="text-2xl text-gray-800 text-center mb-2">Name: {user.firstName} {user.lastName}</h2>
-        <h2 className="text-lg text-gray-700 text-center mb-4">Email: {user.email}</h2>
+        <h2 className="text-2xl text-gray-800  mb-2">Name: {user.firstName} {user.lastName}</h2>
+        <h2 className="text-lg text-gray-700  mb-4">Email: {user.email}</h2>
 
-        {/* Change Password Form */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.3, duration: 0.6 }}
         >
-          <h1 className="text-2xl font-semibold text-center text-gray-800 mb-4">Change Password</h1>
+          <h1 className="text-2xl font-semibold  text-gray-800 mb-4">Change Password</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-gray-700" htmlFor="currentPassword">Current Password</label>
@@ -197,7 +196,7 @@ export default function ProfilePage() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 type="submit" 
-                className="w-full py-3 bg-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 transition duration-300"
+                className="mt-4 w-full py-3 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700  transition duration-200"
               >
                 New Password
               </motion.button>
@@ -209,7 +208,6 @@ export default function ProfilePage() {
         </motion.div>
       </motion.div>
 
-      {/* Profile Image */}
       <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -219,7 +217,7 @@ export default function ProfilePage() {
           <motion.div 
             whileHover={{ scale: 1.1, boxShadow: "0px 10px 20px rgba(0, 0, 255, 0.3)" }} 
             transition={{ duration: 0.3 }}
-            className="w-60 h-60 bg-blue-500 rounded-lg shadow-xl flex items-center justify-center border-8 border-white"
+            className="w-60 h-60 bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg shadow-xl flex items-center justify-center border-8 border-white"
           >
             {user.profileImage ? (
               <img src={user.profileImage} alt="Poza Profil" className="w-full h-full object-cover rounded-lg" />
