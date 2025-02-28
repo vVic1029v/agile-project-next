@@ -4,6 +4,7 @@ import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSl
 // Internal Imports
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/database/timeSlots";
 import { CourseTimeSlots, EventTimeSlot } from "./getCalendarData";
+import bcrypt from "bcryptjs";
 
 // Initialize Prisma Client
 export const prisma = new PrismaClient();
@@ -243,3 +244,32 @@ export async function getHomeClassesByName(name: string): Promise<HomeClassSearc
     take: 5,
   });
 }
+
+
+export async function getUserById(userId: string): Promise<Pick<User, "id" | "firstName" | "lastName" | "email" | "userType"> | null>  {
+  return prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+      userType: true, 
+    },
+  });
+}
+
+export async function resetUserPassword(userId: string, newPassword: string) {
+  try {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
+
+    return { success: true, message: "Password reset successfully" };
+  } catch (error) {
+    console.error("Error resetting password:", error);
+    return { success: false, error: "Database error" };
+  }}

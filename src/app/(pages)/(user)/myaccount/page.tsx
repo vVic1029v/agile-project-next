@@ -1,7 +1,13 @@
-const Page = () => {
-  return (
-    <div className=''>Page</div>
-  )
-}
+import { authMiddleware } from "@/lib/auth";
+import ProfilePage from "@/components/ProfilePage";
+import { useSession } from "next-auth/react";
 
-export default Page
+export default async function Profile() {
+ 
+  return (
+    <ProfilePage />
+      
+  
+);
+
+}

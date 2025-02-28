@@ -19,6 +19,7 @@ model User {
   facultyMember FacultyMember?
   student       Student?
   events        Event[]        @relation("UserEvents")
+  profileImage  String?
 }
 
 model Student {
