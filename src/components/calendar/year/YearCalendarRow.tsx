@@ -42,7 +42,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   };
 
   return (
-    <div className="relative flex w-full items-center" key={`week-${weekIndex}`}>
+    <div className="relative flex w-full items-center z- [-50]" key={`week-${weekIndex}`}>
       <button
         type="button"
         style={{
