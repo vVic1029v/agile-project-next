@@ -16,6 +16,9 @@ export const config = {
     "/home/:path*", 
     "/calendar/:path*", 
     "/new/:path*", 
+    "/announcements/:path*",
+    "/myclass/:path*",
+    "/myaccount/:path*",
    
   ] 
 };
