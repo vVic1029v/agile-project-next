@@ -9,6 +9,7 @@ import { GrAnnounce } from "react-icons/gr";
 import { MdMessage } from "react-icons/md";
 import { IoPersonSharp } from "react-icons/io5";
 import { Session } from "inspector/promises";
+import { MdClass } from "react-icons/md";
 
 interface PageBodyWrapperProps {
   children: React.ReactNode;
@@ -32,7 +33,7 @@ const SideBarHolder: React.FC<PageBodyWrapperProps> = ({ children }) => {
     <div className="flex h-screen w-screen overflow-hidden">
       {/* Sidebar */}
       <nav
-        className={`bg-gray-800 text-white transition-all duration-300 flex-shrink-0 ${isExpanded ? "w-64" : "w-20"} h-full flex flex-col`}
+        className={`bg-blue-950 text-white transition-all duration-300 flex-shrink-0 ${isExpanded ? "w-64" : "w-20"} h-full flex flex-col`}
       >
         {/* Toggle Button */}
         <div className="flex items-center h-16 border-b border-gray-700 px-8">
@@ -137,6 +138,17 @@ const SideBarHolder: React.FC<PageBodyWrapperProps> = ({ children }) => {
             </li>
             <li>
               <Link
+                href="/myclass"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
+                <MdClass className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`} >
+                    My class
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
                 href="/myaccount"
                 className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200"  >
                 <IoPersonSharp className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
@@ -147,7 +159,7 @@ const SideBarHolder: React.FC<PageBodyWrapperProps> = ({ children }) => {
               </Link>
 
             </li>
-
+           
           </ul>
         </div>
 

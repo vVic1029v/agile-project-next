@@ -15,9 +15,9 @@ const AnnouncementsPage: React.FC = () => {
   // Simulare anunțuri
   useEffect(() => {
     setAnnouncements([
-      { title: "Important Update", content: "Our system will be down for maintenance this weekend.", class: "Math 101", date: "2025-03-01" },
-      { title: "New Features Coming", content: "We are introducing new features next week, stay tuned!", class: "CS 202", date: "2025-03-05" },
-      { title: "Holiday Notice", content: "Our office will be closed on national holidays.", class: "English 102", date: "2025-03-10" }
+      { title: "Important Update", content: "Today the math class is suspended.", class: "11 A", date: "2025-03-01" },
+      { title: "National exam", content: "The national exam is recheduled on next week", class: "12 D", date: "2025-03-05" },
+      { title: "Holiday Notice", content: "The french circle will be closed on national holidays.", class: "9 A", date: "2025-03-10" }
     ]);
   }, []);
 
@@ -38,7 +38,6 @@ const AnnouncementsPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-blue-50 to-blue-300">
-      {/* Titlul animat */}
       <motion.h1
         className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8"
         initial={{ opacity: 0, y: 50 }} 
@@ -48,7 +47,6 @@ const AnnouncementsPage: React.FC = () => {
         Announcements
       </motion.h1>
 
-      {/* Butonul de adăugare anunț cu animație fade in */}
       <motion.button
         onClick={() => setShowModal(true)}
         className="mb-6 px-6 py-3 text-white bg-cyan-600 rounded-xl shadow-md hover:bg-cyan-700 transition duration-300 transform hover:scale-105"
