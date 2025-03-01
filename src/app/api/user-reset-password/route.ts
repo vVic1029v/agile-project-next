@@ -1,45 +1,41 @@
-import { NextRequest, NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { resetUserPassword } from "@/lib/database/database";
-import { getToken } from "next-auth/jwt";
+import { PrismaClient } from "@prisma/client";
+import { NextResponse } from "next/server";
+import { auth, isAuthorized } from "@/lib/auth";
+import bcrypt from "bcryptjs";
 
-export async function POST(req: NextRequest) {
+const prisma = new PrismaClient();
+
+export async function POST(request: Request) {
   try {
-   
+    const session = await auth();
+    const userId = session?.user.id;
 
-    const authHeader = req.headers.get("authorization");
-    console.log("Authorization Header:", authHeader);
-    const session = await getServerSession(authOptions);
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    console.log("Token:", token);
-
-    console.log("Session:", session);
-
-    if (!session || !session.user?.id) {
-      return NextResponse.json({ error: "Unauthorized access" }, { status: 401 });
+    if (!userId) {
+      console.log("Unauthorized access");
+      return NextResponse.json({ error: "Unauthorized access" }, { status: 400 });
     }
 
-    const userId = session.user.id;
+    if (!session || !isAuthorized(session, userId)) {
+      console.log("Error: Unauthorized access for userId:", userId);
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
-   
-    const { newPassword } = await req.json();
-
+    const { newPassword } = await request.json();
     if (!newPassword) {
       return NextResponse.json({ error: "Missing new password" }, { status: 400 });
     }
 
-   
-    const result = await resetUserPassword(userId, newPassword);
+    // Hash the new password before saving it to the database
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
 
-    if (!result.success) {
-      return NextResponse.json({ error: result.error }, { status: 500 });
-    }
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { password: hashedPassword },
+    });
 
-    return NextResponse.json({ message: result.message }, { status: 200 });
-
+    return NextResponse.json({ message: "Password successfully updated" }, { status: 200 });
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Server error:", error);
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

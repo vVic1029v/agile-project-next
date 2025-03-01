@@ -104,12 +104,17 @@ export default function ProfilePage() {
   }
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+  
     if (!session) {
       setError("You must be logged in to change your password.");
       return;
     }
-
+  
+    if (!newPassword) {
+      setError("New password is required.");
+      return;
+    }
+  
     try {
       const response = await fetch("/api/user-reset-password", {
         method: "POST",
@@ -117,23 +122,25 @@ export default function ProfilePage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          currentPassword,
-          newPassword,
+          newPassword, 
         }),
       });
-
+  
       const data = await response.json();
-      
+  
       if (response.ok) {
-        setMessage(data.message);
+        setMessage("Password changed successfully.");
+        setError("");
       } else {
-        setError(data.error || "Something went wrong");
+        setError(data.error || "Something went wrong.");
+        setMessage("");
       }
     } catch (error) {
       setError("An error occurred while changing the password.");
+      setMessage("");
     }
   };
-
+  
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">
     <motion.div 
