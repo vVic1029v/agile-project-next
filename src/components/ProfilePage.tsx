@@ -7,7 +7,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
-  profileImage?: string;
+  profileImage?: string| null;
 }
 
 export default function ProfilePage() {
@@ -18,7 +18,8 @@ export default function ProfilePage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
-
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   useEffect(() => {
     console.log("Session:", session);
@@ -140,6 +141,42 @@ export default function ProfilePage() {
       setMessage("");
     }
   };
+   
+   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      const file = e.target.files[0];
+      setSelectedFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile || !session?.user.id) return;
+  
+    const formData = new FormData();
+    formData.append("file", selectedFile);
+    formData.append("userId", session.user.id);
+  
+    console.log("📤 Trimitere request către API...");
+    try {
+      const response = await fetch("/api/upload-profile-image", {
+        method: "POST",
+        body: formData,
+      });
+  
+      console.log("📥 Răspuns primit:", response);
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("✅ Upload reușit:", data);
+      } else {
+        console.error("❌ Eroare la upload:", data.error);
+      }
+    } catch (error) {
+      console.error("❌ Upload failed:", error);
+    }
+  };
+
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">
@@ -214,27 +251,41 @@ export default function ProfilePage() {
           {message && <p className="text-green-500 text-center mt-3">{message}</p>}
         </motion.div>
       </motion.div>
-
       <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.8 }}
-          className="w-full sm:w-2/5 flex justify-center items-center"
-        >
-          <motion.div 
-            whileHover={{ scale: 1.1, boxShadow: "0px 10px 20px rgba(0, 0, 255, 0.3)" }} 
-            transition={{ duration: 0.3 }}
-            className="w-60 h-60 bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg shadow-xl flex items-center justify-center border-8 border-white"
-          >
-            {user.profileImage ? (
-              <img src={user.profileImage} alt="Poza Profil" className="w-full h-full object-cover rounded-lg" />
-            ) : (
-              <span className="text-white text-4xl font-bold">?</span>
-            )}
-          </motion.div>
-        </motion.div>
-        
-      </motion.div>
+  initial={{ opacity: 0, y: 20 }}
+  animate={{ opacity: 1, y: 0 }}
+  transition={{ delay: 0.4, duration: 0.8 }}
+  className="w-full sm:w-2/5 flex flex-col justify-center items-center"
+>
+  
+<motion.div
+  whileHover={{ scale: 1.1, boxShadow: "0px 10px 20px rgba(0, 0, 255, 0.3)" }}
+  transition={{ duration: 0.3 }}
+  className="w-60 h-60 bg-gradient-to-r from-cyan-300 to-blue-500 rounded-lg shadow-xl flex items-center justify-center border-8 border-white cursor-pointer relative overflow-hidden"
+  onClick={() => document.getElementById("fileInput")?.click()} 
+>
+  
+  <img
+    src={user.profileImage ?? imagePreview ?? undefined}
+    alt="Poza Profil"
+    className="w-full h-full object-cover "
+  />
+  <input type="file" accept="image/*" id="fileInput" className="hidden" onChange={handleFileChange} />
+
+
+</motion.div>
+{selectedFile && (
+    <button 
+      onClick={handleUpload}
+      className="mt-4 bg-blue-500 text-white px-4 py-2 rounded transition-all duration-300 ease-in-out hover:bg-blue-600 hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-blue-300 focus:outline-none" 
+      disabled={loading}
+    >
+      {loading ? "Se încarcă..." : "Upload"}
+    </button>
+  )}
+
+    </motion.div>
+  </motion.div>
   </div>
   );
 }
