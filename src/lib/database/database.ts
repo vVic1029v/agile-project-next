@@ -33,6 +33,7 @@ export async function postNewUser(
   email: string,
   password: string,
   userType: UserType,
+  profileImage?: string,
 ): Promise<User | null> {
   return prisma.user.create({
     data: {
@@ -42,7 +43,8 @@ export async function postNewUser(
       lastName: lastName,
       userType: userType,
       student: userType === "STUDENT" ? { create: {} } : undefined,
-      facultyMember: userType === "FACULTYMEMBER" ? { create: {} } : undefined
+      facultyMember: userType === "FACULTYMEMBER" ? { create: {} } : undefined,
+      profileImage: profileImage,
     },
   });
 }
@@ -246,7 +248,7 @@ export async function getHomeClassesByName(name: string): Promise<HomeClassSearc
 }
 
 
-export async function getUserById(userId: string): Promise<Pick<User, "id" | "firstName" | "lastName" | "email" | "userType"> | null>  {
+export async function getUserById(userId: string): Promise<Pick<User, "id" | "firstName" | "lastName" | "email" | "userType" | "profileImage"> | null>  {
   return prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -255,6 +257,7 @@ export async function getUserById(userId: string): Promise<Pick<User, "id" | "fi
       lastName: true,
       email: true,
       userType: true, 
+      profileImage: true,
     },
   });
 }

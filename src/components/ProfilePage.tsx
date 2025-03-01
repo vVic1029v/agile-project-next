@@ -2,12 +2,15 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import {motion} from "framer-motion";
+import Image from 'next/image';
+import { profile } from "console";
+import { get } from "http";
 interface User {
   id: string;
   email: string;
   firstName: string;
   lastName: string;
-  profileImage?: string| null;
+  profileImage: string| null;
 }
 
 export default function ProfilePage() {
@@ -20,10 +23,11 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
-
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   useEffect(() => {
     console.log("Session:", session);
-
+   
+    
     if (session?.user) {
       fetch(`/api/user?userId=${session.user.id}`) 
         .then((res) => {
@@ -35,6 +39,7 @@ export default function ProfilePage() {
         .then((data: { message: string, user: User }) => {
           console.log("User data:", data); 
           setUser(data.user); 
+          setProfileImage(data.user.profileImage ?? null);
           setLoading(false); 
         })
         .catch((error) => {
@@ -265,10 +270,13 @@ export default function ProfilePage() {
   onClick={() => document.getElementById("fileInput")?.click()} 
 >
   
-  <img
-    src={user.profileImage ?? imagePreview ?? undefined}
+  <Image
+    src={profileImage ?? imagePreview ?? "/uploads/4aa7ce64dfff2ad7426e5d8e6d6e12dc.jpg"}
+    width={500}
+    height={300}
     alt="Poza Profil"
     className="w-full h-full object-cover "
+    priority
   />
   <input type="file" accept="image/*" id="fileInput" className="hidden" onChange={handleFileChange} />
 

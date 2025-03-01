@@ -7,14 +7,18 @@ declare module "next-auth" {
     userType: UserType; // Add your custom userType
     firstName: string;
     lastName: string;
+    profileImage?: string | null; 
   }
 
   interface Session extends DefaultSession {
     user: {
+      
       id: string;
       userType: UserType;
       firstName: string;  // Include firstName and lastName in the session
       lastName: string;
+      profileImage: string | null ;
+     
     }
   }
 
@@ -23,5 +27,6 @@ declare module "next-auth" {
     userType: UserType;
     firstName: string;
     lastName: string;
+    picture: string | null ;
   }
 }

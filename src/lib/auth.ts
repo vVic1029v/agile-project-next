@@ -10,6 +10,7 @@ import type {
 } from "next"
 import { UserType } from "@prisma/client";
 import { getExpensiveUserByEmail } from "@/lib/database/database";
+import { profile } from "console";
 
 // You'll need to import and pass this
 // to `NextAuth` in `app/api/auth/[...nextauth]/route.ts`
@@ -54,6 +55,8 @@ export const authOptions: NextAuthOptions = {
         session.user.userType = tok.userType;
         session.user.firstName = tok.firstName;
         session.user.lastName = tok.lastName;
+        if(session.user.profileImage !== undefined)
+        session.user.profileImage = tok.picture;
       }
       return session;
     },
@@ -65,6 +68,10 @@ export const authOptions: NextAuthOptions = {
         tok.userType = user.userType;
         tok.firstName = user.firstName;
         tok.lastName = user.lastName;
+        if (user.profileImage !== undefined) {
+          tok.picture = user.profileImage;
+        }
+        
       }
       return tok;
     },
@@ -90,6 +97,7 @@ export async function verifyUser(email: string, password: string) {
     userType: user.userType,
     studentId: user.student?.id ?? null,
     facultyMemberId: user.facultyMember?.id ?? null,
+    profileImage: user.profileImage,
   };
 }
 
