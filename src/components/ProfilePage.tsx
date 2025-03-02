@@ -271,7 +271,7 @@ export default function ProfilePage() {
 >
   
   <Image
-    src={profileImage ?? imagePreview ?? "/uploads/4aa7ce64dfff2ad7426e5d8e6d6e12dc.jpg"}
+    src={imagePreview ?? profileImage  ?? "/uploads/4aa7ce64dfff2ad7426e5d8e6d6e12dc.jpg"}
     width={500}
     height={300}
     alt="Poza Profil"
