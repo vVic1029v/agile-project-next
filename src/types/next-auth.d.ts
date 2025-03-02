@@ -15,7 +15,7 @@ declare module "next-auth" {
       
       id: string;
       userType: UserType;
-      firstName: string;  // Include firstName and lastName in the session
+      firstName: string;  // Include firstName and lastName in the sessio
       lastName: string;
       profileImage: string | null ;
      
@@ -27,6 +27,6 @@ declare module "next-auth" {
     userType: UserType;
     firstName: string;
     lastName: string;
-    picture: string | null ;
+    profileImage: string | null ;
   }
 }

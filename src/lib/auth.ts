@@ -55,8 +55,9 @@ export const authOptions: NextAuthOptions = {
         session.user.userType = tok.userType;
         session.user.firstName = tok.firstName;
         session.user.lastName = tok.lastName;
+        console.log(tok);
         if(session.user.profileImage !== undefined)
-        session.user.profileImage = tok.picture;
+        session.user.profileImage = tok.profileImage;
       }
       return session;
     },
@@ -69,7 +70,7 @@ export const authOptions: NextAuthOptions = {
         tok.firstName = user.firstName;
         tok.lastName = user.lastName;
         if (user.profileImage !== undefined) {
-          tok.picture = user.profileImage;
+          tok.profileImage = user.profileImage;
         }
         
       }

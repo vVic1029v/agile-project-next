@@ -32,6 +32,7 @@ export async function GET(request: Request) {
         lastName: true,
         email: true,
         userType: true,
+        profileImage:true,
       },
     });
 
