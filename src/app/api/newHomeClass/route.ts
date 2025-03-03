@@ -10,12 +10,20 @@ export async function POST(req: Request) {
 
     const { teacherEmail, startYear, nameLetter } = await req.json();
 
-    const assingedTeacher = await getCheapUserByEmail(teacherEmail)
+    
+
+    const assingedTeacher = await getCheapUserByEmail(teacherEmail);
+
+    
     if (!assingedTeacher) return NextResponse.json({ error: "User does not exist" }, { status: 400 });
     if (assingedTeacher.userType !== UserType.FACULTYMEMBER) return NextResponse.json({ error: "User is not a faculty member" }, { status: 400 });
-
+ 
+    
     const newClass = await postNewHomeClass(assingedTeacher.id, startYear, nameLetter);
-
+    if (!newClass) {
+      throw new Error("postNewHomeClass returned null or undefined");
+    }
+  
     return NextResponse.json({ message: "HomeClass created", class: newClass }, { status: 201 });
   } catch (error) {
     console.error("Error during HomeClass creation:", error);

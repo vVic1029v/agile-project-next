@@ -56,6 +56,7 @@ export async function postNewHomeClass(
   teacherId: string,
   startYear: number,
   nameLetter: string
+  
 ): Promise<HomeClass | null> {
   return prisma.homeClass.create({
     data: {
@@ -65,6 +66,9 @@ export async function postNewHomeClass(
         connect: {
           id: teacherId,
         },
+      },
+      announcements: {
+        create: [], 
       },
     },
   });

@@ -47,6 +47,8 @@ model HomeClass {
   homeroomFacultyMember   FacultyMember @relation(fields: [homeroomFacultyMemberId], references: [id])
   students                Student[]
   schedule                TimeSlot[]
+
+  announcements  Announcement[] @relation("AnnouncementHomeClass")
 }
 
 model Course {
@@ -107,6 +109,15 @@ model Event {
   course      Course    @relation(fields: [courseId], references: [id])
   users       User[]    @relation("UserEvents")
 }
+model Announcement {
+  id          String      @id @default(uuid())
+  title       String
+  content     String
+  date        DateTime
+  allUsers    Boolean     @default(false)  
+  homeClasses HomeClass[]   @relation("AnnouncementHomeClass")
+}
+
 
 enum UserType {
   STUDENT
