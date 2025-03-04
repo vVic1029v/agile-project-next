@@ -8,10 +8,18 @@ declare module "next-auth" {
     firstName: string;
     lastName: string;
     profileImage?: string | null; 
+      student?: {
+      id: string;
+      homeClassId: string | null;
+    };
+    facultyMember?: {
+      id: string;
+    };
   }
 
   interface Session extends DefaultSession {
     user: {
+      homeClassId: unknown;
       
       id: string;
       userType: UserType;

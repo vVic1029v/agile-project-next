@@ -55,6 +55,7 @@ export const authOptions: NextAuthOptions = {
         session.user.userType = tok.userType;
         session.user.firstName = tok.firstName;
         session.user.lastName = tok.lastName;
+        session.user.homeClassId = tok.homeClassId;
         console.log(tok);
         if(session.user.profileImage !== undefined)
         session.user.profileImage = tok.profileImage;
@@ -63,14 +64,17 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user }) {
+      
       const tok = token as CustonJWT
       if (user) {
-        tok.id = user.id; 
-        tok.userType = user.userType;
-        tok.firstName = user.firstName;
-        tok.lastName = user.lastName;
-        if (user.profileImage !== undefined) {
-          tok.profileImage = user.profileImage;
+        const fullUser = user as User; // Forțăm user să fie de tip User
+        tok.id = fullUser.id;
+        tok.userType = fullUser.userType;
+        tok.firstName = fullUser.firstName;
+        tok.lastName = fullUser.lastName;
+        tok.homeClassId = fullUser.student?.homeClassId ?? null; 
+        if (fullUser.profileImage !== undefined) {
+          tok.profileImage = fullUser.profileImage;
         }
         
       }

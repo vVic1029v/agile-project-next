@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import { UserType } from "@prisma/client";
 
 
 interface Announcement {
@@ -25,6 +26,7 @@ const AnnouncementsPage: React.FC = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [homeClasses, setHomeClasses] = useState<HomeClass[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [isFacultyMember, setIsFacultyMember] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
   const [newAnnouncement, setNewAnnouncement] = useState({
     title: "",
@@ -35,15 +37,35 @@ const AnnouncementsPage: React.FC = () => {
   });
 
   // Fetch pentru anunțuri și clase
+ 
   useEffect(() => {
-    fetch("/api/announcements")
-      .then((res) => res.json())
-      .then((data: Announcement[]) => setAnnouncements(data));
-
-    fetch("/api/classes")
-      .then((res) => res.json())
-      .then((data: HomeClass[]) => setHomeClasses(data));
-  }, []);
+    if (!session?.user) return;
+  
+    const fetchAnnouncements = async () => {
+      try {
+        const res = await fetch("/api/announcements");
+        const data: Announcement[] = await res.json();
+  
+        if (session.user.userType === "FACULTYMEMBER") {
+          setIsFacultyMember(true);
+          setAnnouncements(data); 
+        } else if (session.user.userType=== "STUDENT") {
+          const studentClassId = session.user.homeClassId; 
+          setIsFacultyMember(false);
+          const filteredAnnouncements = data.filter(
+            (announcement) =>
+              announcement.allUsers || 
+              announcement.homeClasses.some((cls) => cls.id === studentClassId) 
+          );
+          setAnnouncements(filteredAnnouncements);
+        }
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+      }
+    };
+  
+    fetchAnnouncements();
+  }, [session]);
 
   // Deschide detaliile unui anunț
   const openDetailsModal = (announcement: Announcement) => {
@@ -98,9 +120,10 @@ const AnnouncementsPage: React.FC = () => {
        animate={{ opacity: 1 }}
        transition={{ duration: 1 }}
       className="text-4xl font-bold text-cyan-600">Announcements</motion.h1>
-      <button onClick={() => setShowModal(true)} className="bg-cyan-600 text-white p-3 rounded-lg mt-4">
+       {isFacultyMember && (   <button onClick={() => setShowModal(true)} className="bg-cyan-600 text-white p-3 rounded-lg mt-4">
         Add Announcement
-      </button>
+      </button>)}
+   
 
       <motion.div
         className="w-full max-w-4xl space-y-6 mt-6"
@@ -200,12 +223,13 @@ const AnnouncementsPage: React.FC = () => {
             </form>
 
             {/* Buton de închidere a modalului */}
-            <button
+           <button
               onClick={() => setShowModal(false)}
               className="bg-gray-500 text-white p-2 rounded-lg w-full mt-4"
             >
               Close
             </button>
+           
           </div>
           
         </div>
@@ -233,6 +257,7 @@ const AnnouncementsPage: React.FC = () => {
                 : `Class: ${selectedAnnouncement.homeClasses?.map((cls) => cls.name).join(", ") || "N/A"}`}{" "}
               | Date: {formatDate(selectedAnnouncement.date)}
             </p>
+            
             <button onClick={closeDetailsModal} className="bg-gray-500 text-white p-2 rounded-lg w-full mt-4">
               Close
             </button>
