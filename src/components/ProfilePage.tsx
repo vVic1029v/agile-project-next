@@ -24,6 +24,7 @@ export default function ProfilePage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
   useEffect(() => {
     console.log("Session:", session);
    
@@ -50,6 +51,46 @@ export default function ProfilePage() {
       setLoading(false); 
     }
   }, [session]);
+  useEffect(() => {
+    if (uploadSuccess) {
+      const timer = setTimeout(() => {
+        setUploadSuccess(false);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [uploadSuccess]);
+
+  const handleRemovePicture = async () => {
+    if (!session?.user.id) return;
+  
+    try {
+      const response = await fetch("/api/upload-profile-image", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: session.user.id }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        setProfileImage("/uploads/default.jpg");
+        setImagePreview(null);
+        setSelectedFile(null);
+        setMessage("Profile image removed successfully.");
+        setTimeout(() => setMessage(""), 3000); // Ascunde mesajul după 3 secunde
+      } else {
+        setError(data.error || "Failed to remove profile image.");
+      }
+    } catch (error) {
+      console.error("Error removing profile image:", error);
+      setError("An error occurred while removing the image.");
+    }
+  };
+  
+
+
 
   if (status === "loading" || loading) {
     return (
@@ -174,6 +215,7 @@ export default function ProfilePage() {
   
       if (response.ok) {
         console.log("✅ Upload reușit:", data);
+        setUploadSuccess(true);
       } else {
         console.error("❌ Eroare la upload:", data.error);
       }
@@ -282,16 +324,24 @@ export default function ProfilePage() {
 
 
 </motion.div>
-{selectedFile && (
-    <button 
-      onClick={handleUpload}
-      className="mt-4 bg-blue-500 text-white px-4 py-2 rounded transition-all duration-300 ease-in-out hover:bg-blue-600 hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-blue-300 focus:outline-none" 
-      disabled={loading}
-    >
-      {loading ? "Se încarcă..." : "Upload"}
-    </button>
-  )}
-
+{selectedFile && !uploadSuccess && (
+            <button 
+              onClick={handleUpload}
+              className="mt-4 bg-blue-500 text-white px-4 py-2 rounded transition-all duration-300 ease-in-out hover:bg-blue-600 hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-blue-300 focus:outline-none" 
+              disabled={loading}
+            >
+              {loading ? "Uploading..." : "Upload"}
+            </button>
+          )}
+          {uploadSuccess && (
+            <p className="mt-4 text-green-300 font-semibold">Image changed, please refresh the page.</p>
+          )}
+  <button 
+            onClick={handleRemovePicture}
+            className="mt-4 bg-red-500 text-white px-4 py-2 rounded transition-all duration-300 ease-in-out hover:bg-red-600 hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-red-300 focus:outline-none"
+          >
+            Remove Picture
+          </button>
     </motion.div>
   </motion.div>
   </div>

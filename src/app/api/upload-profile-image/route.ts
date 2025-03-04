@@ -46,3 +46,37 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Error uploading file" }, { status: 500 });
   }
 }
+export async function DELETE(req: NextRequest) {
+  try {
+    const { userId } = await req.json();
+
+    if (!userId) {
+      return NextResponse.json({ error: "No userId provided" }, { status: 400 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    if (user.profileImage && user.profileImage !== "/uploads/default.jpg") {
+      const filePath = path.join(process.cwd(), "public", user.profileImage);
+      if (fs.existsSync(filePath)) {
+        fs.unlinkSync(filePath);
+      }
+    }
+
+    const updatedUser = await prisma.user.update({
+      where: { id: userId },
+      data: { profileImage: "/uploads/default.jpg" },
+    });
+
+    return NextResponse.json({ message: "Profile image removed", user: updatedUser }, { status: 200 });
+  } catch (error) {
+    console.error("Error removing profile image:", error);
+    return NextResponse.json({ error: "Error removing profile image" }, { status: 500 });
+  }
+}
