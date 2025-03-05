@@ -33,7 +33,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   selectedDate
 }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [isYearCalendarModalOpen, setIsYearCalendarModalOpen] = useState(false);
+  
     const handleOpenModal = () => {
       setIsModalOpen(true);
     };
@@ -52,7 +52,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
       dayWeek: dayWeek,
     });
   };
-  
+ 
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -104,13 +104,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
         </svg>
       </button>
       */}
-   
-
-      {/* Afisează modalul YearCalendar doar când starea este true */}
- 
-        <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar>
-
-
+    <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar>
       {/* Render event icons – each stops propagation */}
       {modalTimeSlotCells && modalTimeSlotCells.length > 0 && (
         <div

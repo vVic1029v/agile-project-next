@@ -8,6 +8,7 @@ export async function POST(req: Request) {
     // Extract the request body
     const { homeClassId, teacherEmail, subject, weekScheduleIdentifier, color } = await req.json();
 
+
     // Get the teacher details from the database by email
     const teacher = await getCheapUserByEmail(teacherEmail);
     if (!teacher) {

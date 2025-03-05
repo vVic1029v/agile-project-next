@@ -2,81 +2,133 @@
 import React, { useState } from "react";
 import SearchHomeClassModal from "./SearchHomeClassModal";
 import { ModalOverlay } from "@/components/ModalOverlay";
-import Form from "next/form";
-import { NewCourse } from "@/lib/actions";
 import PeriodSelectWeekCalendar from "@/components/calendar/week/PeriodSelectWeekCalendar";
 import { SelectedDate } from "@/components/calendar/useCalendarState";
+import ModalWeekCalendar from "@/components/ModalWeekCalendar";
+
+const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
 const CourseForm: React.FC = () => {
   const [isModalOpenSearchHomeClass, setIsModalOpenSearchHomeClass] = useState(false);
   const [isModalOpenPeriodSelect, setIsModalOpenPeriodSelect] = useState(false);
   const [selectedHomeClass, setSelectedHomeClass] = useState<{ id: string; name: string } | null>(null);
-
-  // Period Select
   const [selectedTimeSlots, setSelectedTimeSlots] = useState<SelectedDate[]>([]);
+  const [courseName, setCourseName] = useState(""); 
+  const [professorEmail, setProfessorEmail] = useState("");
+  const [color, setColor] = useState("#000000");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
   function handleSelectTimeSlot(date: SelectedDate): void {
-      setSelectedTimeSlots(prevSlots => {
-          const isSelected = prevSlots.some(slot => slot.dayWeek === date.dayWeek && slot.period === date.period);
-          if (isSelected) {
-              return prevSlots.filter(slot => !(slot.dayWeek === date.dayWeek && slot.period === date.period));
-          } else {
-              return [...prevSlots, date];
-          }
+    setSelectedTimeSlots((prevSlots) => {
+      const isSelected = prevSlots.some(
+        (slot) => slot.dayWeek === date.dayWeek && slot.period === date.period
+      );
+      return isSelected
+        ? prevSlots.filter((slot) => !(slot.dayWeek === date.dayWeek && slot.period === date.period))
+        : [...prevSlots, date];
+    });
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    if (!selectedHomeClass) {
+      setError("Please select a class.");
+      setLoading(false);
+      return;
+    }
+    if (!professorEmail) {
+      setError("Please enter a professor's email.");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/newCourse", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          homeClassId: selectedHomeClass.id,
+          teacherEmail: professorEmail,
+          subject: courseName,
+          weekScheduleIdentifier: selectedTimeSlots,
+          color: color,
+        }),
       });
+
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to create course.");
+      }
+
+      alert("Course created successfully!");
+      setCourseName("");
+      setProfessorEmail("");
+      setSelectedHomeClass(null);
+      setSelectedTimeSlots([]);
+      setColor("#000000");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
-    <Form className="p-6" action={(formData: FormData ) => {formData.append("homeClassId", selectedHomeClass?.id || ""); NewCourse(formData) }}>
-      <span className="flex">
-        <button
-          type="button"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md size-[5vh] w-[20vh] min-h-10 min-w-10 max-w-30 max-h-20"
-          onClick={() => setIsModalOpenSearchHomeClass(true)}
-        >
-          Select Class
-        </button>
-        {selectedHomeClass ? (
-          <div className="bg-blue-50 border border-blue-200 rounded-md text-center items-center justify-center ml-5 flex size-[5vh] w-[30vh] min-h-10 min-w-30 max-w-50 max-h-20">
-            <p className="texmb-t-sm text-blue-800 px-3">Selected Class: {selectedHomeClass.name}</p>
-          </div>
-        ) : (
-          <p className="text-sm text-gray-500 ml-5 mt-2">No class selected.</p>
-        )}
+    <form className="p-6" onSubmit={handleSubmit}>
+      {error && <p className="text-red-500">{error}</p>}
 
-        {/* Modal */}
-        <ModalOverlay onClose={() => setIsModalOpenSearchHomeClass(false)} isOpen={isModalOpenSearchHomeClass} title={"Select a class"}>
-          <SearchHomeClassModal
-            onClose={() => setIsModalOpenSearchHomeClass(false)}
-            onSelect={(item) => {
-              setSelectedHomeClass(item);
-              setIsModalOpenSearchHomeClass(false);
-            }}
-          />
-        </ModalOverlay>
-      </span>
+      <div className="mb-4">
+        <label className="block font-semibold text-gray-800">Course Name:</label>
+        <input type="text" value={courseName} onChange={(e) => setCourseName(e.target.value)} className="w-full p-2 border rounded-md" placeholder="Enter course name" />
+      </div>
 
-      {/* Period Select Week Calendar */}
-      <span className="flex">
-        <button
-          type="button"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md size-[5vh] w-[20vh] min-h-10 min-w-10 max-w-30 max-h-20 mt-5"
-          onClick={() => setIsModalOpenPeriodSelect(true)}
-        >
-          Select Period
-        </button>
-        <div className="mt-6 ">
-          <ModalOverlay onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect} title={"Select a period"}>
+      <div className="mb-4">
+        <label className="block font-semibold text-gray-800">Professor's Email:</label>
+        <input type="email" value={professorEmail} onChange={(e) => setProfessorEmail(e.target.value)} className="w-full p-2 border rounded-md" placeholder="Enter professor's email" />
+      </div>
 
-            <PeriodSelectWeekCalendar selectedTimeSlots={selectedTimeSlots} handleSelectTimeSlot={handleSelectTimeSlot} />
-          </ModalOverlay>
+      <div className="mb-4">
+        <label className="block font-semibold text-gray-800">Course Color:</label>
+        <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-full p-2 border rounded-md" />
+      </div>
+
+      <div className="flex items-center">
+        <button type="button" className="px-4 py-2 bg-blue-600 text-white rounded-md" onClick={() => setIsModalOpenSearchHomeClass(true)}>Select Class</button>
+        {selectedHomeClass ? <p className="ml-5 text-blue-800">Selected Class: {selectedHomeClass.name}</p> : <p className="ml-5 text-gray-500">No class selected.</p>}
+      </div>
+
+      <ModalOverlay onClose={() => setIsModalOpenSearchHomeClass(false)} isOpen={isModalOpenSearchHomeClass} title="Select a class">
+        <SearchHomeClassModal onClose={() => setIsModalOpenSearchHomeClass(false)} onSelect={(item) => { setSelectedHomeClass(item); setIsModalOpenSearchHomeClass(false); }} />
+      </ModalOverlay>
+
+      <div className="flex items-center mt-5">
+        <button type="button" className="px-4 py-2 bg-blue-600 text-white rounded-md" onClick={() => setIsModalOpenPeriodSelect(true)}>Select Period</button>
+      </div>
+
+      <ModalOverlay onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect} title="Select a period">
+        <ModalWeekCalendar selectedTimeSlots={selectedTimeSlots} handleSelectTimeSlot={handleSelectTimeSlot} />
+      </ModalOverlay>
+
+      {selectedTimeSlots.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold text-gray-800">Selected Time Slots:</h3>
+          <ul className="mt-2 space-y-2">
+            {selectedTimeSlots.map((slot, index) => (
+              <li key={index} className="text-gray-700 flex justify-between">
+                <span>{dayLabels[slot.dayWeek]}</span>
+                <span>{`Period ${slot.period}`}</span>
+              </li>
+            ))}
+          </ul>
         </div>
-      </span>
+      )}
 
-      {/* Submit Button */}
-      <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md mt-6 size-[5vh] w-[20vh] min-h-11 min-w-10 max-w-26 max-h-20">
-        Create Course
-      </button>
-    </Form>
+      <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md mt-6" disabled={loading}>{loading ? "Creating..." : "Create Course"}</button>
+    </form>
   );
 };
 

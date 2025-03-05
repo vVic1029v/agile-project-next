@@ -12,6 +12,7 @@ export interface YearCalendarHeaderProps {
   onTodayClick: () => void;
   onPrevYear: () => void;
   onNextYear: () => void;
+ 
 }
 
 const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
@@ -21,6 +22,7 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
   onTodayClick,
   onPrevYear,
   onNextYear,
+ 
 }) => {
   const router = useRouter();
 
@@ -30,6 +32,7 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
       onPrev={onPrevYear}
       onNext={onNextYear}
       onTodayClick={onTodayClick}
+      
       additionalButtonsLeft={
         <button
           onClick={() => router.push('/calendar/week')}
@@ -38,7 +41,10 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
         >
           Open This Week
         </button>
+        
+        
       }
+      
       additionalButtonsRight={
         <Select
           className="mx-5"

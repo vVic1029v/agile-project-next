@@ -1,15 +1,29 @@
+'use client';
 import React from "react";
 import { auth } from "@/lib/auth";
 import CourseForm from "@/components/new/course/CourseForm";  // Separate form component
+import { useSession } from "next-auth/react";
 
-export default async function NewCourse() {
+export default function NewCourse() {
   // const sess = await auth();
+  const { data: session } = useSession();
+  
+  if (!session || session.user.userType !== "FACULTYMEMBER") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="p-6 rounded-lg bg-red-100 border-2 border-red-500 text-center max-w-lg w-full">
+          <h1 className="text-3xl font-bold text-red-600 mb-4">Access Denied</h1>
+          <p className="text-xl text-gray-700">You do not have permission to access this page.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="p-6 rounded-2xl bg-white shadow-lg max-w-lg w-full">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Create a New Course</h1>
-          <CourseForm />
+        <CourseForm />
       </div>
     </div>
   );

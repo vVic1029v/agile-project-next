@@ -39,8 +39,8 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
     initialSelectedDate = {
       ...initialSelectedDate,
       day: day,
-      month: month - 1,
-      year: initialYear,
+      month: month-1,
+      year: initialYear ,
       week: initialWeek,
       dayWeek: dayWeek,
     };
@@ -54,6 +54,7 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
 
   return { initialSelectedDate };
 };
+
 
 export const useCalendarState = (isWeekView: boolean) => {
   const router = useRouter();
