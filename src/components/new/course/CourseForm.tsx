@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import SearchHomeClassModal from "./SearchHomeClassModal";
 import { ModalOverlay } from "@/components/ModalOverlay";
-import PeriodSelectWeekCalendar from "@/components/calendar/week/PeriodSelectWeekCalendar";
 import { SelectedDate } from "@/components/calendar/useCalendarState";
 import ModalWeekCalendar from "@/components/ModalWeekCalendar";
 
@@ -47,9 +46,11 @@ const CourseForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch("/api/newCourse", {
+      const response = await fetch("/api/new/course", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({
           homeClassId: selectedHomeClass.id,
           teacherEmail: professorEmail,
@@ -69,7 +70,6 @@ const CourseForm: React.FC = () => {
       setProfessorEmail("");
       setSelectedHomeClass(null);
       setSelectedTimeSlots([]);
-      setColor("#000000");
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -89,11 +89,6 @@ const CourseForm: React.FC = () => {
       <div className="mb-4">
         <label className="block font-semibold text-gray-800">Professor's Email:</label>
         <input type="email" value={professorEmail} onChange={(e) => setProfessorEmail(e.target.value)} className="w-full p-2 border rounded-md" placeholder="Enter professor's email" />
-      </div>
-
-      <div className="mb-4">
-        <label className="block font-semibold text-gray-800">Course Color:</label>
-        <input type="color" value={color} onChange={(e) => setColor(e.target.value)} className="w-full p-2 border rounded-md" />
       </div>
 
       <div className="flex items-center">
