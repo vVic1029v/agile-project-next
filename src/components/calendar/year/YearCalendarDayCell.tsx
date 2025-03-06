@@ -5,7 +5,6 @@ import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
 import { ModalOverlay } from "@/components/ModalOverlay";
-import AddEventButton from "@/components/calendar/AddEventButton"
 import AddEventYearCalendar from '../AddEventYearCalendar';
 export interface YearDayCellProps {
   dayObj: DayObj;
