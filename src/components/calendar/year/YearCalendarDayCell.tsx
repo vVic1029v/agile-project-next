@@ -17,7 +17,6 @@ export interface YearDayCellProps {
   year: number;
   dayWeek: number;
   dayEvents: DayCell;
-  selectedDate: SelectedDate;
   isBlank?: boolean;
 }
 
@@ -31,7 +30,6 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   year,
   dayWeek,
   dayEvents,
-  selectedDate,
   isBlank = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +45,6 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   const modalTimeSlotCells = useMemo(() => Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell), [dayEvents]);
 
   const handleClick = () => {
-    if (!isBlank) {
       onClick({
         day: dayObj.day,
         month: dayObj.month,
@@ -55,7 +52,6 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
         week: dayObj.week,
         dayWeek: dayWeek,
       });
-    }
   };
 
   const handleButtonClick = (e: React.MouseEvent) => {
@@ -82,11 +78,11 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
       </span>
       {isNewMonth && (
         <span className="absolute bottom-0.5 left-0 w-full truncate px-1.5 text-sm font-semibold text-slate-300 sm:bottom-0 sm:text-lg lg:bottom-2.5 lg:left-3.5 lg:-mb-1 lg:w-fit lg:px-0 lg:text-xl 2xl:mb-[-4px] 2xl:text-2xl">
-          {monthNames[dayObj.month]}
+          {dayObj.month === 12 ? monthNames[0] : monthNames[dayObj.month]}
         </span>
       )}
 
-      <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar>
+      {/* <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar> */}
       {modalTimeSlotCells && modalTimeSlotCells.length > 0 && (
         <div
           className="absolute bottom-[-2px] flex flex-wrap-reverse flex-row-reverse overflow-hidden w-[100%] h-[90%] justify-start p-2 content-start"
