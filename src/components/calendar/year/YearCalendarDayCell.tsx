@@ -1,11 +1,12 @@
 "use client"
-import React, { useMemo,useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
 import { ModalOverlay } from "@/components/ModalOverlay";
 import AddEventYearCalendar from '../AddEventYearCalendar';
+
 export interface YearDayCellProps {
   dayObj: DayObj;
   index: number;
@@ -16,7 +17,8 @@ export interface YearDayCellProps {
   year: number;
   dayWeek: number;
   dayEvents: DayCell;
-  selectedDate:SelectedDate;
+  selectedDate: SelectedDate;
+  isBlank?: boolean;
 }
 
 const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
@@ -29,29 +31,33 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   year,
   dayWeek,
   dayEvents,
-  selectedDate
+  selectedDate,
+  isBlank = false,
 }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-  
-    const handleOpenModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    const handleCloseModal = () => {
-      setIsModalOpen(false);
-    };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleOpenModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
   const modalTimeSlotCells = useMemo(() => Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell), [dayEvents]);
 
   const handleClick = () => {
-    onClick({
-      day: dayObj.day,
-      month: dayObj.month,
-      year: year,
-      week: dayObj.week,
-      dayWeek: dayWeek,
-    });
+    if (!isBlank) {
+      onClick({
+        day: dayObj.day,
+        month: dayObj.month,
+        year: year,
+        week: dayObj.week,
+        dayWeek: dayWeek,
+      });
+    }
   };
- 
+
   const handleButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
   };
@@ -65,7 +71,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
       data-day={dayObj.day}
       onClick={handleClick}
       className={`relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-3xl size-[15vh] 
-        ${dayWeek === 6 || dayWeek === 5 ? "bg-gray-200 border-gray-300" : ""}`}
+        ${isBlank ? "invisible pointer-events-none" : ""} ${dayWeek === 6 || dayWeek === 5 ? "bg-gray-200 border-gray-300" : ""}`}
     >
       <span
         className={`absolute left-1 top-1 flex size-5 items-center justify-center rounded-full text-xs sm:size-6 sm:text-sm lg:left-2 lg:top-2 lg:size-8 lg:text-base ${
@@ -80,7 +86,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
         </span>
       )}
 
-    <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar>
+      <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar>
       {modalTimeSlotCells && modalTimeSlotCells.length > 0 && (
         <div
           className="absolute bottom-[-2px] flex flex-wrap-reverse flex-row-reverse overflow-hidden w-[100%] h-[90%] justify-start p-2 content-start"

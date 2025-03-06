@@ -13,7 +13,8 @@ const AnimatedHeader: React.FC<AnimatedHeaderProps> = ({ text }) => {
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.6, ease: "easeOut" }}
       whileHover={{ scale: 1.05 }}
-      className="text-4xl sm:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8"
+      className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600"
+      style={{ lineHeight: '1.5' }}
     >
       {text}
     </motion.h1>

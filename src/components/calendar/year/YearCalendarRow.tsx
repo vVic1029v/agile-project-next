@@ -13,7 +13,8 @@ export interface YearCalendarRowProps {
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   events?: WeekCell;
-  selectedDate:SelectedDate
+  selectedDate: SelectedDate;
+  showNewMonth?: boolean;
 }
 
 const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
@@ -24,7 +25,8 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   dayRefs,
   year,
   events,
-  selectedDate
+  selectedDate,
+  showNewMonth = true,
 }) => {
   const now = useMemo(() => new Date(), []);
   const router = useRouter();
@@ -60,9 +62,10 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
         </span>
       </button>
       <div className="flex w-full">
+
         {week.map((dayObj, dayIndex) => {
           const index = weekIndex * 7 + dayIndex;
-          const isNewMonth = index === 0 || days[index - 1].month !== dayObj.month;
+          const isNewMonth = showNewMonth && (index === 0 || days[index - 1].month !== dayObj.month);
           const isToday =
             dayObj.month === now.getMonth() &&
             dayObj.day === now.getDate() &&
@@ -82,7 +85,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
               dayWeek={dayIndex}
               dayEvents={dayEvents}
               selectedDate={selectedDate}
-              
+              isBlank={dayObj.month === -1}
             />
           );
         })}
