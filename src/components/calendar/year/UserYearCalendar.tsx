@@ -22,7 +22,7 @@ export default function UserYearCalendar() {
   const userId = session?.user?.id;
 
   const { selectedDate, setSelectedDate, updateUrl: updateYearUrl, isModalOpen, setIsModalOpen } = useCalendarState(false);
-  const [monthHeaders, setMonthHeaders] = useState(false);
+  const [monthHeaders, setMonthHeaders] = useState(true);
 
   const monthOptions = useMemo(() => monthNames.map((month, index) => ({
     name: month,
