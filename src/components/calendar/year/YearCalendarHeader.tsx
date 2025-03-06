@@ -4,6 +4,7 @@ import Select from '../../Common/Select';
 import { useRouter } from 'next/navigation';
 import CalendarHeader from '../CalendarHeader';
 import { SelectedDate } from '../useCalendarState';
+import Checkbox from '@/components/Common/Checkbox';
 
 export interface YearCalendarHeaderProps {
   selectedDay: SelectedDate;
@@ -12,7 +13,8 @@ export interface YearCalendarHeaderProps {
   onTodayClick: () => void;
   onPrevYear: () => void;
   onNextYear: () => void;
- 
+  onShowMonthHeadersChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  monthHeaders: boolean;
 }
 
 const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
@@ -22,7 +24,8 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
   onTodayClick,
   onPrevYear,
   onNextYear,
- 
+  onShowMonthHeadersChange,
+  monthHeaders,
 }) => {
   const router = useRouter();
 
@@ -32,19 +35,24 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
       onPrev={onPrevYear}
       onNext={onNextYear}
       onTodayClick={onTodayClick}
-      
       additionalButtonsLeft={
-        <button
-          onClick={() => router.push('/calendar/week')}
-          type="button"
-          className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:px-5 lg:py-2.5"
-        >
-          Open This Week
-        </button>
-        
-        
+        <>
+          <button
+            onClick={() => router.push('/calendar/week')}
+            type="button"
+            className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:px-5 lg:py-2.5"
+          >
+            Open This Week
+          </button>
+          <Checkbox
+            name="monthHeaders"
+            checked={monthHeaders}
+            label="Show Month Headers"
+            onChange={onShowMonthHeadersChange}
+            className="ml-4"
+          />
+        </>
       }
-      
       additionalButtonsRight={
         <Select
           className="mx-5"

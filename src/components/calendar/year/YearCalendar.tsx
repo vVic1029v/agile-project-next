@@ -9,10 +9,10 @@ export interface YearCalendarProps {
   onClick?: (selected: SelectedDate) => void;
   events: StructuredEvents;
   selectedDay: SelectedDate;
-  
+  monthHeaders?: boolean;
 }
 
-export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, selectedDay }) => {
+export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, selectedDay, monthHeaders }) => {
   const today = useMemo(() => new Date(), []);
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -64,6 +64,7 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, sel
       events={events}
       year={selectedDay.year}
       selectedDate={selectedDay}
+      monthHeaders={monthHeaders}
     />
   );
 };
