@@ -1,9 +1,9 @@
+"use client"
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useRouter } from 'next/router';
 
 interface BigButtonProps {
-  onClick: () => void;
+  onClick?: () => void;
   iconPath: string;
   label: string;
   delay: number;
