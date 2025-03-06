@@ -9,7 +9,6 @@ export async function SearchHomeClasses(formData: FormData): Promise<{ results: 
 
   const results = await getHomeClassesByName(query);
 
-  console.log(results);
   return { results };
 }
 

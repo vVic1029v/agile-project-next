@@ -1,11 +1,9 @@
-"use client"
 import React, { useMemo, useState } from 'react';
 import { monthNames } from '@/lib/calendarUtils';
 import type { DayObj } from '@/lib/calendarUtils';
 import { DayCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
-import { ModalOverlay } from "@/components/ModalOverlay";
-import AddEventYearCalendar from '../AddEventYearCalendar';
+import CalendarCellWrapper from '../CalendarCellWrapper';
 
 export interface YearDayCellProps {
   dayObj: DayObj;
@@ -59,30 +57,17 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   };
 
   return (
-    <div
-      ref={(el) => {
-        dayRefs.current[index] = el;
-      }}
-      data-month={dayObj.month}
-      data-day={dayObj.day}
+    <CalendarCellWrapper
       onClick={handleClick}
-      className={`relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-3xl size-[15vh] 
-        ${isBlank ? "invisible pointer-events-none" : ""} ${dayWeek === 6 || dayWeek === 5 ? "bg-gray-200 border-gray-300" : ""}`}
+      isBlank={isBlank}
+      dayWeek={dayWeek}
+      dayRefs={dayRefs}
+      index={index}
+      dayObj={dayObj}
+      isToday={isToday}
+      isNewMonth={isNewMonth}
+      monthNames={monthNames}
     >
-      <span
-        className={`absolute left-1 top-1 flex size-5 items-center justify-center rounded-full text-xs sm:size-6 sm:text-sm lg:left-2 lg:top-2 lg:size-8 lg:text-base ${
-          isToday ? 'bg-blue-500 font-semibold text-white' : ''
-        } ${dayObj.month < 0 ? 'text-slate-400' : 'text-slate-800'}`}
-      >
-        {dayObj.day}
-      </span>
-      {isNewMonth && (
-        <span className="absolute bottom-0.5 left-0 w-full truncate px-1.5 text-sm font-semibold text-slate-300 sm:bottom-0 sm:text-lg lg:bottom-2.5 lg:left-3.5 lg:-mb-1 lg:w-fit lg:px-0 lg:text-xl 2xl:mb-[-4px] 2xl:text-2xl">
-          {dayObj.month === 12 ? monthNames[0] : monthNames[dayObj.month]}
-        </span>
-      )}
-
-      {/* <AddEventYearCalendar selectedDate={selectedDate}></AddEventYearCalendar> */}
       {modalTimeSlotCells && modalTimeSlotCells.length > 0 && (
         <div
           className="absolute bottom-[-2px] flex flex-wrap-reverse flex-row-reverse overflow-hidden w-[100%] h-[90%] justify-start p-2 content-start"
@@ -110,7 +95,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
           ))}
         </div>
       )}
-    </div>
+    </CalendarCellWrapper>
   );
 };
 

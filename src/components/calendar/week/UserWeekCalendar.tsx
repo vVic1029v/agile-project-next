@@ -27,7 +27,6 @@ export default function UserWeekCalendar() {
     (date: SelectedDate) => {
       const dateString = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(date.day+1).padStart(2, "0")}`;
       const weekAndDay = getWeekAndDay(date.year, date.month + 1, date.day+1);
-      console.log(weekAndDay);
       updateWeekUrl(date.year, weekAndDay.week, { date: dateString });
       setSelectedDate({ ...date, week: weekAndDay.week });
       setIsModalOpen(true);
@@ -64,7 +63,6 @@ export default function UserWeekCalendar() {
   
   const handleTodayClick = () => {
     const todayDate = getToday();
-    console.log(todayDate);
     setSelectedDate(todayDate);
     updateWeekUrl(todayDate.year, todayDate.week);
   };

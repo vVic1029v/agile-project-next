@@ -14,7 +14,6 @@ export type SelectedDate = {
 export const getToday = (): SelectedDate => {
   const now = new Date();
   const { week, dayWeek } = getWeekAndDay(now.getFullYear(), now.getMonth() + 1, now.getDate());
-  // console.log(getWeekAndDay(now.getFullYear(), now.getMonth() + 1, now.getDate()))
   return {
     day: now.getDate(),
     month: now.getMonth(),

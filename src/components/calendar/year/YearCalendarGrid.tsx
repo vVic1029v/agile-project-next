@@ -30,7 +30,6 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
         {weeks.map((week, weekIndex) => {
           const monthChangeIndex = week.findIndex((day, dayIndex) => dayIndex > 0 && day.month !== week[dayIndex - 1].month);
           const monthChange = monthChangeIndex !== -1 || (weekIndex > 0 && week[0].month !== weeks[weekIndex - 1][6].month);
-          console.log(monthChangeIndex, monthChange, weekIndex, weeks[weekIndex][6].month);
           return (
             <React.Fragment key={weekIndex}>
               {monthChange && (

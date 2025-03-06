@@ -1,7 +1,6 @@
-'use client';
-import { TimeSlotCell } from "@/lib/database/getCalendarData";
-import React from "react";
-import { Event } from "@prisma/client";
+import React from 'react';
+import { Event } from '@prisma/client';
+import CalendarCellWrapper from '../CalendarCellWrapper';
 
 export interface WeekCalendarCellProps {
   courseName?: string;
@@ -19,12 +18,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
   highlighted = false,
 }) => {
   return (
-    <div
-      onClick={onClick}
-      className={`relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all rounded-3xl size-[15vh] hover:z-20 hover:border-cyan-400 ${
-        highlighted ? 'border-blue-700' : ''
-      }`}
-    >
+    <CalendarCellWrapper onClick={onClick} highlighted={highlighted}>
       {/* Tint overlay */}
       <div
         className="absolute inset-0 rounded-3xl"
@@ -66,7 +60,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
           ))}
         </div>
       )}
-    </div>
+    </CalendarCellWrapper>
   );
 };
 
