@@ -9,6 +9,7 @@ export interface WeekCalendarCellProps {
   onClick: () => void;
   color?: string | null;
   highlighted?: boolean;
+  isWeekend?: boolean;
 }
 
 const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
@@ -17,19 +18,20 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
   onClick,
   color,
   highlighted = false,
+  isWeekend,
 }) => {
   return (
     <div
       onClick={onClick}
       className={`relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all rounded-3xl size-[15vh] hover:z-20 hover:border-cyan-400 ${
-        highlighted ? 'border-blue-700' : ''
-      }`}
+        highlighted ? 'border-blue-700' : '' 
+      }` }
     >
       {/* Tint overlay */}
       <div
-        className="absolute inset-0 rounded-3xl"
+        className={`absolute inset-0 rounded-3xl` }
         style={{
-          background: `radial-gradient(circle, transparent 50%, ${color} 95%)`,
+          background: `radial-gradient(circle, transparent 50%, ${color} 95%) `,
           opacity: 0.2,
         }}
       ></div>
