@@ -2,7 +2,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import PageBodyWrapper from "@/components/body/PageBodyWrapper";
+import PageBodyWrapper from "@/components/Body/PageBodyWrapper";
+import ClientWrapper from "@/components/Body/ClientWrapper";
+import { SessionProvider } from "next-auth/react";
+import SessionWrapper from "@/components/SessionWrapper";
+
 
 
 const geistSans = Geist({
@@ -23,10 +27,15 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode; }>) {
 
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-          <PageBodyWrapper>{children}</PageBodyWrapper>
-      </body>
-    </html>
+    <SessionWrapper>
+   <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <ClientWrapper children={children}></ClientWrapper>
+        </body>
+      </html>
+    </SessionWrapper>
+   
+
+  
   );
 }
