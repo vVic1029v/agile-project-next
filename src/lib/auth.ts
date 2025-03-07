@@ -23,10 +23,8 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        console.log("credentials", credentials);
         if (!credentials) return null;
         const user = await verifyUser(credentials.email, credentials.password);
-        console.log("user", user);
         if (!user) return null;
         return user;
       },
@@ -56,7 +54,6 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = tok.firstName;
         session.user.lastName = tok.lastName;
         session.user.homeClassId = tok.homeClassId;
-        console.log(tok);
         if(session.user.profileImage !== undefined)
         session.user.profileImage = tok.profileImage;
       }

@@ -60,7 +60,7 @@ export const getDaysInYear = (year: number): DayObj[] => {
   if (lastWeekDayCount > 0) {
     const extraDaysNeeded = 7 - lastWeekDayCount;
     for (let day = 1; day <= extraDaysNeeded; day++) {
-      days.push({ month: 0, week, day });
+      days.push({ month: 12, week, day });
     }
   }
 

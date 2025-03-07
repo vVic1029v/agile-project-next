@@ -22,6 +22,7 @@ export default function UserYearCalendar() {
   const userId = session?.user?.id;
 
   const { selectedDate, setSelectedDate, updateUrl: updateYearUrl, isModalOpen, setIsModalOpen } = useCalendarState(false);
+  const [monthHeaders, setMonthHeaders] = useState(true);
 
   const monthOptions = useMemo(() => monthNames.map((month, index) => ({
     name: month,
@@ -62,6 +63,10 @@ export default function UserYearCalendar() {
     updateYearUrl(todayDate.year);
   };
 
+  const handleShowMonthHeadersChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setMonthHeaders(event.target.checked);
+  };
+
   if (status === "loading" || !userId) return null;
 
   return (
@@ -78,8 +83,10 @@ export default function UserYearCalendar() {
           onTodayClick={handleTodayClick}
           onPrevYear={() => handleYearChange(-1)}
           onNextYear={() => handleYearChange(1)}
+          onShowMonthHeadersChange={handleShowMonthHeadersChange}
+          monthHeaders={monthHeaders}
         />
-        <YearCalendar selectedDay={selectedDate} onClick={handleDayClick} events={events} />
+        <YearCalendar selectedDay={selectedDate} onClick={handleDayClick} events={events} monthHeaders={monthHeaders} />
       </YearCalendarContainer>
     </div>
   );

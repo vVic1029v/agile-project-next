@@ -1,6 +1,6 @@
-'use client';
 import React from "react";
 import { daysOfWeek } from "@/lib/calendarUtils";
+import UtilityButton from "@/components/Common/Buttons/UtilityButton";
 
 export interface CalendarHeaderProps {
   title: string;
@@ -42,13 +42,9 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
       <div>
         <div className="mb-4 flex w-full flex-wrap items-center justify-between gap-6">
           <div className="flex flex-wrap gap-2 sm:gap-3">
-            <button
-              onClick={onTodayClick}
-              type="button"
-              className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100 lg:px-5 lg:py-2.5"
-            >
+            <UtilityButton onClick={onTodayClick}>
               Today
-            </button>
+            </UtilityButton>
             {additionalButtonsLeft}
           </div>
           <div className="flex w-fit items-center justify-between">

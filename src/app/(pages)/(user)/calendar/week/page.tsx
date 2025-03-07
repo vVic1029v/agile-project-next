@@ -13,9 +13,10 @@ export default async function CalendarPage() {
   const { events, courses } = await getCalendarData(userId);
 
   return (
+    <div className="flex items-center justify-center min-h-screen">
       <CalendarProvider events={events} courses={courses}>
-        <UserWeekCalendar/>
+        <UserWeekCalendar />
       </CalendarProvider>
-  
-);
+    </div>
+  );
 }

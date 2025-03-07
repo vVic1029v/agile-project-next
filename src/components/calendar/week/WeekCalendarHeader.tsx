@@ -2,7 +2,6 @@
 import React from "react";
 import CalendarHeader from "../CalendarHeader";
 import { SelectedDate } from "../useCalendarState";
-import AddEventButton from "../AddEventButton";
 import { getWeekStartDateFromYearWeek, daysOfWeek } from "../../../lib/calendarUtils";
 
 export interface WeekCalendarHeaderProps {
@@ -36,7 +35,6 @@ const WeekCalendarHeader: React.FC<WeekCalendarHeaderProps> = ({
       onPrev={onPrevWeek}
       onNext={onNextWeek}
       onTodayClick={onTodayClick}
-      additionalButtonsLeft={selectedDate && <AddEventButton selectedDate={selectedDate} />}
       dayOfWeek={({ weekDay, index }) => {
         const dayInfo = selectedDate ? getDayOfWeek(selectedDate.week, selectedDate.year, index) : null;
         const textStyle = dayInfo && dayInfo.isToday ? {

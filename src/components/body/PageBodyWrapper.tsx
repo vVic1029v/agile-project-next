@@ -6,7 +6,7 @@ import { SessionProvider, signOut } from "next-auth/react";
 import { HiCalendar, HiOutlineCalendar } from "react-icons/hi";
 import { FaHome } from "react-icons/fa";
 import { GrAnnounce } from "react-icons/gr";
-import { MdMessage } from "react-icons/md";
+import { MdConstruction, MdGolfCourse, MdMessage } from "react-icons/md";
 import { IoPersonSharp } from "react-icons/io5";
 import { Session } from "inspector/promises";
 import { MdClass } from "react-icons/md";
@@ -86,6 +86,17 @@ const SideBarHolder: React.FC<PageBodyWrapperProps> = ({ children }) => {
                 <span
                   className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`} >
                   Home
+                </span>
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/courses"
+                className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
+                <MdConstruction className="h-6 w-6 flex-shrink-0" /> {/* Prevent icon resize */}
+                <span
+                  className={`truncate ${isExpanded ? "opacity-100" : "opacity-0"} transition-all duration-200`} >
+                  Courses
                 </span>
               </Link>
             </li>

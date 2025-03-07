@@ -13,7 +13,7 @@ export interface YearCalendarRowProps {
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   events?: WeekCell;
-  selectedDate:SelectedDate
+  showNewMonth?: boolean;
 }
 
 const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
@@ -24,7 +24,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   dayRefs,
   year,
   events,
-  selectedDate
+  showNewMonth = true,
 }) => {
   const now = useMemo(() => new Date(), []);
   const router = useRouter();
@@ -42,14 +42,14 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   };
 
   return (
-    <div className="relative flex w-full items-center z- [-50]" key={`week-${weekIndex}`}>
+    <div className="relative flex w-full items-center" key={`week-${weekIndex}`}>
       <button
         type="button"
         style={{
           WebkitMaskImage: "linear-gradient(to left, black 1%, transparent 50%)",
           maskImage: "linear-gradient(to left, black 1%, transparent 50%)",
         }}
-        className="absolute left-0 -translate-x-full m-[-0.5px] group aspect-square grow cursor-pointer border font-medium transition-all opacity-20 w-30 hover:z-20 hover:border-cyan-400 hover:opacity-100 sm:-m-px sm:border-2 rounded-3xl size-[15vh]"
+        className="absolute left-0 -translate-x-full m-[-0.5px] group aspect-square h-full cursor-pointer border-2 font-medium transition-all opacity-20 hover:z-20 hover:border-cyan-400 hover:opacity-100 rounded-3xl"
         onClick={() => goToWeek(weekIndex)}
       >
         <span
@@ -62,7 +62,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
       <div className="flex w-full">
         {week.map((dayObj, dayIndex) => {
           const index = weekIndex * 7 + dayIndex;
-          const isNewMonth = index === 0 || days[index - 1].month !== dayObj.month;
+          const isNewMonth = showNewMonth && (index === 0 || days[index - 1].month !== dayObj.month);
           const isToday =
             dayObj.month === now.getMonth() &&
             dayObj.day === now.getDate() &&
@@ -81,8 +81,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
               year={year}
               dayWeek={dayIndex}
               dayEvents={dayEvents}
-              selectedDate={selectedDate}
-              
+              isBlank={dayObj.month === -1 || dayObj.month === 12}
             />
           );
         })}
