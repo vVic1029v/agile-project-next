@@ -90,7 +90,15 @@ const CourseForm: React.FC = () => {
         <label className="block font-semibold text-gray-800">Professor's Email:</label>
         <input type="email" value={professorEmail} onChange={(e) => setProfessorEmail(e.target.value)} className="w-full p-2 border rounded-md" placeholder="Enter professor's email" />
       </div>
-
+      <div className="mb-4">
+  <label className="block font-semibold text-gray-800">Select Color:</label>
+  <input
+    type="color"
+    value={color}
+    onChange={(e) => setColor(e.target.value)}
+    className="w-full p-2 border rounded-md cursor-pointer"
+  />
+</div>
       <div className="flex items-center">
         <button type="button" className="px-4 py-2 bg-blue-600 text-white rounded-md mt-5" onClick={() => setIsModalOpenSearchHomeClass(true)}>Select Class</button>
         {selectedHomeClass ? <p className="ml-5 text-blue-800 mt-5">Selected Class: {selectedHomeClass.name}</p> : <p className="ml-5 text-gray-500 mt-5">No class selected.</p>}
