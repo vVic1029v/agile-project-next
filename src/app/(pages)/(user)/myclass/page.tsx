@@ -7,7 +7,7 @@ import MyClassPage from "@/components/Myclass.Page";
 import { useSession } from "next-auth/react";
 
 
-export default async function Myclass() {
+export default function Myclass() {
  
 
   
