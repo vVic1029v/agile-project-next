@@ -5,6 +5,7 @@ import {motion} from "framer-motion";
 import Image from 'next/image';
 import { profile } from "console";
 import { get } from "http";
+import Link from "next/link";
 interface User {
   id: string;
   email: string;
@@ -245,14 +246,22 @@ export default function ProfilePage() {
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 whileHover={{ scale: 1.05 }}
-                className="text-1xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8"
+                className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8"
               >
             My account             
              </motion.h1>
 
         <h2 className="text-2xl text-gray-800  mb-2">Name: {user.firstName} {user.lastName}</h2>
         <h2 className="text-lg text-gray-700  mb-4">Email: {user.email}</h2>
-
+                <Link href="/myclass">
+                <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="mb-2 px-6 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white rounded-xl shadow-lg hover:bg-blue-700 transition-all duration-100"
+          >
+            My class
+            </motion.button>
+                </Link>
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
