@@ -48,6 +48,7 @@ const AnnouncementsPage: React.FC = () => {
           setAnnouncements(data);
         } else if (session.user.userType === "STUDENT") {
           const studentClassId = session.user.homeClassId;
+         
           setIsFacultyMember(false);
           const filteredAnnouncements = data.filter(
             (announcement) =>
@@ -63,6 +64,23 @@ const AnnouncementsPage: React.FC = () => {
 
     fetchAnnouncements();
   }, [session]);
+  useEffect(() => {
+    const fetchHomeClasses = async () => {
+      try {
+        const res = await fetch("/api/searchHomeClasses");
+        
+        if (!res.ok) throw new Error("Failed to fetch home classes");
+  
+        const data: HomeClass[] = await res.json();
+        
+        setHomeClasses(data);
+      } catch (error) {
+        console.error("Error fetching home classes:", error);
+      }
+    };
+  
+    fetchHomeClasses();
+  }, []);
 
   const openDetailsModal = (announcement: Announcement) => {
     setSelectedAnnouncement(announcement);

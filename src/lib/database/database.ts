@@ -16,7 +16,8 @@ export const prisma = new PrismaClient();
 export async function getExpensiveUserByEmail(email: string): Promise<User & { student: Student | null, facultyMember: FacultyMember | null } | null> {
   return prisma.user.findUnique({
     where: { email },
-    include: { student: true, facultyMember: true },
+    include: { student: { select: { id: true, homeClassId: true } }, 
+    facultyMember: { select: { id: true, titles: true } }, },
   });
 }
 

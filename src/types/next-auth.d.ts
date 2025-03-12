@@ -7,6 +7,7 @@ declare module "next-auth" {
     userType: UserType; // Add your custom userType
     firstName: string;
     lastName: string;
+    homeClassId?: string | null;
     profileImage?: string | null; 
       student?: {
       id: string;
@@ -19,13 +20,13 @@ declare module "next-auth" {
 
   interface Session extends DefaultSession {
     user: {
-      homeClassId: unknown;
       
       id: string;
       userType: UserType;
       firstName: string;  // Include firstName and lastName in the sessio
       lastName: string;
       profileImage: string | null ;
+      homeClassId?: string | null;
      
     }
   }
@@ -36,5 +37,6 @@ declare module "next-auth" {
     firstName: string;
     lastName: string;
     profileImage: string | null ;
+    homeClassId?: string | null;
   }
 }

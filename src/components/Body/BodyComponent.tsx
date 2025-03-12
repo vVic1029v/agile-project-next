@@ -18,5 +18,5 @@ const BodyComponent = ({children}: Readonly<{ children: React.ReactNode; }>) => 
     </div>
   );
 };
-
+ 
 export default BodyComponent;

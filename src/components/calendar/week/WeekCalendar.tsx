@@ -47,6 +47,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
             // if it is a highlighted date, set highlighted to true
             const isHighlighted = highlightedPeriods.some((date) => date.dayWeek === dayWeek && date.period === timeslotPeriod );
+            const isWeekend= dayWeek === 5 || dayWeek === 6;
             return (
               <WeekCalendarCell
                 key={dayWeek}
@@ -54,6 +55,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
                 events={cellEvents}
                 onClick={() => onClick && onClick(selectedDateForDay)}
                 color={timeslotRecords[timeslotPeriod]?.[dayWeek]?.course?.color}
+                isWeekend={isWeekend}
                 highlighted={isHighlighted}
               />
             );

@@ -134,7 +134,7 @@ export default function ProfilePage() {
             transition={{ delay: 0.2, duration: 0.8 }}
             className="text-3xl text-white font-semibold mb-4"
           >
-            You are not logged in
+            {/* access denied */}
           </motion.h2>
         
           <motion.p

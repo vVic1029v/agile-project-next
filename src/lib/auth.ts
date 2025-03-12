@@ -53,7 +53,7 @@ export const authOptions: NextAuthOptions = {
         session.user.userType = tok.userType;
         session.user.firstName = tok.firstName;
         session.user.lastName = tok.lastName;
-        session.user.homeClassId = tok.homeClassId;
+        session.user.homeClassId = tok.homeClassId ?? null;
         if(session.user.profileImage !== undefined)
         session.user.profileImage = tok.profileImage;
       }
@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
         tok.userType = fullUser.userType;
         tok.firstName = fullUser.firstName;
         tok.lastName = fullUser.lastName;
-        tok.homeClassId = fullUser.student?.homeClassId ?? null; 
+        tok.homeClassId = fullUser.homeClassId ?? null;
         if (fullUser.profileImage !== undefined) {
           tok.profileImage = fullUser.profileImage;
         }
@@ -98,6 +98,7 @@ export async function verifyUser(email: string, password: string) {
     email: user.email,
     userType: user.userType,
     studentId: user.student?.id ?? null,
+    homeClassId: user.student?.homeClassId ?? null,
     facultyMemberId: user.facultyMember?.id ?? null,
     profileImage: user.profileImage,
   };

@@ -46,7 +46,7 @@ const CourseForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch("/api/new/course", {
+      const response = await fetch("/api/newCourse", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
