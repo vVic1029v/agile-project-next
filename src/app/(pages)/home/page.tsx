@@ -1,4 +1,4 @@
-import AuthContent from "@/components/auth/AuthContent";
+import AuthContent from "@/app/auth/AuthContent";
 import PageBodyWrapper from "@/components/Body/PageBodyWrapper";
 import HomePage from "@/components/home/HomePage";
 import { authMiddleware } from "@/lib/auth";

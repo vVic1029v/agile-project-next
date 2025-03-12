@@ -74,7 +74,7 @@ export default function ClassProfile() {
 
   return (
     <div className=" bg-gradient-to-br from-white via-blue-50 to-blue-300 min-h-screen flex items-center justify-center p-4">
-  <div className="p-6 bg-white rounded-lg shadow-md max-w-3xl mx-auto w-full space-y-6 ">
+  <div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6 ">
       {/* class name */}
       <motion.h1
               initial={{ opacity: 0 }}

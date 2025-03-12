@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react";
 import { SessionProvider, useSession } from "next-auth/react";
-import AuthButton from "@/components/auth/AuthButton";
+import AuthButton from "@/app/auth/AuthButton";
 import { useRouter } from "next/navigation";
 interface AuthContentProps {
   children?: ReactNode;
