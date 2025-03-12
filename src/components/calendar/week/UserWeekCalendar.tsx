@@ -91,6 +91,6 @@ export default function UserWeekCalendar() {
 
 const WeekCalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <CalendarContainter isModalOpen={isModalOpen}>
-    <div className="w-full px-[5vw] pt-4">{children}</div>
+    <div className="w-full px-[5vw] ">{children}</div>
   </CalendarContainter>
 );

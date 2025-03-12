@@ -1,6 +1,7 @@
+// WeekCalendarCell.tsx
 import React from "react";
 import { Event } from "@prisma/client";
-import CalendarCellWrapper from "../CalendarCellWrapper";
+import WeekCalendarCellWrapper from "./WeekCalendarCellWrapper";
 
 export interface WeekCalendarCellProps {
   courseName?: string;
@@ -20,18 +21,19 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
   isWeekend,
 }) => {
   return (
-    <CalendarCellWrapper onClick={onClick} highlighted={highlighted} isBlank={false} dayWeek={0} index={0} dayObj={{ month: 0, day: 0 }} isToday={false} isNewMonth={false} monthNames={[""]} >
+    <WeekCalendarCellWrapper onClick={onClick} highlighted={highlighted} isWeekend={isWeekend} isBlank={false} dayObj={{ month: 0, day: 0 }} isToday={false}>
       <div
         onClick={onClick}
-        className={`relative z-10 m-[-0.5px] group aspect-square w-full grow cursor-pointer border-2 font-medium transition-all rounded-3xl size-[15vh] hover:z-20 hover:border-cyan-400 ${
-          highlighted ? "border-blue-700" : ""
-        }`}
+        className={`relative z-10 m-[-0.5px] group aspect-[4/3] w-full cursor-pointer border-2 font-medium transition-all rounded-3xl hover:z-20 hover:border-cyan-400
+          ${highlighted ? "border-blue-700" : ""}
+          md:size-[10vh] lg:size-[14vh] xl:size-[16vh]
+        `}
       >
         {/* Tint overlay */}
         <div
           className="absolute inset-0 rounded-3xl"
           style={{
-            background: `radial-gradient(circle, transparent 50%, ${color} 95%) `,
+            background: `radial-gradient(circle, transparent 50%, ${color} 95%)`,
             opacity: 0.2,
           }}
         ></div>
@@ -69,7 +71,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
           </div>
         )}
       </div>
-    </CalendarCellWrapper>
+    </WeekCalendarCellWrapper>
   );
 };
 
