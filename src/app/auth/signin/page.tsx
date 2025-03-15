@@ -69,7 +69,7 @@ export default function SignIn() {
         <div className="p-8 bg-white rounded-lg shadow-lg w-full sm:w-96 space-y-6">
          
           <h1 className="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 text-center">
-            Welcome Back! Sign In
+            Welcome Back! <br></br> Sign In
           </h1>
 
           {error && <p className="text-red-500 text-center">{error}</p>}

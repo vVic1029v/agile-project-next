@@ -23,9 +23,9 @@ export default function NewCourse() {
   return (
     <motion.div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300"
   
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}>
+    initial={{ opacity: 0 }} 
+    animate={{ opacity: 1 }}
+    transition={{ duration: 1 }}>
       <div className="p-6 rounded-2xl bg-white shadow-lg max-w-lg w-full">
         <h1 className="text-1xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8">Create a New Course</h1>
         <CourseForm />

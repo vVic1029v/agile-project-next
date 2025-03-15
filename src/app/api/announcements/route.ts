@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
 import { sendEmail } from "../../../lib/email";
 
-
-
 const prisma = new PrismaClient();
 
+// Funcția de întârziere (delay)
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,7 +15,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Title, content, and date are required" }, { status: 400 });
     }
 
-  
     const announcement = await prisma.announcement.create({
       data: {
         title,
@@ -29,16 +28,13 @@ export async function POST(req: NextRequest) {
       include: { homeClasses: true },
     });
 
-
     let usersToNotify: { email: string }[] = [];
 
     if (allUsers) {
-   
       usersToNotify = await prisma.user.findMany({
         select: { email: true },
       });
     } else if (homeClassIds?.length) {
-    
       usersToNotify = await prisma.user.findMany({
         where: {
           student: { homeClassId: { in: homeClassIds } },
@@ -47,10 +43,12 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    
-    const emailPromises = usersToNotify.map((user) =>
-      sendEmail(user.email, `New Announcement: ${title}`, content)
-    );
+    const emailPromises = usersToNotify.map(async (user, index) => {
+      if (index > 0) {
+        await delay(500); 
+      }
+      await sendEmail(user.email, `New Announcement: ${title}`, content);
+    });
 
     await Promise.all(emailPromises);
 
@@ -60,10 +58,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Failed to create announcement" }, { status: 500 });
   }
 }
+
 export async function GET(req: NextRequest) {
   try {
     const announcements = await prisma.announcement.findMany({
-      include: { homeClasses: true }, 
+      include: { homeClasses: true },
     });
 
     return NextResponse.json(announcements, { status: 200 });
