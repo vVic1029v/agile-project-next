@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 
     const emailPromises = usersToNotify.map(async (user, index) => {
       if (index > 0) {
-        await delay(500); 
+        await delay(1500); 
       }
       await sendEmail(user.email, `New Announcement: ${title}`, content);
     });
