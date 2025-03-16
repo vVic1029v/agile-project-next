@@ -21,7 +21,7 @@ function formatSelectedDate(selectedDate: SelectedDate) {
   return `${weekDayNames[dayWeek]}, ${monthNames[month]} ${day}, ${year}`;
 }
 
-const CalendarDayModal: React.FC<CalendarDayModalProps> = React.memo(({ selectedDate, events }) => {
+const CalendarDayModal: React.FC<CalendarDayModalProps> = ({ selectedDate, events }) => {
   const dayEvents = events[selectedDate.year]?.[selectedDate.week]?.[selectedDate.dayWeek] || {};
   const dayTimeSlots = Object.values(dayEvents).flatMap(timeSlotCell => timeSlotCell);
   const modalEvents = dayTimeSlots.flatMap(timeSlotCell => timeSlotCell.events);
@@ -46,6 +46,6 @@ const CalendarDayModal: React.FC<CalendarDayModalProps> = React.memo(({ selected
       </div>
     </div>
   );
-});
+};
 
-export default CalendarDayModal;``
+export default CalendarDayModal;
