@@ -7,6 +7,8 @@ import { GrAnnounce } from "react-icons/gr";
 import { IoPersonSharp } from "react-icons/io5";
 import { signOut, useSession } from "next-auth/react";
 import { ReactNode, useState } from "react";
+import { SiGoogleclassroom } from "react-icons/si";
+
 
 interface MyComponentProps {
   children: ReactNode;  // Specifică faptul că această componentă acceptă un prop children
@@ -54,17 +56,27 @@ const PageBodyWrapper : React.FC<MyComponentProps> = ({ children }) => {
                 </span>
               </Link>
             </li>
-
+            {userType === "FACULTYMEMBER" && (
+              <li>
+                <Link href="/new/home-class" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
+                  <SiGoogleclassroom className="h-6 w-6 flex-shrink-0" />
+                  <span className={`truncate transition-all duration-200 ${isExpanded ? "opacity-100" : "opacity-0"}`}>
+                    Create HomeClass
+                  </span>
+                </Link>
+              </li>
+            )}
             {userType === "FACULTYMEMBER" && (
               <li>
                 <Link href="/new/course" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
                   <MdConstruction className="h-6 w-6 flex-shrink-0" />
                   <span className={`truncate transition-all duration-200 ${isExpanded ? "opacity-100" : "opacity-0"}`}>
-                    Courses
+                    Create Course
                   </span>
                 </Link>
               </li>
             )}
+           
 
             <li>
               <Link href="/calendar/year" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
