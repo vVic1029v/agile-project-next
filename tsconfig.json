@@ -4,7 +4,7 @@
     
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    "skipLibCheck": false, // changed to false to make prisma work?
+    "skipLibCheck": true, // changed to false to make prisma work?
     "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -24,6 +24,6 @@
     },
     "typeRoots": ["./src/types", "./types", "./node_modules/@types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "./src/**/*.*"],
   "exclude": ["node_modules"]
 }
