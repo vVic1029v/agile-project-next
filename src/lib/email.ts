@@ -17,4 +17,5 @@ export async function sendEmail(to: string, subject: string, body: string) {
     console.log("Full response:", response);
   } catch (error) {
     console.error("❌ Failed to send email:", error);
-  }}
+  }
+}
