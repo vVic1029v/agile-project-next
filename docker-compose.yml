@@ -1,6 +1,22 @@
-version: '3.8'
-
 services:
+  app:
+    build:
+      context: .
+    image: nextjs-app
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: development
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+          ignore:
+            - node_modules/
+        - action: rebuild
+          path: package.json
+
   db:
     image: postgres:13
     container_name: agile-db
@@ -9,7 +25,7 @@ services:
       POSTGRES_PASSWORD: emDvuwU6
       POSTGRES_DB: agile_db
     ports:
-      - '5435:5432'
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     networks:

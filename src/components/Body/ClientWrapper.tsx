@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import PageBodyWrapper from "@/components/Body/PageBodyWrapper";
+import PageBodyWrapper from "@/components/body/PageBodyWrapper";
 import { SessionProvider } from "next-auth/react";
 import { PropsWithChildren } from "react"
 
