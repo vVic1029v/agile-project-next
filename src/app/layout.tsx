@@ -28,7 +28,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <SessionWrapper>
    <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-            <ClientWrapper children={children}></ClientWrapper>
+            <ClientWrapper>
+              {children}
+            </ClientWrapper>
         </body>
       </html>
     </SessionWrapper>
