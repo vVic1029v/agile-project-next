@@ -5,7 +5,6 @@ export default withAuth({
   callbacks: {
     authorized: async ({ req }) => {
       // Log the request cookies for debugging
-      console.log("Request Cookies:", req.cookies);
 
       // Verify token and return a boolean
       //const token = await getToken({ req, secret: process.env.AUTH_SECRET, secureCookie: true, cookieName: 
@@ -25,8 +24,6 @@ export default withAuth({
         secret: secret,
         raw: true,
       });
-
-      console.log("Session Token:", sessionToken); // Log the session token for debugging
 
       if (sessionToken) return true;
       else return false;

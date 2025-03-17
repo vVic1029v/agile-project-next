@@ -3,9 +3,8 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import {motion} from "framer-motion";
 import Image from 'next/image';
-import { profile } from "console";
-import { get } from "http";
 import Link from "next/link";
+
 interface User {
   id: string;
   email: string;

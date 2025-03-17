@@ -6,7 +6,7 @@ import { prisma } from "@/lib/database/database";
 export async function GET(req: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    console.log("Session Data: ", session);
+    // console.log("Session Data: ", session);
 
     if (!session) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -23,7 +23,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log("User Data: ", user);
+    // console.log("User Data: ", user);
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    console.log("HomeClass Data: ", homeClass);
+    // console.log("HomeClass Data: ", homeClass);
 
     if (!homeClass) {
       return NextResponse.json({ error: "Home class not found" }, { status: 404 });
