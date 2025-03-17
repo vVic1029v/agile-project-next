@@ -1,7 +1,8 @@
 import { auth } from "@/lib/auth";
 import { getHomeClassesByName, HomeClassSearchResult } from "@/lib/database/database";
-import { PrismaClient } from "@prisma/client";
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/database/database";
+
+
 export async function GET(req: Request) {
     try {
       const session = await auth();

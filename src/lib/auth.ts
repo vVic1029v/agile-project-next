@@ -8,9 +8,7 @@ import type {
   NextApiRequest,
   NextApiResponse,
 } from "next"
-import { UserType } from "@prisma/client";
 import { getExpensiveUserByEmail } from "@/lib/database/database";
-import { profile } from "console";
 
 // You'll need to import and pass this
 // to `NextAuth` in `app/api/auth/[...nextauth]/route.ts`
@@ -64,7 +62,7 @@ export const authOptions: NextAuthOptions = {
       
       const tok = token as CustonJWT
       if (user) {
-        const fullUser = user as User; // Forțăm user să fie de tip User
+        const fullUser = user as User;
         tok.id = fullUser.id;
         tok.userType = fullUser.userType;
         tok.firstName = fullUser.firstName;
@@ -113,7 +111,7 @@ export function auth(
   return getServerSession(...args, authOptions)
 }
 
-// Checks if the user is authorized to access a resource. Change behaviour in the future to allow for more granular permissions.
+
 export function isAuthorized(session: Session | null, userId: string | null): boolean {
   return !!session && !!session.user.id && (userId === session.user.id || session.user.userType === "ADMIN");
 }

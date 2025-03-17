@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
 import { sendEmail } from "../../../lib/email";
+import { prisma } from "@/lib/database/database";
 
-const prisma = new PrismaClient();
 
 // Funcția de întârziere (delay)
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

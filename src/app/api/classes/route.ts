@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/database/database";
 
 // 🔹 GET: Obține toate clasele
 export async function GET(req: NextRequest) {
