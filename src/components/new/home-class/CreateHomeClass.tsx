@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import MainButton from '../../Common/Buttons/MainButton';
+import { NewHomeClass } from '@/lib/actions';
 
 const CreateHomeClass = () => {
   const [teacherEmail, setTeacherEmail] = useState('');
@@ -17,18 +18,12 @@ const CreateHomeClass = () => {
 
     try {
 
-      const response = await fetch('/api/newHomeClass', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          teacherEmail,
-          startYear: Number(startYear),
-          nameLetter: nameLetter.toUpperCase(),
-        }),
-      });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Failed to create class');
-
+      const formData = new FormData();
+      formData.set('teacherEmail', teacherEmail);
+      formData.set('startYear', startYear);
+      formData.set('nameLetter', nameLetter);
+      const results = await NewHomeClass(formData);
+      
   
       setMessage({ type: 'success', text: 'Home class created successfully!' });
       setTeacherEmail('');

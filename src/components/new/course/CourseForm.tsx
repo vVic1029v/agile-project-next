@@ -48,21 +48,26 @@ const CourseForm: React.FC = () => {
     }
 
     try {
-
-    const formData = new FormData();
-    formData.set("query", courseName);
-    formData.set("homeClassId", selectedHomeClass.id);
-    formData.set("teacherEmail", professorEmail);
-    formData.set("subject", courseName);
-    formData.set("weekScheduleIdentifier", JSON.stringify(selectedTimeSlots));
-    formData.set("color", color);
-    const results = await NewCourse(formData);
-    }
-    catch (err: any) {
+      const formData = new FormData();
+      formData.set("query", courseName);
+      formData.set("homeClassId", selectedHomeClass.id);
+      formData.set("teacherEmail", professorEmail);
+      formData.set("subject", courseName);
+      formData.set("weekScheduleIdentifier", JSON.stringify(selectedTimeSlots));
+      formData.set("color", color);
+  
+      const results = await NewCourse(formData);
+      alert("Course created successfully!");
+      setCourseName("");
+      setProfessorEmail("");
+      setSelectedHomeClass(null);
+      setSelectedTimeSlots([]);
+    } catch (err: any) {
       setError(err.message);
-  }finally {
-    setLoading(false);
-  }}
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <form className="p-6" onSubmit={handleSubmit}>
