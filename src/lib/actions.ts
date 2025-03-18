@@ -38,8 +38,7 @@ export async function getCourses(userId: string,usertype:UserType): Promise<Cour
         }
 }
 export async function NewCourse(formData: FormData) {
-  const query = formData.get("query") as string;
-  if (!query) return { results: [] };
+
 
   const homeClassId = formData.get("homeClassId") as string;
   const teacherEmail = formData.get("teacherEmail") as string;
