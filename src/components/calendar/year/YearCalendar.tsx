@@ -6,7 +6,7 @@ import { StructuredEvents } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarProps {
-  onClick?: (selected: SelectedDate) => void;
+  onClick?: (selected: SelectedDate, openModal: boolean) => void;
   events: StructuredEvents;
   selectedDay: SelectedDate;
   monthHeaders?: boolean;
@@ -43,9 +43,9 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, sel
     }
   }, []);
 
-  const handleDayClick = useCallback((selected: SelectedDate) => {
+  const handleDayClick = useCallback((selected: SelectedDate, openModal: boolean) => {
     if (onClick) {
-      onClick(selected);
+      onClick(selected, openModal);
     }
   }, [onClick]);
 

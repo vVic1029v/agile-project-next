@@ -1,6 +1,5 @@
 "use server";
 
-
 import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse } from "@/lib/database/database";
 import { UserType,Course } from "@prisma/client";
 import { get } from "http";

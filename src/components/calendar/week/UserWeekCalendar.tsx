@@ -10,6 +10,7 @@ import CalendarDayModal from "../event-modal/CalendarDayModal";
 import CalendarContainter from "../CalendarContainer";
 import { getWeekAndDay, getWeeksInYear } from "@/lib/calendarUtils";
 import { getToday, SelectedDate, useCalendarState } from "../useCalendarState";
+import { useCalendarStateContext } from "../CalendarStateProvider";
 
 interface CalendarContainerProps {
   children: ReactNode;
@@ -21,7 +22,7 @@ export default function UserWeekCalendar() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  const { selectedDate, setSelectedDate, updateUrl: updateWeekUrl, isModalOpen, setIsModalOpen } = useCalendarState(true);
+  const { selectedDate, setSelectedDate, updateUrl: updateWeekUrl, isModalOpen, setIsModalOpen } = useCalendarStateContext();
   
   const handleCellClick = useCallback(
     (date: SelectedDate) => {

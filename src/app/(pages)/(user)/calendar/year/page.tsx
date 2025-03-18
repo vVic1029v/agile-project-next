@@ -3,7 +3,7 @@ import { authMiddleware } from "@/lib/auth";
 import CalendarProvider from "@/components/calendar/CalendarProvider";
 import UserYearCalendar from "@/components/calendar/year/UserYearCalendar";
 
-export default async function CalendarPage() {
+export default async function YearCalendarPage() {
   const session = await authMiddleware();
   const { events, courses } = await getCalendarData(session.user.id);
 

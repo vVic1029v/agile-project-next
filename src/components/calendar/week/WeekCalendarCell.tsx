@@ -24,7 +24,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
     <WeekCalendarCellWrapper onClick={onClick} highlighted={highlighted} isWeekend={isWeekend} isBlank={false} dayObj={{ month: 0, day: 0 }} isToday={false}>
       <div
         onClick={onClick}
-        className={`relative z-10 m-[-0.5px] group aspect-[4/3] w-full cursor-pointer border-2 font-medium transition-all rounded-3xl hover:z-20 hover:border-cyan-400
+        className={`relative z-10 m-[-0.5px] group aspect-[4/3] w-full cursor-pointer font-medium transition-all rounded-3xl hover:z-20 hover:border-cyan-400
           ${highlighted ? "border-blue-700" : ""}
           md:size-[10vh] lg:size-[14vh] xl:size-[16vh]
         `}
@@ -39,7 +39,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
         ></div>
 
         {/* Course Name */}
-        <span className="absolute left-1 top-1 flex items-center justify-center text-xs sm:text-sm lg:text-base">
+        <span className="absolute left-1 top-1 flex items-center justify-center text-sm">
           {courseName ? `${courseName}` : ""}
         </span>
 
