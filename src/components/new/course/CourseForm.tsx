@@ -4,6 +4,7 @@ import SearchHomeClassModal from "./SearchHomeClassModal";
 import { ModalOverlay } from "@/components/ModalOverlay";
 import { SelectedDate } from "@/components/calendar/useCalendarState";
 import ModalWeekCalendar from "@/components/ModalWeekCalendar";
+import { NewCourse } from "@/lib/actions";
 
 const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
@@ -47,36 +48,21 @@ const CourseForm: React.FC = () => {
     }
 
     try {
-      const response = await fetch("/api/newCourse", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          homeClassId: selectedHomeClass.id,
-          teacherEmail: professorEmail,
-          subject: courseName,
-          weekScheduleIdentifier: selectedTimeSlots,
-          color: color,
-        }),
-      });
 
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create course.");
-      }
-
-      alert("Course created successfully!");
-      setCourseName("");
-      setProfessorEmail("");
-      setSelectedHomeClass(null);
-      setSelectedTimeSlots([]);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
+    const formData = new FormData();
+    formData.set("query", courseName);
+    formData.set("homeClassId", selectedHomeClass.id);
+    formData.set("teacherEmail", professorEmail);
+    formData.set("subject", courseName);
+    formData.set("weekScheduleIdentifier", JSON.stringify(selectedTimeSlots));
+    formData.set("color", color);
+    const results = await NewCourse(formData);
     }
-  }
+    catch (err: any) {
+      setError(err.message);
+  }finally {
+    setLoading(false);
+  }}
 
   return (
     <form className="p-6" onSubmit={handleSubmit}>
