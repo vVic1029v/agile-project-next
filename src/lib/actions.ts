@@ -67,23 +67,20 @@ export async function NewCourse(formData: FormData) {
 }
 
 export async function NewHomeClass(formData: FormData){
-  const query = formData.get("query") as string;
-  if (!query) return { results: [] };
-
   const teacherEmail = formData.get("teacherEmail") as string;
   const startYear = formData.get("startYear") as string;
   const nameLetter = formData.get("nameLetter") as string;
   if (!teacherEmail || !startYear || !nameLetter) {
     throw new Error("Missing required fields in formData");
   }
-   const assignedTeacher = await getCheapUserByEmail(teacherEmail);
-   if (!assignedTeacher) {
-     throw new Error("User does not exist");
-   }
-   if (assignedTeacher.userType !== UserType.FACULTYMEMBER) {
-     throw new Error("User is not a faculty member");
-   }
-   const newClass = await postNewHomeClass(assignedTeacher.id, Number(startYear), nameLetter);
+  const assignedTeacher = await getCheapUserByEmail(teacherEmail);
+  if (!assignedTeacher) {
+    throw new Error("User does not exist");
+  }
+  if (assignedTeacher.userType !== UserType.FACULTYMEMBER) {
+    throw new Error("User is not a faculty member");
+  }
+  const newClass = await postNewHomeClass(assignedTeacher.id, Number(startYear), nameLetter);
    if (!newClass) {
      throw new Error("Failed to create new HomeClass");
    }

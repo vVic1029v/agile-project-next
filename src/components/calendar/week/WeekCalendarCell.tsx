@@ -22,16 +22,16 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
 }) => {
   return (
     <WeekCalendarCellWrapper onClick={onClick} highlighted={highlighted} isWeekend={isWeekend} isBlank={false} dayObj={{ month: 0, day: 0 }} isToday={false}>
-      <div
+      {/* <div
         onClick={onClick}
         className={`relative z-10 m-[-0.5px] group aspect-[4/3] w-full cursor-pointer font-medium transition-all rounded-3xl hover:z-20 hover:border-cyan-400
           ${highlighted ? "border-blue-700" : ""}
           md:size-[10vh] lg:size-[14vh] xl:size-[16vh]
         `}
-      >
+      > */}
         {/* Tint overlay */}
         <div
-          className="absolute inset-0 rounded-3xl"
+          className="absolute inset-0 rounded-2xl"
           style={{
             background: `radial-gradient(circle, transparent 50%, ${color} 95%)`,
             opacity: 0.2,
@@ -70,7 +70,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
             ))}
           </div>
         )}
-      </div>
+      {/* </div> */}
     </WeekCalendarCellWrapper>
   );
 };

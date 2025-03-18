@@ -37,7 +37,8 @@ const CalendarCellWrapper: React.FC<CalendarCellWrapperProps> = ({
       data-month={dayObj?.month}
       data-day={dayObj?.day}
       onClick={onClick}
-      className={`relative z-10 m-[-0.5px] group aspect-[3/4] w-full grow cursor-pointer border-2 font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-3xl 
+      className={`relative z-10 m-[1px] group aspect-[3/4] w-full grow cursor-pointer border-2 
+        font-medium transition-all hover:z-20 hover:border-cyan-400 rounded-xl 
         ${isBlank ? "invisible pointer-events-none" : ""} ${dayWeek === 6 || dayWeek === 5 ? "bg-gray-200 border-gray-300" : ""} ${highlighted ? 'border-blue-700' : ''}`}
       style={{ '--cell-size': '15vh' } as React.CSSProperties}
     >

@@ -97,7 +97,7 @@ export default function UserYearCalendar() {
 const YearCalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <CalendarContainter isModalOpen={isModalOpen}>
     <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
-      <div className="w-full p-[2vw]">{children}</div>
+      <div className="w-full p-[0vw]">{children}</div>
     </div>
   </CalendarContainter>
 );
