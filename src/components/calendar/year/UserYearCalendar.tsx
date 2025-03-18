@@ -9,7 +9,8 @@ import { useCalendarContext } from "../CalendarProvider";
 import { ModalOverlay } from "@/components/ModalOverlay";
 import CalendarDayModal from "../event-modal/CalendarDayModal";
 import CalendarContainter from "../CalendarContainer";
-import { getToday, SelectedDate, useCalendarState } from "../useCalendarState";
+import { getToday, SelectedDate } from "../useCalendarState";
+import { useCalendarStateContext } from "../CalendarStateProvider";
 
 interface CalendarContainerProps {
   children: ReactNode;
@@ -21,7 +22,8 @@ export default function UserYearCalendar() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  const { selectedDate, setSelectedDate, updateUrl: updateYearUrl, isModalOpen, setIsModalOpen } = useCalendarState(false);
+  const { selectedDate, setSelectedDate, isModalOpen, setIsModalOpen, updateUrl: updateYearUrl } = useCalendarStateContext();
+
   const [monthHeaders, setMonthHeaders] = useState(true);
 
   const monthOptions = useMemo(() => monthNames.map((month, index) => ({
@@ -40,14 +42,14 @@ export default function UserYearCalendar() {
     setSelectedDate((prev) => ({ ...prev, month: monthIndex }));
   };
 
-  const handleDayClick = useCallback(
-    (selected: SelectedDate) => {
+  const handleSelectedDayChange = useCallback(
+    (selected: SelectedDate, openModal: boolean) => {
       if (!userId) return;
       const { day, month, year } = selected;
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       updateYearUrl(year, undefined, { date: dateString });
       setSelectedDate(selected);
-      setIsModalOpen(true);
+      if (openModal) setIsModalOpen(true);
     },
     [userId, updateYearUrl, setSelectedDate, setIsModalOpen]
   );
@@ -86,7 +88,7 @@ export default function UserYearCalendar() {
           onShowMonthHeadersChange={handleShowMonthHeadersChange}
           monthHeaders={monthHeaders}
         />
-        <YearCalendar selectedDay={selectedDate} onClick={handleDayClick} events={events} monthHeaders={monthHeaders} />
+        <YearCalendar selectedDay={selectedDate} onClick={handleSelectedDayChange} events={events} monthHeaders={monthHeaders} />
       </YearCalendarContainer>
     </div>
   );
@@ -95,7 +97,7 @@ export default function UserYearCalendar() {
 const YearCalendarContainer = ({ children, isModalOpen }: CalendarContainerProps) => (
   <CalendarContainter isModalOpen={isModalOpen}>
     <div className="no-scrollbar calendar-container max-h-full overflow-y-scroll rounded-t-2xl bg-white pb-10 text-slate-800 shadow-xl">
-      <div className="w-full px-[5vw] pt-4">{children}</div>
+      <div className="w-full p-[2vw]">{children}</div>
     </div>
   </CalendarContainter>
 );

@@ -10,7 +10,7 @@ export interface YearDayCellProps {
   index: number;
   isNewMonth: boolean;
   isToday: boolean;
-  onClick: (selected: SelectedDate) => void;
+  onClick: (selected: SelectedDate, openModal: boolean) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   dayWeek: number;
@@ -49,7 +49,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
         year: year,
         week: dayObj.week,
         dayWeek: dayWeek,
-      });
+      }, true);
   };
 
   const handleButtonClick = (e: React.MouseEvent) => {

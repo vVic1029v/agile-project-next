@@ -9,7 +9,8 @@ export interface YearCalendarRowProps {
   week: DayObj[];
   weekIndex: number;
   days: DayObj[];
-  onDayClick: (selected: SelectedDate) => void;
+  selectedDate : SelectedDate
+  onClick: (selected: SelectedDate, openModal: boolean) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   events?: WeekCell;
@@ -20,25 +21,31 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   week,
   weekIndex,
   days,
-  onDayClick,
+  selectedDate,
+  onClick,
   dayRefs,
   year,
   events,
   showNewMonth = true,
 }) => {
   const now = useMemo(() => new Date(), []);
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  // const router = useRouter();
+  // const searchParams = useSearchParams();
 
   // Helper function to navigate to a specific week on /calendar/week.
   const goToWeek = (weekIdx: number) => {
     // Convert the 0-indexed week to a 1-indexed string and pad it.
-    const weekStr = String(weekIdx + 1).padStart(2, "0");
-    const newSearch = new URLSearchParams(searchParams.toString());
-    newSearch.set("year", String(year));
-    newSearch.set("week", `W${weekStr}`);
-    newSearch.delete("date"); // Remove the "date" parameter if it exists.
-    router.push(`/calendar/week?${newSearch.toString()}`, { scroll: false });
+    // const weekStr = String(weekIdx + 1).padStart(2, "0");
+    // const newSearch = new URLSearchParams(searchParams.toString());
+    // newSearch.set("year", String(year));
+    // newSearch.set("week", `W${weekStr}`);
+    // newSearch.delete("date"); // Remove the "date" parameter if it exists.
+    // router.push(`/calendar/week?${newSearch.toString()}`, { scroll: false });
+
+    onClick({
+      ...selectedDate,
+      week: weekIdx,
+    }, false);
   };
 
   return (
@@ -76,7 +83,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
               index={index}
               isNewMonth={isNewMonth}
               isToday={isToday}
-              onClick={onDayClick}
+              onClick={onClick}
               dayRefs={dayRefs}
               year={year}
               dayWeek={dayIndex}
