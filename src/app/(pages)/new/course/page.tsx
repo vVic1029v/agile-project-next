@@ -12,10 +12,8 @@ export default async function NewCoursePage(context: any) {
     // Fetch calendar data on the server
     const { events, courses } = await getCalendarData(userId);
     return (
-        <SnackProvider>
-            <CalendarProvider events={events} courses={courses}>
-                <NewCourse />
-            </CalendarProvider>
-        </SnackProvider>
+        <CalendarProvider events={events} courses={courses}>
+            <NewCourse />
+        </CalendarProvider>
     )
 }

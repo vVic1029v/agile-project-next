@@ -1,13 +1,12 @@
 "use server";
 
-
 import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse } from "@/lib/database/database";
 import { UserType,Course } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
 import { SelectedDate } from "@/components/calendar/useCalendarState";
 import { WeekScheduleIdentifier } from "./database/timeSlots";
-const session = await auth();
+
 export async function SearchHomeClasses(formData: FormData): Promise<{ results: HomeClassSearchResult[] }> {
   const query = formData.get("query") as string;
 
@@ -20,6 +19,7 @@ export async function SearchHomeClasses(formData: FormData): Promise<{ results: 
 
 export async function getCourses(userId: string,usertype:UserType): Promise<Course[] | null>
 {
+  const session = await auth();
   if(!userId) return null;
   if(!isAuthorized(session, userId)) return null;
    let courses: Course[] | null = null
