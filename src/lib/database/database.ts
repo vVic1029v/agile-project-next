@@ -92,6 +92,7 @@ export async function getCheapHomeClassById(homeClassId: string): Promise<HomeCl
   });
 }
 
+
 // Course-related Functions
 // ========================
 
@@ -292,3 +293,16 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     console.error("Error resetting password:", error);
     return { success: false, error: "Database error" };
   }}
+
+  export async function getClasses(): Promise<HomeClass[]> {
+    return prisma.homeClass.findMany({
+      include: {
+        homeroomFacultyMember: {
+          select: {
+            user: true
+          }
+        }
+      }
+    });
+  }
+
