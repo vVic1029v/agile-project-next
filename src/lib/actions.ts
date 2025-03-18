@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass } from "@/lib/database/database";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements } from "@/lib/database/database";
 import { UserType,Course } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
@@ -85,4 +85,27 @@ export async function NewHomeClass(formData: FormData){
      throw new Error("Failed to create new HomeClass");
    }
    return { newClass };
+}
+export async function newAnnouncement(formData: FormData) {
+  const title = formData.get("title") as string;
+  const content = formData.get("content") as string;
+  const date = formData.get("date") as string;
+  const allUsers = formData.get("allUsers") === "true"; // Assuming "allUsers" is passed as a string ("true" or "false")
+  const homeClassIds = formData.get("homeClassIds") ? JSON.parse(formData.get("homeClassIds") as string) : undefined;
+
+  if (!title || !content || !date) {
+    throw new Error("Missing required fields in formData");
+  }
+
+  const newAnnouncement = await postNewAnnouncement(title, content, date, allUsers, homeClassIds);
+  return { newAnnouncement };
+}
+export async function getAnnouncements(userId: string) {
+  const session = await auth();
+  if (!userId) return null;
+  if (!isAuthorized(session, userId)) return null;
+
+  const announcements = await getAllAnnouncements(userId);
+
+  return { announcements };
 }

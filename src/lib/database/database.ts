@@ -1,5 +1,5 @@
 // External Imports
-import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma } from "@prisma/client";
+import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma, Announcement } from "@prisma/client";
 
 // Internal Imports
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/database/timeSlots";
@@ -306,3 +306,68 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     });
   }
 
+  export async function postNewAnnouncement(
+    title: string,
+    content: string,
+    date: string,
+    allUsers: boolean,
+    homeClassIds?: string[]
+  ): Promise<{
+    id: string;
+    title: string;
+    content: string;
+    date: Date;
+    allUsers: boolean;
+    homeClasses: HomeClass[];
+  }> {
+    return prisma.announcement.create({
+      data: {
+        title,
+        content,
+        date: new Date(date),
+        allUsers,
+        homeClasses: homeClassIds?.length
+          ? { connect: homeClassIds.map((id: string) => ({ id })) }
+          : undefined,
+      },
+      include: { homeClasses: true },
+    });
+  }
+  export async function getAllAnnouncements(userId: string): Promise<Announcement[]> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { userType: true, student: true },
+    });
+  
+    if (!user) {
+      throw new Error("User not found");
+    }
+  
+    if (user.userType === UserType.STUDENT && !user.student) {
+      throw new Error("Student not found");
+    }
+  
+    const homeClassId = user.student?.homeClassId;
+  
+    const announcements = await prisma.announcement.findMany({
+      where: {
+        OR: [
+          { allUsers: true },
+          ...(homeClassId
+            ? [
+                {
+                  homeClasses: {
+                    some: {
+                      id: homeClassId,
+                    },
+                  },
+                },
+              ]
+            : []),
+        ],
+      },
+      include: { homeClasses: true },
+    });
+  
+    return announcements;
+  }
