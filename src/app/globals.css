@@ -26,3 +26,14 @@ select {
     scrollbar-width: none;  /* Firefox */
   }
 }
+
+/* Ensure smooth scrolling behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Scroll container styles */
+.scroll-container {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}

@@ -26,7 +26,9 @@ export default function SearchHomeClassModal({ onClose, onSelect }: SearchModalP
 
     const formData = new FormData();
     formData.set("query", query);
+
     const results = await SearchHomeClasses(formData);
+    
     setSearchResults(results.results);
   }
 

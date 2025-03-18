@@ -18,6 +18,7 @@ const CourseForm: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+
   function handleSelectTimeSlot(date: SelectedDate): void {
     setSelectedTimeSlots((prevSlots) => {
       const isSelected = prevSlots.some(

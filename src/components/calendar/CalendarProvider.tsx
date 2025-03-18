@@ -3,17 +3,13 @@
 import React, { createContext, useContext, useState } from "react";
 import type { StructuredEvents, StructuredWeekCourses } from "@/lib/database/getCalendarData";
 
-// Define the context type.
 interface CalendarContextType {
   events: StructuredEvents;
   courses: StructuredWeekCourses;
-  // You can add dynamic state setters here.
 }
 
-// Create the context.
 const CalendarContext = createContext<CalendarContextType | undefined>(undefined);
 
-// Provider component.
 export default function CalendarProvider({
   events,
   courses,
@@ -23,7 +19,6 @@ export default function CalendarProvider({
   courses: StructuredWeekCourses;
   children: React.ReactNode;
 }) {
-  // Any client-side state or logic can be handled here.
   const [stateEvents] = useState(events);
   const [stateCourses] = useState(courses);
 
@@ -39,7 +34,6 @@ export default function CalendarProvider({
   );
 }
 
-// Custom hook to consume context.
 export function useCalendarContext() {
   const context = useContext(CalendarContext);
   if (!context) {
