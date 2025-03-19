@@ -22,6 +22,7 @@ declare module "next-auth" {
     user: {
       
       id: string;
+      email:string;
       userType: UserType;
       firstName: string;  // Include firstName and lastName in the sessio
       lastName: string;

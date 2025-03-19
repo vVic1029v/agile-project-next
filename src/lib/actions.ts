@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements } from "@/lib/database/database";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getHomeClass, getExpensiveUserByEmail } from "@/lib/database/database";
 import { UserType,Course } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
@@ -109,3 +109,27 @@ export async function getAnnouncements(userId: string) {
 
   return { announcements };
 }
+export async function getHomeClassDetails(userId:string) {
+  try {
+    const homeClass = await getHomeClass(userId);
+
+    if (!homeClass) {
+      console.error("Home class not found for userId:", userId);
+      throw new Error("Home class not found");
+    }
+
+    return {
+      id: homeClass.id,
+      name: homeClass.name,
+      startYear: homeClass.startYear,
+      homeroomFacultyMember: homeClass.homeroomFacultyMemberId,
+      students: homeClass.students,
+      courses: homeClass.courses,
+    };
+  } catch (error) {
+    console.error("Error in getHomeClassDetails:", error);
+    throw error;
+  }
+} 
+
+

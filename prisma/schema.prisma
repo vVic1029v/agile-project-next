@@ -36,7 +36,7 @@ model FacultyMember {
   titles        String?
   courses       Course[]
   user          User       @relation(fields: [id], references: [id])
-  homeroomClass HomeClass?
+  homeroomClass HomeClass? 
 }
 
 model HomeClass {
