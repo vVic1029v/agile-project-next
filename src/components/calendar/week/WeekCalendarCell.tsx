@@ -21,7 +21,7 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
   isWeekend,
 }) => {
   return (
-    <WeekCalendarCellWrapper onClick={onClick} highlighted={highlighted} isWeekend={isWeekend} isBlank={false} dayObj={{ month: 0, day: 0 }} isToday={false}>
+    <WeekCalendarCellWrapper onClick={onClick} highlighted={highlighted} isWeekend={isWeekend} isBlank={false} dayObj={{ month: -1, day: -1 }} isToday={false}>
       {/* <div
         onClick={onClick}
         className={`relative z-10 m-[-0.5px] group aspect-[4/3] w-full cursor-pointer font-medium transition-all rounded-3xl hover:z-20 hover:border-cyan-400

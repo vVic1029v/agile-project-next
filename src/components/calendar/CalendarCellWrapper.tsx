@@ -30,7 +30,7 @@ const CalendarCellWrapper: React.FC<CalendarCellWrapperProps> = ({
   return (
     <div
       ref={(el) => {
-        if (dayRefs && index !== undefined) {
+        if (dayRefs && index !== undefined && !isBlank) {
           dayRefs.current[index] = el;
         }
       }}

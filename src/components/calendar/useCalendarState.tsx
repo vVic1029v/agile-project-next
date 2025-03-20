@@ -28,15 +28,14 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
   let initialYear = yearParam ? Number(yearParam) : today.getFullYear();
   let initialWeek = weekParam ? Number(weekParam.split("W")[1]) - 1 : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week;
   let initialSelectedDate = getToday();
-
+  
   if (dateParam) {
     const [year, month, day] = dateParam.split("-").map(Number);
     const { week, dayWeek } = getWeekAndDay(year, month, day);
     initialYear = year;
     initialWeek = week;
-
+    
     initialSelectedDate = {
-      ...initialSelectedDate,
       day: day,
       month: month-1,
       year: initialYear ,
@@ -44,10 +43,13 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
       dayWeek: dayWeek,
     };
   } else {
+    const date = getWeekStartDateFromYearWeek(initialYear, initialWeek);
     initialSelectedDate = {
-      ...initialSelectedDate,
+      day: date.getDate(),
+      month: date.getMonth(),
       year: initialYear,
       week: initialWeek,
+      dayWeek: date.getDay()-1
     }
   }
 

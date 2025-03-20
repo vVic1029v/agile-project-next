@@ -45,6 +45,7 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onDayClick: handleDa
   }, []);
 
   useEffect(() => {
+    console.log('scrolling to day', selectedDay);
     scrollToDay(selectedDay.month, selectedDay.day);
   }, [scrollToDay, selectedDay]);
 

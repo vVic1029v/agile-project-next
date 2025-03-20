@@ -23,6 +23,7 @@ export default function UserYearCalendar() {
   const userId = session?.user?.id;
 
   const { selectedDate, setSelectedDate, isModalOpen, setIsModalOpen, updateUrl } = useCalendarStateContext();
+  console.log(selectedDate)
 
   const [monthHeaders, setMonthHeaders] = useState(true);
 
@@ -58,14 +59,6 @@ export default function UserYearCalendar() {
     (selected: SelectedDate, openModal: boolean) => {
       if (!userId) return;
       const { day, month, year, week } = selected;
-      // const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-
-      const weekStartDate = getWeekStartDateFromYearWeek(year, week);
-      selected = {
-        ...selected,
-        day: weekStartDate.getDate(),
-        month: weekStartDate.getMonth(),
-      }
 
       updateUrl(year, week);
       setSelectedDate(selected);
@@ -82,7 +75,7 @@ export default function UserYearCalendar() {
   const handleTodayClick = () => {
     const todayDate = getToday();
     setSelectedDate(todayDate);
-    updateUrl(todayDate.year);
+    updateUrl(todayDate.year, todayDate.week);
   };
 
   const handleShowMonthHeadersChange = (event: React.ChangeEvent<HTMLInputElement>) => {

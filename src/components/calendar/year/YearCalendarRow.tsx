@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
-import type { DayObj } from '@/lib/calendarUtils';
+import { getWeekStartDateFromYearWeek, type DayObj } from '@/lib/calendarUtils';
 import { useRouter, useSearchParams } from "next/navigation";
 import { DayCell, WeekCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
@@ -31,16 +31,32 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   showNewMonth = true,
 }) => {
   const now = useMemo(() => new Date(), []);
+
+  // Check if the current week includes the selected date
+  const isSelectedWeek = week.some(
+    (dayObj) =>
+      dayObj.day === selectedDate.day && dayObj.month === selectedDate.month
+  );
+
   const goToWeek = (weekIdx: number) => {
-    onWeekClick({
-      ...selectedDate,
-      week: weekIdx,
-    }, false);
+    const idx = (week[0].day === -1) ? 6 : 0
+    onWeekClick(
+      {
+        day: week[idx].day,
+        month: week[idx].month,
+        year: year,
+        week: weekIdx,
+        dayWeek: idx
+      },
+      false
+    );
   };
 
   return (
     <div
-      className="relative items-center -mx-[-0px] flex overflow-visible"
+      className={`relative items-center -mx-[-0px] flex overflow-visible ${
+        isSelectedWeek ? "bg-blue-100" : ""
+      }`} // Highlight the row if it's the selected week
       key={`week-${weekIndex}`}
     >
       <button
@@ -54,7 +70,11 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
       >
         <span
           className="absolute right-0 top-1/2 -translate-y-1/2 text-2xl"
-          style={{ writingMode: "vertical-lr", textOrientation: "sideways", height: "100%" }}
+          style={{
+            writingMode: "vertical-lr",
+            textOrientation: "sideways",
+            height: "100%",
+          }}
         >
           Week {weekIndex + 1}
         </span>
@@ -62,7 +82,9 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
       <div className="flex w-full">
         {week.map((dayObj, dayIndex) => {
           const index = weekIndex * 7 + dayIndex;
-          const isNewMonth = showNewMonth && (index === 0 || days[index - 1].month !== dayObj.month);
+          const isNewMonth =
+            showNewMonth &&
+            (index === 0 || days[index - 1].month !== dayObj.month);
           const isToday =
             dayObj.month === now.getMonth() &&
             dayObj.day === now.getDate() &&

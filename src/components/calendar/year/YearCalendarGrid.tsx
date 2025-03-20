@@ -40,7 +40,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                   {monthChangeIndex !== -1 && weekIndex !== 0 && (
                     <YearCalendarRow
                       key={`${weekIndex}-first`}
-                      week={[...week.slice(0, monthChangeIndex), ...Array(7 - monthChangeIndex).fill({ month: -1, week: weekIndex, day: 0 })]}
+                      week={[...week.slice(0, monthChangeIndex), ...Array(7 - monthChangeIndex).fill({ month: -1, week: weekIndex, day: -1 })]}
                       weekIndex={weekIndex}
                       days={days}
                       selectedDate={selectedDate}
@@ -60,7 +60,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                     </div>
                     <YearCalendarRow
                       key={`${weekIndex}-second`}
-                      week={[...Array(monthChangeIndex !== -1 ? monthChangeIndex : 0).fill({ month: -1, week: weekIndex, day: 0 }), ...week.slice(monthChangeIndex !== -1 ? monthChangeIndex : 0)]}
+                      week={[...Array(monthChangeIndex !== -1 ? monthChangeIndex : 0).fill({ month: -1, week: weekIndex, day: -1 }), ...week.slice(monthChangeIndex !== -1 ? monthChangeIndex : 0)]}
                       weekIndex={weekIndex}
                       days={days}
                       selectedDate={selectedDate}
