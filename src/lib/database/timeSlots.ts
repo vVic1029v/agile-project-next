@@ -41,12 +41,15 @@ const weekSchedule: WeekSchedule = [
 export function getTimesOfIndentifier(weekScheduleId: WeekScheduleIdentifier): { startHour: number, startMinute: number, endHour: number, endMinute: number }[] {
     const times: { startHour: number, startMinute: number, endHour: number, endMinute: number }[] = [];
 
-    // Loop through each identifier (day, period)
-    for (const { day, period } of weekScheduleId) {
+
+    // Verificăm dacă weekScheduleId este array, altfel îl punem într-un array
+    const identifiers = Array.isArray(weekScheduleId) ? weekScheduleId : [weekScheduleId];
+
+    for (const { day, period } of identifiers) {
         const daySchedule = weekSchedule[day];
 
-        if (period < 0 || period >= daySchedule.length) {
-            throw new Error("Invalid period value in WeekScheduleIdentifier");
+        if (!daySchedule || period < 0 || period >= daySchedule.length) {
+            throw new Error(`Invalid period value (${period}) or day (${day}) in WeekScheduleIdentifier`);
         }
 
         const session = daySchedule[period];

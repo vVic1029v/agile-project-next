@@ -26,29 +26,12 @@ export default function ProfilePage() {
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   useEffect(() => {
-    console.log("Session:", session);
-   
-    
     if (session?.user) {
-      fetch(`/api/user?userId=${session.user.id}`) 
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error("Eroare la fetch /api/user");
-          }
-          return res.json();
-        })
-        .then((data: { message: string, user: User }) => {
-          console.log("User data:", data); 
-          setUser(data.user); 
-          setProfileImage(data.user.profileImage ?? null);
-          setLoading(false); 
-        })
-        .catch((error) => {
-          console.error("Fetch error:", error);
-          setLoading(false); 
-        });
+      setUser(session.user);  
+      setProfileImage(session.user.profileImage ?? null);
+      setLoading(false);
     } else {
-      setLoading(false); 
+      setLoading(false);
     }
   }, [session]);
   useEffect(() => {
@@ -188,14 +171,15 @@ export default function ProfilePage() {
     }
   };
    
-   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
       setSelectedFile(file);
       setImagePreview(URL.createObjectURL(file));
     }
   };
-
+  
   const handleUpload = async () => {
     if (!selectedFile || !session?.user.id) return;
   
@@ -203,27 +187,24 @@ export default function ProfilePage() {
     formData.append("file", selectedFile);
     formData.append("userId", session.user.id);
   
-    console.log("📤 Trimitere request către API...");
     try {
       const response = await fetch("/api/upload-profile-image", {
         method: "POST",
         body: formData,
       });
   
-      console.log("📥 Răspuns primit:", response);
       const data = await response.json();
   
       if (response.ok) {
-        console.log("✅ Upload reușit:", data);
         setUploadSuccess(true);
+        setProfileImage(data.imageUrl); // Actualizează profilul cu noua poză
       } else {
-        console.error("❌ Eroare la upload:", data.error);
+        setError(data.error || "Error uploading image.");
       }
     } catch (error) {
-      console.error("❌ Upload failed:", error);
+      setError("An error occurred while uploading the image.");
     }
   };
-
   
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">

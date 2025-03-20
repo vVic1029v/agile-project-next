@@ -48,6 +48,7 @@ const CourseForm: React.FC = () => {
     }
 
     try {
+
       const formData = new FormData();
       formData.set("query", courseName);
       formData.set("homeClassId", selectedHomeClass.id);

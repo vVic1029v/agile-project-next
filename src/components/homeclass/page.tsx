@@ -1,9 +1,8 @@
-'use server';
-
-import { getHomeClassDetails } from "@/lib/database/database";
+// src/app/(pages)/ClassProfile.tsx
+"use server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { getHomeClass } from "@/lib/actions";
+import { getClassProfile } from "@/lib/actions";
 
 interface Person {
   name: string;
@@ -23,6 +22,7 @@ interface HomeClass {
 
 export default async function ClassProfile() {
   const session = await getServerSession(authOptions);
+
   if (!session?.user?.id) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -33,16 +33,7 @@ export default async function ClassProfile() {
 
   let homeClass: HomeClass | null = null;
   try {
-    const homeClassDetails = await getHomeClass(session.user.id);
-    if (homeClassDetails) {
-      homeClass = {
-        className: homeClassDetails.homeClass.name,
-        homeroomTeacher: homeClassDetails.homeClass.homeroomFacultyMember,
-        students: homeClassDetails.homeClass.students,
-        facultyMembers: homeClassDetails.homeClass.facultyMembers.map((prof) => ({  name: prof.name, email: prof.email, subject: prof.subject
-        })),
-      };
-    }
+    homeClass = await getClassProfile(session.user.id);
   } catch (error) {
     console.error("❌ Error fetching home class details:", error);
   }
@@ -93,6 +84,27 @@ export default async function ClassProfile() {
                     {prof.subject}
                   </span>
                 )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <h2 className="text-2xl font-semibold mt-6 mb-3">Students</h2>
+        {homeClass.students.length === 0 ? (
+          <p className="text-gray-600">No students assigned.</p>
+        ) : (
+          <ul className="list-disc ml-6 space-y-4">
+            {homeClass.students.map((student, index) => (
+              <li key={index} className="text-gray-700">
+                <div>
+                  <span className="font-medium text-lg">{student.name}</span> -{" "}
+                  <a
+                    href={`mailto:${student.email}`}
+                    className="text-blue-600 underline"
+                  >
+                    {student.email}
+                  </a>
+                </div>
               </li>
             ))}
           </ul>
