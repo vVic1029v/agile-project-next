@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, ReactNode, Fragment } from 'react';
+import { useRef, useState, useEffect, ReactNode } from 'react';
 import Panel from './Panel'; // Import the new Panel component
 
 interface ScrollPanelsProps {
@@ -62,14 +62,12 @@ export default function ScrollPanels({ children }: ScrollPanelsProps) {
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="gap-x-[10vw] flex h-full w-full snap-x snap-mandatory overflow-visible scroll-smooth pl-[10%] pr-[10%]"
+        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth pl-[10%] pr-[10%]"
       >
         {/* Panels */}
-        <>
-          {children.map((child, index) => (
-            <Fragment key={index}>{child}</Fragment>
-          ))}
-        </>
+        {children.map((child, index) => (
+          <Panel key={index}>{child}</Panel>
+        ))}
       </div>
 
       {/* Navigation Buttons */}
