@@ -8,6 +8,7 @@ import AnimatedHeader from '@/components/Common/Headers/AnimatedHeader';
 export interface YearCalendarGridProps {
   year: number;
   onDayClick: (selected: SelectedDate, openModal: boolean) => void;
+  onWeekClick: (selected: SelectedDate, openModal: boolean) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   events?: StructuredEvents;
   selectedDate : SelectedDate;
@@ -17,6 +18,7 @@ export interface YearCalendarGridProps {
 const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({ 
   year, 
   onDayClick, 
+  onWeekClick,
   dayRefs, 
   events, 
   selectedDate,
@@ -42,7 +44,8 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                       weekIndex={weekIndex}
                       days={days}
                       selectedDate={selectedDate}
-                      onClick={onDayClick}
+                      onDayClick={onDayClick}
+                      onWeekClick={onWeekClick}
                       dayRefs={dayRefs}
                       year={year}
                       events={events?.[year]?.[weekIndex] ?? []}
@@ -61,7 +64,8 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                       weekIndex={weekIndex}
                       days={days}
                       selectedDate={selectedDate}
-                      onClick={onDayClick}
+                      onDayClick={onDayClick}
+                      onWeekClick={onWeekClick}
                       dayRefs={dayRefs}
                       year={year}
                       events={events?.[year]?.[weekIndex] ?? []}
@@ -78,7 +82,8 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                   weekIndex={weekIndex}
                   days={days}
                   selectedDate={selectedDate}
-                  onClick={onDayClick}
+                  onDayClick={onDayClick}
+                  onWeekClick={onWeekClick}
                   dayRefs={dayRefs}
                   year={year}
                   events={events?.[year]?.[weekIndex] ?? []}
@@ -100,7 +105,8 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
             weekIndex={weekIndex}
             days={days}
             selectedDate={selectedDate}
-            onClick={onDayClick}
+            onDayClick={onDayClick}
+            onWeekClick={onWeekClick}
             dayRefs={dayRefs}
             year={year}
             events={events?.[year]?.[weekIndex] ?? []}

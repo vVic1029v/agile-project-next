@@ -13,13 +13,11 @@ interface CalendarStateContextType {
 const CalendarStateContext = createContext<CalendarStateContextType | undefined>(undefined);
 
 export default function CalendarStateProvider({
-  isWeekView,
   children,
 }: {
-  isWeekView: boolean;
   children: React.ReactNode;
 }) {
-  const calendarState = useCalendarState(isWeekView);
+  const calendarState = useCalendarState();
 
   return (
     <CalendarStateContext.Provider value={calendarState}>

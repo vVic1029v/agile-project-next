@@ -55,7 +55,7 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
 };
 
 
-export const useCalendarState = (isWeekView: boolean) => {
+export const useCalendarState = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -80,7 +80,7 @@ export const useCalendarState = (isWeekView: boolean) => {
     (year: number, week?: number, extraParams: Record<string, string> = {}) => {
       const search = new URLSearchParams(searchParams.toString());
       search.set("year", String(year));
-      if (isWeekView && week !== undefined) {
+      if (week !== undefined) {
         search.set("week", `W${String(week + 1).padStart(2, "0")}`); // Convert to 1-indexed
       }
       if (!("date" in extraParams)) {
@@ -91,7 +91,7 @@ export const useCalendarState = (isWeekView: boolean) => {
       }
       router.replace(`${pathname}?${search.toString()}`, { scroll: false });
     },
-    [searchParams, router, pathname, isWeekView]
+    [searchParams, router, pathname]
   );
 
   return {

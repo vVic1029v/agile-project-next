@@ -1,3 +1,5 @@
+"use client"
+
 import { getCalendarData } from "@/lib/database/getCalendarData";
 import { authMiddleware } from "@/lib/auth";
 import CalendarProvider from "@/components/calendar/CalendarProvider";
@@ -7,20 +9,24 @@ import { useCalendarState } from "../useCalendarState";
 import CalendarStateProvider from "../CalendarStateProvider";
 import UserWeekCalendar from "../week/UserWeekCalendar";
 import Panel from "./Panel";
+import { useRef, useState } from "react";
 
-export default async function CalendarPageSelector() {
-    const session = await authMiddleware();
+export default function CalendarPageSelector() {
+    // const session = await authMiddleware();
+
+    const onActiveIndexChange = (index: number) => {
+        console.log("Active index changed to:", index);
+    };
 
     return (
-        <CalendarStateProvider isWeekView={true}>
-            <ScrollPanels>
-                <Panel width="w-[80%]">
-                    <UserYearCalendar />
-                </Panel>
-                <Panel width="w-[80%]">
-                    <UserWeekCalendar />
-                </Panel>
-            </ScrollPanels>
-        </CalendarStateProvider>
+        <ScrollPanels onActiveIndexChange={onActiveIndexChange} >
+            <Panel width="w-[80%]">
+                <UserYearCalendar />
+            </Panel>
+            
+            <Panel width="w-[80%]">
+                <UserWeekCalendar />
+            </Panel>
+        </ScrollPanels>
     );
 }

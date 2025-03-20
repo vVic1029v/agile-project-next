@@ -22,23 +22,23 @@ export default function UserWeekCalendar() {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
 
-  const { selectedDate, setSelectedDate, updateUrl: updateWeekUrl, isModalOpen, setIsModalOpen } = useCalendarStateContext();
+  const { selectedDate, setSelectedDate, updateUrl, isModalOpen, setIsModalOpen } = useCalendarStateContext();
   
   const handleCellClick = useCallback(
     (date: SelectedDate) => {
       const dateString = `${date.year}-${String(date.month + 1).padStart(2, "0")}-${String(date.day+1).padStart(2, "0")}`;
       const weekAndDay = getWeekAndDay(date.year, date.month + 1, date.day+1);
-      updateWeekUrl(date.year, weekAndDay.week, { date: dateString });
+      updateUrl(date.year, weekAndDay.week, { date: dateString });
       setSelectedDate({ ...date, week: weekAndDay.week });
       setIsModalOpen(true);
     },
-    [updateWeekUrl, setIsModalOpen, setSelectedDate]
+    [updateUrl, setIsModalOpen, setSelectedDate]
   );
   
   const closeModal = useCallback(() => {
-    updateWeekUrl(selectedDate.year, selectedDate.week);
+    updateUrl(selectedDate.year, selectedDate.week);
     setIsModalOpen(false);
-  }, [selectedDate.year, selectedDate.week, updateWeekUrl, setIsModalOpen]);
+  }, [selectedDate.year, selectedDate.week, updateUrl, setIsModalOpen]);
   
   const handlePrevWeek = () => {
     let newWeek = selectedDate.week - 1;
@@ -48,7 +48,7 @@ export default function UserWeekCalendar() {
       newWeek = getWeeksInYear(newYear) - 1;
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    updateWeekUrl(newYear, newWeek);
+    updateUrl(newYear, newWeek);
   };
   
   const handleNextWeek = () => {
@@ -59,13 +59,13 @@ export default function UserWeekCalendar() {
       newWeek = 0;
     }
     setSelectedDate((prev) => ({ ...prev, year: newYear, week: newWeek }));
-    updateWeekUrl(newYear, newWeek);
+    updateUrl(newYear, newWeek);
   };
   
   const handleTodayClick = () => {
     const todayDate = getToday();
     setSelectedDate(todayDate);
-    updateWeekUrl(todayDate.year, todayDate.week);
+    updateUrl(todayDate.year, todayDate.week);
   };
 
   const weekEvents = events[selectedDate.year]?.[selectedDate.week];
