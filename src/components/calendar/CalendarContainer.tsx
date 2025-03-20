@@ -7,7 +7,7 @@ interface CalendarContainerProps {
 
 const CalendarContainer = ({ children, isModalOpen = false }: CalendarContainerProps) => (
   <div
-    className={`relative flex h-screen max-h-screen w-full max-w-screen-xl flex-col gap-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""}`}
+    className={`relative flex h-screen max-h-screen w-full flex-col gap-4 items-center justify-center ${isModalOpen ? "pointer-events-none" : ""}`}
   >
     <div className="relative h-full w-full overflow-auto mt-[1vh]">
       {children}

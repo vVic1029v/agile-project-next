@@ -73,7 +73,7 @@ export default function UserWeekCalendar() {
   if (status === "loading" || !userId) return null;
 
   return (
-    <div>
+    <>
       <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
         <CalendarDayModal selectedDate={selectedDate} events={events} />
       </ModalOverlay>
@@ -86,7 +86,7 @@ export default function UserWeekCalendar() {
         />
         <WeekCalendar onClick={handleCellClick} events={weekEvents} courses={courses} selectedDate={selectedDate} />
       </WeekCalendarContainer>
-    </div>
+    </>
   );
 }
 

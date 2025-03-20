@@ -72,7 +72,7 @@ export default function UserYearCalendar() {
   if (status === "loading" || !userId) return null;
 
   return (
-    <div>
+    <>
       <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
         <CalendarDayModal selectedDate={selectedDate} events={events} />
       </ModalOverlay>
@@ -90,7 +90,7 @@ export default function UserYearCalendar() {
         />
         <YearCalendar selectedDay={selectedDate} onClick={handleSelectedDayChange} events={events} monthHeaders={monthHeaders} />
       </YearCalendarContainer>
-    </div>
+    </>
   );
 }
 

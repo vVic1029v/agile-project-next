@@ -6,6 +6,7 @@ import ScrollPanels from "@/components/calendar/calendar-page/ScrollPanels";
 import { useCalendarState } from "../useCalendarState";
 import CalendarStateProvider from "../CalendarStateProvider";
 import UserWeekCalendar from "../week/UserWeekCalendar";
+import Panel from "./Panel";
 
 export default async function CalendarPageSelector() {
     const session = await authMiddleware();
@@ -13,8 +14,12 @@ export default async function CalendarPageSelector() {
     return (
         <CalendarStateProvider isWeekView={true}>
             <ScrollPanels>
-                <UserYearCalendar />
-                <UserWeekCalendar />
+                <Panel width="w-[80%]">
+                    <UserYearCalendar />
+                </Panel>
+                <Panel width="w-[110%]">
+                    <UserWeekCalendar />
+                </Panel>
             </ScrollPanels>
         </CalendarStateProvider>
     );
