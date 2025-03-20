@@ -5,6 +5,7 @@ import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSl
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/database/timeSlots";
 import { CourseTimeSlots, EventTimeSlot } from "./getCalendarData";
 import bcrypt from "bcryptjs";
+import { isAuthorized } from "../auth";
 
 // Initialize Prisma Client
 let prisma: PrismaClient;
@@ -376,60 +377,66 @@ export async function resetUserPassword(userId: string, newPassword: string) {
   
     return announcements;
   }
-  export async function getHomeClass(userId:string): Promise<HomeClass> {
-
-    console.log("Fetching home class for userId:", userId);
+ export async function getHomeClassDetails(userId: string) {
+    try {
+    
   
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: {
-        student: {
-          include: { homeClass: true },
+      const homeClass = await prisma.homeClass.findFirst({
+        where: {
+          students: {
+            some: {
+              id: userId,
+            },
+          },
         },
-        facultyMember: {
-          include: { homeroomClass: true },
+        include: {
+          homeroomFacultyMember: {
+            include: {
+              user: true, 
+            },
+          },
+          students: {
+            include: {
+              user: true, 
+            },
+          },
+          courses: {
+            include: {
+              facultyMember: {
+                include: {
+                  user: true, 
+                },
+              },
+            },
+          },
         },
-      },
-    });
+      });
   
-    console.log("✅ User from DB:", user);
+      if (!homeClass) {
+        throw new Error("Home class not found");
+      }
   
-    if (!user) {
-      throw new Error("User not found");
+      return {
+        id: homeClass.id,
+        name: homeClass.name,
+        startYear: homeClass.startYear,
+        homeroomFacultyMember: {
+          name: homeClass.homeroomFacultyMember?.user.firstName || "N/A", 
+          email: homeClass.homeroomFacultyMember?.user.email || "N/A", 
+        },
+        students: homeClass.students.map((student) => ({
+          name: student.user.firstName, 
+          email: student.user.email,
+        })),
+        facultyMembers: homeClass.courses.map((course) => ({
+          name: course.facultyMember.user.firstName, 
+          email: course.facultyMember.user.email, 
+          subject: course.subject,
+        })),
+      };
+    } catch (error) {
+      console.error("Error in getHomeClassDetails:", error);
+      throw error;
     }
-  
-    const homeClassId = user.student?.homeClass?.id || user.facultyMember?.homeroomClass?.id;
-  
-    if (!homeClassId) {
-      throw new Error("User is not assigned to a home class");
-    }
-  
-    console.log("Fetching home class for ID:", homeClassId);
-  
- const homeClass = await prisma.homeClass.findUnique({
-  where: { id: homeClassId },
-  include: {
-    homeroomFacultyMember: {
-      include: { user: true },
-    },
-    students: {
-      include: { user: true }, 
-    },
-    courses: {
-      include: {
-        facultyMember: { include: { user: true } },
-        timeSlots: true,
-      },
-    },
-  },
-});
-
-  
-    console.log("📊 Rezultat homeClass:", homeClass);
-  
-    if (!homeClass) {
-      throw new Error("Home class not found");
-    }
-  
-    return homeClass;
   }
+  

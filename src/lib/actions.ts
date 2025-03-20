@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getHomeClass, getExpensiveUserByEmail } from "@/lib/database/database";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails } from "@/lib/database/database";
 import { UserType,Course } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
@@ -90,7 +90,7 @@ export async function newAnnouncement(formData: FormData) {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const date = formData.get("date") as string;
-  const allUsers = formData.get("allUsers") === "true"; // Assuming "allUsers" is passed as a string ("true" or "false")
+  const allUsers = formData.get("allUsers") === "true";
   const homeClassIds = formData.get("homeClassIds") ? JSON.parse(formData.get("homeClassIds") as string) : undefined;
 
   if (!title || !content || !date) {
@@ -109,27 +109,16 @@ export async function getAnnouncements(userId: string) {
 
   return { announcements };
 }
-export async function getHomeClassDetails(userId:string) {
+export async function getHomeClass(userId:string) {
   try {
-    const homeClass = await getHomeClass(userId);
+     const session = await auth();
+     
+         if (!userId || !isAuthorized(session, userId)) return null;
 
-    if (!homeClass) {
-      console.error("Home class not found for userId:", userId);
-      throw new Error("Home class not found");
-    }
-
-    return {
-      id: homeClass.id,
-      name: homeClass.name,
-      startYear: homeClass.startYear,
-      homeroomFacultyMember: homeClass.homeroomFacultyMemberId,
-      students: homeClass.students,
-      courses: homeClass.courses,
-    };
+    const homeClass = await getHomeClassDetails(userId);
+    return {homeClass};
   } catch (error) {
-    console.error("Error in getHomeClassDetails:", error);
-    throw error;
+    throw new Error("could not get home class");
   }
-} 
-
+}
 
