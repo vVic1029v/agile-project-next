@@ -39,10 +39,7 @@ export default async function ClassProfile() {
         className: homeClassDetails.homeClass.name,
         homeroomTeacher: homeClassDetails.homeClass.homeroomFacultyMember,
         students: homeClassDetails.homeClass.students,
-        facultyMembers: homeClassDetails.homeClass.facultyMembers.map((prof) => ({
-          name: prof.name,
-          email: prof.email,
-          subject: prof.subject,
+        facultyMembers: homeClassDetails.homeClass.facultyMembers.map((prof) => ({  name: prof.name, email: prof.email, subject: prof.subject
         })),
       };
     }
