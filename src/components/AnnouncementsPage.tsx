@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { UserType } from "@prisma/client";
 import MainButton from "./Common/Buttons/MainButton";
+import { getAnnouncements, newAnnouncement } from "@/lib/actions";
 
 interface Announcement {
   id: string;
@@ -27,7 +28,7 @@ const AnnouncementsPage: React.FC = () => {
   const [showModal, setShowModal] = useState(false);
   const [isFacultyMember, setIsFacultyMember] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
-  const [newAnnouncement, setNewAnnouncement] = useState({
+  const [newAnnouncementData, setNewAnnouncementData] = useState({
     title: "",
     content: "",
     date: "",
@@ -37,18 +38,21 @@ const AnnouncementsPage: React.FC = () => {
 
   useEffect(() => {
     if (!session?.user) return;
-
+  
     const fetchAnnouncements = async () => {
       try {
-        const res = await fetch("/api/announcements");
-        const data: Announcement[] = await res.json();
-
+        const result = await getAnnouncements(session.user.id); // Use getAnnouncements from actions.ts
+        const data: Announcement[] = result?.announcements.map((announcement) => ({
+          ...announcement,
+          homeClasses: announcement.homeClasses || [], // Default to an empty array
+        })) || []; // Default to an empty array if undefined
+  
         if (session.user.userType === "FACULTYMEMBER") {
           setIsFacultyMember(true);
           setAnnouncements(data);
         } else if (session.user.userType === "STUDENT") {
           const studentClassId = session.user.homeClassId;
-         
+  
           setIsFacultyMember(false);
           const filteredAnnouncements = data.filter(
             (announcement) =>
@@ -61,9 +65,10 @@ const AnnouncementsPage: React.FC = () => {
         console.error("Error fetching announcements:", error);
       }
     };
+  
+    fetchAnnouncements(); // Call the function inside useEffect
+  }, [session]); // Add session as a dependency// Add session as a dependency
 
-    fetchAnnouncements();
-  }, [session]);
   useEffect(() => {
     const fetchHomeClasses = async () => {
       try {
@@ -91,27 +96,39 @@ const AnnouncementsPage: React.FC = () => {
   };
 
   const handleSubmitAnnouncement = async () => {
-    if (!newAnnouncement.title || !newAnnouncement.content || !newAnnouncement.date) {
+    if (!newAnnouncementData.title || !newAnnouncementData.content || !newAnnouncementData.date) {
       alert("All fields are required!");
       return;
     }
-
-    const response = await fetch("/api/announcements", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newAnnouncement),
-    });
-
-    if (response.ok) {
-      const createdAnnouncement: Announcement = await response.json();
-      setAnnouncements((prev) => [...prev, createdAnnouncement]);
+  
+    try {
+      const formData = new FormData();
+      formData.set("title", newAnnouncementData.title);
+      formData.set("content", newAnnouncementData.content);
+      formData.set("date", newAnnouncementData.date);
+      formData.set("allUsers", newAnnouncementData.allUsers.toString());
+      if (!newAnnouncementData.allUsers) {
+        formData.set("homeClassIds", JSON.stringify(newAnnouncementData.homeClassIds));
+      }
+  
+      const result = await newAnnouncement(formData); // Use newAnnouncement from actions.ts
+      const createdAnnouncement = result.newAnnouncement;
+  
+      // Ensure homeClasses is always included
+      const announcementWithDefaults: Announcement = {
+        ...createdAnnouncement,
+        date: createdAnnouncement.date.toISOString(), // Convert Date to string
+        homeClasses: createdAnnouncement.homeClasses || [], // Default to an empty array
+      };
+  
+      setAnnouncements((prev) => [...prev, announcementWithDefaults]);
       setShowModal(false);
-      setNewAnnouncement({ title: "", content: "", date: "", allUsers: false, homeClassIds: [] });
-    } else {
+      setNewAnnouncementData({ title: "", content: "", date: "", allUsers: false, homeClassIds: [] });
+    } catch (error) {
+      console.error("Error creating announcement:", error);
       alert("Failed to create announcement");
     }
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-EN", {
@@ -178,33 +195,33 @@ const AnnouncementsPage: React.FC = () => {
               <input
                 type="text"
                 placeholder="Title"
-                value={newAnnouncement.title}
-                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })}
+                value={newAnnouncementData.title}
+                onChange={(e) =>setNewAnnouncementData({ ...newAnnouncementData, title: e.target.value })}
                 className="w-full p-2 border rounded-lg mt-2"
               />
 
               <textarea
                 placeholder="Content"
-                value={newAnnouncement.content}
-                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })}
+                value={newAnnouncementData.content}
+                onChange={(e) => setNewAnnouncementData({ ...newAnnouncementData, content: e.target.value })}
                 className="w-full p-2 border rounded-lg mt-2"
               />
 
               <input
                 type="checkbox"
-                checked={newAnnouncement.allUsers}
-                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, allUsers: e.target.checked })}
+                checked={newAnnouncementData.allUsers}
+                onChange={(e) => setNewAnnouncementData({ ...newAnnouncementData, allUsers: e.target.checked })}
                 className="mt-2"
               />
               <label className="ml-2">Apply to all users</label>
 
-              {!newAnnouncement.allUsers && (
+              {!newAnnouncementData.allUsers && (
                 <select
                   multiple
-                  value={newAnnouncement.homeClassIds}
+                  value={newAnnouncementData.homeClassIds}
                   onChange={(e) =>
-                    setNewAnnouncement({
-                      ...newAnnouncement,
+                    setNewAnnouncementData({
+                      ...newAnnouncementData,
                       homeClassIds: Array.from(e.target.selectedOptions, (option) => option.value),
                     })
                   }
@@ -220,8 +237,8 @@ const AnnouncementsPage: React.FC = () => {
 
               <input
                 type="datetime-local"
-                value={newAnnouncement.date}
-                onChange={(e) => setNewAnnouncement({ ...newAnnouncement, date: e.target.value })}
+                value={newAnnouncementData.date}
+                onChange={(e) => setNewAnnouncementData({ ...newAnnouncementData, date: e.target.value })}
                 className="w-full p-2 border rounded-lg mt-2"
               />
 

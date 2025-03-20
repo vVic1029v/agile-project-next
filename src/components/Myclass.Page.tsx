@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
-
+import { data } from "framer-motion/client";
+import {getHomeClassDetails} from "@/lib/actions";
 interface Person {
   name: string;
   email: string;
@@ -24,20 +25,31 @@ export default function ClassProfile() {
 
   useEffect(() => {
     async function fetchClassData() {
-      if (!session?.user?.id) return;
-
+      if (!session?.user?.id) {
+        console.warn("❌ No user ID found in session");
+        return;
+      }
+  
       try {
-        const res = await fetch(`/api/getHomeClass`);
-        const data = await res.json();
-        console.log("HomeClass Data:", data); // 🔍 Debugging Output
-        setHomeClass(data);
+        const homeClassDetails = await getHomeClassDetails(session.user.id);
+        if (!homeClassDetails) {
+          // console.error("❌ Failed to fetch home class details");
+          return;
+        }
+        setHomeClass({
+          className: homeClassDetails.name,
+          homeroomTeacher: homeClassDetails.homeroomFacultyMember,
+          students: homeClassDetails.students,
+          facultyMembers: homeClassDetails.facultyMembers,
+        });
       } catch (error) {
-        console.error("Error fetching home class data:", error);
+        console.error("❌ Error fetching home class details:", error);
       }
     }
-
+  
     fetchClassData();
   }, [session?.user?.id]);
+  
 
   if (!homeClass) return (
     <div className="bg-gradient-to-br from-white via-blue-50 to-blue-300 min-h-screen flex items-center justify-center">
@@ -141,3 +153,7 @@ export default function ClassProfile() {
   
   );
 }
+function HomeClassDetails(userId: string) {
+  throw new Error("Function not implemented.");
+}
+

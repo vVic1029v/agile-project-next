@@ -1,5 +1,5 @@
 // External Imports
-import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma } from "@prisma/client";
+import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSlot, Course, Event, EventType, Prisma, Announcement } from "@prisma/client";
 
 // Internal Imports
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/database/timeSlots";
@@ -25,13 +25,18 @@ export { prisma };
 
 // For authentication
 export async function getExpensiveUserByEmail(email: string): Promise<User & { student: Student | null, facultyMember: FacultyMember | null } | null> {
-  return prisma.user.findUnique({
+  const user = await prisma.user.findUnique({
     where: { email },
-    include: { student: { select: { id: true, homeClassId: true } }, 
-    facultyMember: { select: { id: true, titles: true } }, },
+    include: {
+      student: { include: { homeClass: true } }, 
+      facultyMember: { include: { homeroomClass: true } },
+    },
   });
-}
 
+  console.log("✅ User from DB:", JSON.stringify(user, null, 2));
+  return user;
+    
+  }
 // For registration
 export async function getCheapUserByEmail(email: string): Promise<User | null> {
   return prisma.user.findUnique({
@@ -306,3 +311,125 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     });
   }
 
+  export async function postNewAnnouncement(
+    title: string,
+    content: string,
+    date: string,
+    allUsers: boolean,
+    homeClassIds?: string[]
+  ): Promise<{
+    id: string;
+    title: string;
+    content: string;
+    date: Date;
+    allUsers: boolean;
+    homeClasses: HomeClass[];
+  }> {
+    return prisma.announcement.create({
+      data: {
+        title,
+        content,
+        date: new Date(date),
+        allUsers,
+        homeClasses: homeClassIds?.length
+          ? { connect: homeClassIds.map((id: string) => ({ id })) }
+          : undefined,
+      },
+      include: { homeClasses: true },
+    });
+  }
+  export async function getAllAnnouncements(userId: string): Promise<Announcement[]> {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: { userType: true, student: true },
+    });
+  
+    if (!user) {
+      throw new Error("User not found");
+    }
+  
+    if (user.userType === UserType.STUDENT && !user.student) {
+      throw new Error("Student not found");
+    }
+  
+    const homeClassId = user.student?.homeClassId;
+  
+    const announcements = await prisma.announcement.findMany({
+      where: {
+        OR: [
+          { allUsers: true },
+          ...(homeClassId
+            ? [
+                {
+                  homeClasses: {
+                    some: {
+                      id: homeClassId,
+                    },
+                  },
+                },
+              ]
+            : []),
+        ],
+      },
+      include: { homeClasses: true },
+    });
+  
+    return announcements;
+  }
+  export async function getHomeClass(userId:string): Promise<HomeClass> {
+
+    console.log("Fetching home class for userId:", userId);
+  
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        student: {
+          include: { homeClass: true },
+        },
+        facultyMember: {
+          include: { homeroomClass: true },
+        },
+      },
+    });
+  
+    console.log("✅ User from DB:", user);
+  
+    if (!user) {
+      throw new Error("User not found");
+    }
+  
+    const homeClassId = user.student?.homeClass?.id || user.facultyMember?.homeroomClass?.id;
+  
+    if (!homeClassId) {
+      throw new Error("User is not assigned to a home class");
+    }
+  
+    console.log("Fetching home class for ID:", homeClassId);
+  
+ const homeClass = await prisma.homeClass.findUnique({
+  where: { id: homeClassId },
+  include: {
+    homeroomFacultyMember: {
+      include: { user: true },
+    },
+    students: {
+      include: { user: true }, 
+    },
+    courses: {
+      include: {
+        facultyMember: { include: { user: true } },
+        timeSlots: true,
+      },
+    },
+  },
+});
+
+  
+    console.log("📊 Rezultat homeClass:", homeClass);
+  
+    if (!homeClass) {
+      throw new Error("Home class not found");
+    }
+  
+    return homeClass;
+  }
