@@ -17,7 +17,7 @@ export default async function CalendarPageSelector() {
                 <Panel width="w-[80%]">
                     <UserYearCalendar />
                 </Panel>
-                <Panel width="w-[110%]">
+                <Panel width="w-[80%]">
                     <UserWeekCalendar />
                 </Panel>
             </ScrollPanels>
