@@ -50,11 +50,8 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
 
   return (
     <div
-      className="relative items-center -mx-[-0px] flex w-[calc(100%+50px)]"
+      className="relative items-center -mx-[-0px] flex overflow-visible"
       key={`week-${weekIndex}`}
-      style={{
-        overflow: 'visible', // Ensure content is not clipped
-      }}
     >
       <button
         type="button"
