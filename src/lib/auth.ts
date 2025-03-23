@@ -52,8 +52,11 @@ export const authOptions: NextAuthOptions = {
         session.user.firstName = tok.firstName;
         session.user.lastName = tok.lastName;
         session.user.homeClassId = tok.homeClassId ?? null;
-        if(session.user.profileImage !== undefined)
+        // if(session.user.profileImage !== undefined)
         session.user.profileImage = tok.profileImage;
+      
+      console.log("user session ",session);
+      console.log("user tok ",tok);
       }
       return session;
     },

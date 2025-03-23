@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails } from "@/lib/database/database";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture } from "@/lib/database/database";
 import { UserType,Course } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
@@ -160,4 +160,18 @@ export async function getClassProfile(userId: string) {
     console.error("Error fetching home class profile:", error);
     throw new Error("Error fetching home class profile");
   }
+}
+
+export async function ChangePicture(userId:string,profileImage:string){
+  const session = await auth();
+  if (!userId) return null;
+  if (!isAuthorized(session, userId)) return null;
+  ChangeProfilePicture(userId,profileImage);
+
+}
+export async function RemovePicture(userId:string){
+  const session = await auth();
+  if (!userId) return null;
+  if (!isAuthorized(session, userId)) return null;
+DeleteProfilePicture(userId );
 }

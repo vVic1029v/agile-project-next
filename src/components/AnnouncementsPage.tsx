@@ -73,23 +73,23 @@ const AnnouncementsPage: React.FC = () => {
     fetchAnnouncements(); // Call the function inside useEffect
   }, [session]); // Add session as a dependency// Add session as a dependency
 
-  useEffect(() => {
-    const fetchHomeClasses = async () => {
-      try {
-        const res = await fetch("/api/searchHomeClasses");
+  // useEffect(() => {
+  //   const fetchHomeClasses = async () => {
+  //     try {
+  //       const res = await fetch("/api/searchHomeClasses");
 
-        if (!res.ok) throw new Error("Failed to fetch home classes");
+  //       if (!res.ok) throw new Error("Failed to fetch home classes");
 
-        const data: HomeClass[] = await res.json();
+  //       const data: HomeClass[] = await res.json();
 
-        setHomeClasses(data);
-      } catch (error) {
-        console.error("Error fetching home classes:", error);
-      }
-    };
+  //       setHomeClasses(data);
+  //     } catch (error) {
+  //       console.error("Error fetching home classes:", error);
+  //     }
+  //   };
 
-    fetchHomeClasses();
-  }, []);
+  //   fetchHomeClasses();
+  // }, []);
 
   const openDetailsModal = (announcement: Announcement) => {
     setSelectedAnnouncement(announcement);

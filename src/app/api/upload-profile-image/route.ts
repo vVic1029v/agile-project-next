@@ -74,7 +74,7 @@ export async function POST(req: NextRequest) {
 
     // Încărcarea fișierului pe Cloudinary
     const uploadResponse = await uploadFileBuffer(buffer, userId);
-
+    
     // Returnează URL-ul fișierului încărcat pe Cloudinary
     return NextResponse.json({ imageUrl: uploadResponse.secure_url, userId }, { status: 200 });
   } catch (error) {

@@ -1,9 +1,12 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, getSession } from "next-auth/react";
 import {motion} from "framer-motion";
 import Image from 'next/image';
 import Link from "next/link";
+import { ChangeProfilePicture } from "@/lib/database/database";
+import { ChangePicture, RemovePicture } from "@/lib/actions";
+import router from "next/router";
 
 interface User {
   id: string;
@@ -14,7 +17,7 @@ interface User {
 }
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
+  const { data: session, status,update } = useSession();
   const [user, setUser] = useState<User | null>(null);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -46,30 +49,9 @@ export default function ProfilePage() {
   const handleRemovePicture = async () => {
     if (!session?.user.id) return;
   
-    try {
-      const response = await fetch("/api/upload-profile-image", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ userId: session.user.id }),
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        setProfileImage("/uploads/default.jpg");
-        setImagePreview(null);
-        setSelectedFile(null);
-        setMessage("Profile image removed successfully.");
-        setTimeout(() => setMessage(""), 3000); // Ascunde mesajul după 3 secunde
-      } else {
-        setError(data.error || "Failed to remove profile image.");
-      }
-    } catch (error) {
-      console.error("Error removing profile image:", error);
-      setError("An error occurred while removing the image.");
-    }
+
+   await RemovePicture(session.user.id);
+    
   };
   
 
@@ -197,11 +179,17 @@ export default function ProfilePage() {
   
       if (response.ok) {
         setUploadSuccess(true);
-        setProfileImage(data.imageUrl); // Actualizează profilul cu noua poză
+        setProfileImage(data.imageUrl); 
+        console.log("image URL " ,data.imageUrl);
+       ChangePicture(session.user.id,data.imageUrl);
+        
+        setSelectedFile(null); 
+        
       } else {
         setError(data.error || "Error uploading image.");
       }
     } catch (error) {
+      console.log(error);
       setError("An error occurred while uploading the image.");
     }
   };
@@ -302,7 +290,7 @@ export default function ProfilePage() {
 >
   
   <Image
-    src={imagePreview ?? profileImage  ?? "/uploads/4aa7ce64dfff2ad7426e5d8e6d6e12dc.jpg"}
+    src={imagePreview ?? profileImage  ?? "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1742747120/user_uploads/39ded51f-4925-487f-9522-6c294c949e74/39ded51f-4925-487f-9522-6c294c949e74-1742747120740.jpg"}
     width={500}
     height={300}
     alt="Poza Profil"
@@ -322,8 +310,8 @@ export default function ProfilePage() {
               {loading ? "Uploading..." : "Upload"}
             </button>
           )}
-          {uploadSuccess && (
-            <p className="mt-4 text-green-300 font-semibold">Image changed, please refresh the page.</p>
+     {uploadSuccess && (
+            <p className="mt-4 text-green-300 font-semibold">Image changed, please relog to see the changes</p>
           )}
   <button 
             onClick={handleRemovePicture}

@@ -6,6 +6,7 @@ import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekSch
 import { CourseTimeSlots, EventTimeSlot } from "./getCalendarData";
 import bcrypt from "bcryptjs";
 import { isAuthorized } from "../auth";
+import { Url } from "next/dist/shared/lib/router/router";
 
 // Initialize Prisma Client
 let prisma: PrismaClient;
@@ -436,3 +437,28 @@ export async function resetUserPassword(userId: string, newPassword: string) {
   
     return { homeClass };
   }
+  export async function getUserProfileImage(userId:string){
+    const user=await prisma.user.findFirst({
+      where:{id:userId},
+    })
+    return {profileImg:user?.profileImage}
+  }
+  export async function ChangeProfilePicture(userId:string,profileImage:string){
+    const user = await prisma.user.update({
+      where: { id: userId },
+     data:{
+      profileImage: profileImage
+     }
+    });
+
+  }
+  export async function DeleteProfilePicture(userId:string){
+    const user = await prisma.user.update({
+      where: { id: userId },
+     data:{
+      profileImage: null
+     }
+    });
+
+  }
+  

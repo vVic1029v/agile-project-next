@@ -1,10 +1,10 @@
 // src/app/(pages)/ClassProfile.tsx
 "use server";
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getClassProfile } from "@/lib/actions";
-import { motion } from "framer-motion";
-
+import * as motion from "motion/react-client";
 interface Person {
   name: string;
   email: string;
@@ -49,9 +49,11 @@ export default async function ClassProfile() {
   }
 
   return (
-    <div
+    <motion.div
       className="bg-gradient-to-br from-white via-blue-50 to-blue-300 min-h-screen flex items-center justify-center p-4"
- 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 1 }}
     >
       <div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6"
            >
@@ -116,6 +118,6 @@ export default async function ClassProfile() {
           </ul>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }
