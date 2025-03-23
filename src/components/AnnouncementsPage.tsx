@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { UserType } from "@prisma/client";
 import MainButton from "./Common/Buttons/MainButton";
 import { getAnnouncements, newAnnouncement } from "@/lib/actions";
+import SearchHomeClassModal from "./new/course/SearchHomeClassModal";
 
 interface Announcement {
   id: string;
@@ -26,6 +27,7 @@ const AnnouncementsPage: React.FC = () => {
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [homeClasses, setHomeClasses] = useState<HomeClass[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [selectedHomeClass, setSelectedHomeClass] = useState<{ id: string; name: string } | null>(null);
   const [isFacultyMember, setIsFacultyMember] = useState(false);
   const [selectedAnnouncement, setSelectedAnnouncement] = useState<Announcement | null>(null);
   const [newAnnouncementData, setNewAnnouncementData] = useState({
@@ -38,21 +40,23 @@ const AnnouncementsPage: React.FC = () => {
 
   useEffect(() => {
     if (!session?.user) return;
-  
+
     const fetchAnnouncements = async () => {
       try {
         const result = await getAnnouncements(session.user.id); // Use getAnnouncements from actions.ts
         const data: Announcement[] = result?.announcements.map((announcement) => ({
           ...announcement,
+          date: new Date(announcement.date).toISOString(), // Convert Date to string
           homeClasses: announcement.homeClasses || [], // Default to an empty array
-        })) || []; // Default to an empty array if undefined
-  
+        })) || [];
+
+
         if (session.user.userType === "FACULTYMEMBER") {
           setIsFacultyMember(true);
           setAnnouncements(data);
         } else if (session.user.userType === "STUDENT") {
           const studentClassId = session.user.homeClassId;
-  
+
           setIsFacultyMember(false);
           const filteredAnnouncements = data.filter(
             (announcement) =>
@@ -65,7 +69,7 @@ const AnnouncementsPage: React.FC = () => {
         console.error("Error fetching announcements:", error);
       }
     };
-  
+
     fetchAnnouncements(); // Call the function inside useEffect
   }, [session]); // Add session as a dependency// Add session as a dependency
 
@@ -73,17 +77,17 @@ const AnnouncementsPage: React.FC = () => {
     const fetchHomeClasses = async () => {
       try {
         const res = await fetch("/api/searchHomeClasses");
-        
+
         if (!res.ok) throw new Error("Failed to fetch home classes");
-  
+
         const data: HomeClass[] = await res.json();
-        
+
         setHomeClasses(data);
       } catch (error) {
         console.error("Error fetching home classes:", error);
       }
     };
-  
+
     fetchHomeClasses();
   }, []);
 
@@ -94,41 +98,53 @@ const AnnouncementsPage: React.FC = () => {
   const closeDetailsModal = () => {
     setSelectedAnnouncement(null);
   };
-
   const handleSubmitAnnouncement = async () => {
     if (!newAnnouncementData.title || !newAnnouncementData.content || !newAnnouncementData.date) {
       alert("All fields are required!");
       return;
     }
-  
+
+    // ✅ Asigură-te că exact O clasă este selectată
+    if (!newAnnouncementData.allUsers && (!selectedHomeClass || selectedHomeClass.id === undefined)) {
+      alert("Trebuie să selectezi exact o clasă dacă anunțul nu este pentru toți utilizatorii.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.set("title", newAnnouncementData.title);
       formData.set("content", newAnnouncementData.content);
-      formData.set("date", newAnnouncementData.date);
+      formData.set("date", new Date(newAnnouncementData.date).toISOString());
       formData.set("allUsers", newAnnouncementData.allUsers.toString());
-      if (!newAnnouncementData.allUsers) {
-        formData.set("homeClassIds", JSON.stringify(newAnnouncementData.homeClassIds));
+
+      if (!newAnnouncementData.allUsers && selectedHomeClass) {
+        formData.set("homeClassIds", JSON.stringify([selectedHomeClass.id])); // ✅ Trimite doar un singur ID
       }
-  
-      const result = await newAnnouncement(formData); // Use newAnnouncement from actions.ts
+
+      const result = await newAnnouncement(formData);
+
+      if (!result?.newAnnouncement) {
+        throw new Error("Invalid response from server");
+      }
+
       const createdAnnouncement = result.newAnnouncement;
-  
-      // Ensure homeClasses is always included
+
       const announcementWithDefaults: Announcement = {
         ...createdAnnouncement,
-        date: createdAnnouncement.date.toISOString(), // Convert Date to string
-        homeClasses: createdAnnouncement.homeClasses || [], // Default to an empty array
+        date: new Date(createdAnnouncement.date).toISOString(),
+        homeClasses: createdAnnouncement.homeClasses ?? [],
       };
-  
+
       setAnnouncements((prev) => [...prev, announcementWithDefaults]);
       setShowModal(false);
       setNewAnnouncementData({ title: "", content: "", date: "", allUsers: false, homeClassIds: [] });
+      setSelectedHomeClass(null);
     } catch (error) {
       console.error("Error creating announcement:", error);
-      alert("Failed to create announcement");
     }
   };
+
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return new Intl.DateTimeFormat("en-EN", {
@@ -196,7 +212,7 @@ const AnnouncementsPage: React.FC = () => {
                 type="text"
                 placeholder="Title"
                 value={newAnnouncementData.title}
-                onChange={(e) =>setNewAnnouncementData({ ...newAnnouncementData, title: e.target.value })}
+                onChange={(e) => setNewAnnouncementData({ ...newAnnouncementData, title: e.target.value })}
                 className="w-full p-2 border rounded-lg mt-2"
               />
 
@@ -215,25 +231,17 @@ const AnnouncementsPage: React.FC = () => {
               />
               <label className="ml-2">Apply to all users</label>
 
-              {!newAnnouncementData.allUsers && (
-                <select
-                  multiple
-                  value={newAnnouncementData.homeClassIds}
-                  onChange={(e) =>
-                    setNewAnnouncementData({
-                      ...newAnnouncementData,
-                      homeClassIds: Array.from(e.target.selectedOptions, (option) => option.value),
-                    })
-                  }
-                  className="w-full p-2 border rounded-lg mt-2"
-                >
-                  {homeClasses.map((cls) => (
-                    <option key={cls.id} value={cls.id}>
-                      {cls.name}
-                    </option>
-                  ))}
-                </select>
-              )}
+              <SearchHomeClassModal
+                onClose={() => { }}
+                onSelect={(item) => {
+                  setSelectedHomeClass(item);
+                  setNewAnnouncementData(prev => ({
+                    ...prev,
+                    homeClassIds: item ? [item.id] : [] // ✅ Corect: trimitem doar ID-ul într-un array
+                  }));
+                }}
+              />
+
 
               <input
                 type="datetime-local"

@@ -138,7 +138,10 @@ export async function postNewCourse(
   });
 
   const timeSlotsData = weekScheduleIds.flatMap(id => createScheduleTimeSlots(id, course.id, homeClassId));
-
+  if (!Array.isArray(timeSlotsData) || timeSlotsData.length === 0) {
+    throw new Error("Failed to generate valid time slots");
+  }
+  
   await prisma.timeSlot.createMany({
     data: timeSlotsData
   });
@@ -337,6 +340,10 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     allUsers: boolean;
     homeClasses: HomeClass[];
   }> {
+    if ( (!homeClassIds)) {
+      throw new Error("Trebuie să selectezi exact o clasă dacă anunțul nu este pentru toți utilizatorii.");
+    }
+  
     return prisma.announcement.create({
       data: {
         title,
@@ -350,44 +357,47 @@ export async function resetUserPassword(userId: string, newPassword: string) {
       include: { homeClasses: true },
     });
   }
-  export async function getAllAnnouncements(userId: string): Promise<Announcement[]> {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { userType: true, student: true },
-    });
   
-    if (!user) {
-      throw new Error("User not found");
-    }
-  
-    if (user.userType === UserType.STUDENT && !user.student) {
-      throw new Error("Student not found");
-    }
-  
-    const homeClassId = user.student?.homeClassId;
-  
-    const announcements = await prisma.announcement.findMany({
-      where: {
-        OR: [
-          { allUsers: true },
-          ...(homeClassId
-            ? [
-                {
-                  homeClasses: {
-                    some: {
-                      id: homeClassId,
-                    },
+  export async function getAllAnnouncements(userId: string): Promise<
+  (Prisma.AnnouncementGetPayload<{ include: { homeClasses: true } }>)[]
+> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { userType: true, student: true },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.userType === UserType.STUDENT && !user.student) {
+    throw new Error("Student not found");
+  }
+
+  const homeClassId = user.student?.homeClassId;
+
+  const announcements = await prisma.announcement.findMany({
+    where: {
+      OR: [
+        { allUsers: true },
+        ...(homeClassId
+          ? [
+              {
+                homeClasses: {
+                  some: {
+                    id: homeClassId,
                   },
                 },
-              ]
-            : []),
-        ],
-      },
-      include: { homeClasses: true },
-    });
-  
-    return announcements;
-  }
+              },
+            ]
+          : []),
+      ],
+    },
+    include: { homeClasses: true },
+  });
+
+  return announcements;
+}
   export async function getHomeClassDetails(userId: string) {
     // Fetch user and their home class (student or facultyMember)
     const user = await prisma.user.findUnique({

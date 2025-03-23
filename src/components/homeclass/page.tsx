@@ -3,6 +3,7 @@
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getClassProfile } from "@/lib/actions";
+import { motion } from "framer-motion";
 
 interface Person {
   name: string;
@@ -34,6 +35,7 @@ export default async function ClassProfile() {
   let homeClass: HomeClass | null = null;
   try {
     homeClass = await getClassProfile(session.user.id);
+    console.log("🔍 Faculty Members:", homeClass.facultyMembers);
   } catch (error) {
     console.error("❌ Error fetching home class details:", error);
   }
@@ -47,8 +49,12 @@ export default async function ClassProfile() {
   }
 
   return (
-    <div className="bg-gradient-to-br from-white via-blue-50 to-blue-300 min-h-screen flex items-center justify-center p-4">
-      <div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6">
+    <div
+      className="bg-gradient-to-br from-white via-blue-50 to-blue-300 min-h-screen flex items-center justify-center p-4"
+ 
+    >
+      <div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6"
+           >
         <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8 text-center">
           {homeClass.className}
         </h1>

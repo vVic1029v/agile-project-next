@@ -46,17 +46,21 @@ export async function NewCourse(formData: FormData) {
   const subject = formData.get("subject") as string;
   const weekScheduleIdentifierRaw = formData.get("weekScheduleIdentifier") as string; 
   const color = formData.get("color") as string;
-
+  const weekScheduleIdentifierStr = formData.get("weekScheduleIdentifier") as string;
+const weekScheduleIdentifierss = JSON.parse( weekScheduleIdentifierStr) as SelectedDate[];
+console.log(weekScheduleIdentifierss);
   if (!homeClassId || !teacherEmail || !subject || !weekScheduleIdentifierRaw || !color) {
     throw new Error("Missing required fields in formData");
   }
 
-  const weekScheduleIdentifiers: WeekScheduleIdentifier[] = JSON.parse(weekScheduleIdentifierRaw).map((date: SelectedDate) => {
-    if (date.day === undefined || date.period === undefined) {
+  const weekScheduleIdentifiers: WeekScheduleIdentifier[] = weekScheduleIdentifierss.map((date: SelectedDate) => {
+    if (date.dayWeek === undefined || date.period === undefined) {
       throw new Error("Invalid weekScheduleIdentifier format");
     }
-    return { day: date.day, period: date.period };
+    return { day: date.dayWeek, period: date.period }; // Folosim dayWeek în loc de day
   });
+  
+
   console.log("weekScheduleIdentifierRaw:", weekScheduleIdentifierRaw);
   console.log("weekScheduleIdentifiers:", weekScheduleIdentifiers);
 
@@ -95,7 +99,7 @@ export async function newAnnouncement(formData: FormData) {
   const date = formData.get("date") as string;
   const allUsers = formData.get("allUsers") === "true";
   const homeClassIds = formData.get("homeClassIds") ? JSON.parse(formData.get("homeClassIds") as string) : undefined;
-
+  console.log(homeClassIds);
   if (!title || !content || !date) {
     throw new Error("Missing required fields in formData");
   }
@@ -116,28 +120,44 @@ export async function getClassProfile(userId: string) {
   try {
     const { homeClass } = await getHomeClassDetails(userId);
 
-    // Mapăm datele pentru a le trimite în formatul dorit
+    if (!homeClass) {
+      throw new Error("Home class not found");
+    }
+
     const homeClassProfile = {
-      className: homeClass.name,
-      homeroomTeacher: homeClass.homeroomFacultyMember
+      className: homeClass.name || "Unknown Class",
+
+      homeroomTeacher: homeClass.homeroomFacultyMember?.user
         ? {
-            name: `${homeClass.homeroomFacultyMember.user?.firstName} ${homeClass.homeroomFacultyMember.user?.lastName}`,
-            email: homeClass.homeroomFacultyMember.user?.email,
+            name: `${homeClass.homeroomFacultyMember.user.firstName || "Unknown"} ${homeClass.homeroomFacultyMember.user.lastName || "Name"}`,
+            email: homeClass.homeroomFacultyMember.user.email || "N/A",
           }
         : { name: "No homeroom teacher", email: "N/A" },
-      students: homeClass.students.map((student) => ({
-        name: `${student.user?.firstName} ${student.user?.lastName}`,
-        email: student.user?.email,
+
+      students: (homeClass.students || []).map((student) => ({
+        name: `${student.user?.firstName || "Unknown"} ${student.user?.lastName || "Student"}`,
+        email: student.user?.email || "N/A",
       })),
-      facultyMembers: homeClass.courses.map((course) => ({
-        name: `${course.facultyMember.user?.firstName} ${course.facultyMember.user?.lastName}`,
-        email: course.facultyMember.user?.email,
-        subject: course.subject,
-      })),
+
+      facultyMembers: Array.from(
+        new Map(
+          (homeClass.courses || [])
+            .filter((course) => course.facultyMember?.user) // Asigură-te că există user
+            .map((course) => [
+              course.facultyMember.user.email, // Cheia unică
+              {
+                name: `${course.facultyMember.user.firstName || "Unknown"} ${course.facultyMember.user.lastName || "Faculty"}`,
+                email: course.facultyMember.user.email,
+                subject: course.subject || "Unknown Subject",
+              },
+            ])
+        ).values()
+      ),
     };
 
     return homeClassProfile;
   } catch (error) {
+    console.error("Error fetching home class profile:", error);
     throw new Error("Error fetching home class profile");
   }
 }
