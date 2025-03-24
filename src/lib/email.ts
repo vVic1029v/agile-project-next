@@ -1,21 +1,20 @@
-import { Resend } from 'resend';
+import nodemailer from "nodemailer";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+export async function sendEmail(to: string[], subject: string, text: string) {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.EMAIL_USER, // Setează în `.env`
+      pass: process.env.EMAIL_PASS, // Setează în `.env`
+    },
+  });
 
-export async function sendEmail(to: string, subject: string, body: string) {
-  try {
-    console.log(`📧 Attempting to send email to: ${to}`);
-    const response = await resend.emails.send({
-      from: 'email@calendar.ex.com', 
-      to,
-      subject,
-      text: body,
-    });
+  const mailOptions = {
+    from: process.env.EMAIL_USER,
+    to, // Lista de emailuri
+    subject,
+    text,
+  };
 
-    console.log("✅ Email sent successfully:", response);
-
-    console.log("Full response:", response);
-  } catch (error) {
-    console.error("❌ Failed to send email:", error);
-  }
+  await transporter.sendMail(mailOptions);
 }

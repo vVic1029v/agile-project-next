@@ -28,6 +28,7 @@ export default function ProfilePage() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [removeSucces, SetRemoveSuccess] = useState(false);
   useEffect(() => {
     if (session?.user) {
       setUser(session.user);  
@@ -41,16 +42,27 @@ export default function ProfilePage() {
     if (uploadSuccess) {
       const timer = setTimeout(() => {
         setUploadSuccess(false);
+        
       }, 3000);
       return () => clearTimeout(timer);
     }
   }, [uploadSuccess]);
+  useEffect(() => {
+    if (removeSucces) {
+      const timer = setTimeout(() => {
+        SetRemoveSuccess(false);
+        
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [removeSucces]);
 
   const handleRemovePicture = async () => {
     if (!session?.user.id) return;
   
 
    await RemovePicture(session.user.id);
+   SetRemoveSuccess(true);
     
   };
   
@@ -311,7 +323,10 @@ export default function ProfilePage() {
             </button>
           )}
      {uploadSuccess && (
-            <p className="mt-4 text-green-300 font-semibold">Image changed, please relog to see the changes</p>
+            <p className="ml-4 mt-4 text-green-300 font-semibold">Image changed, please relog to see the changes</p>
+          )}
+           {removeSucces && (
+            <p className="ml-4 mt-4 text-red-600 font-semibold">Image removed, please relog to see the changes</p>
           )}
   <button 
             onClick={handleRemovePicture}

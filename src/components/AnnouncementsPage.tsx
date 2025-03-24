@@ -5,8 +5,9 @@ import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import { UserType } from "@prisma/client";
 import MainButton from "./Common/Buttons/MainButton";
-import { getAnnouncements, newAnnouncement } from "@/lib/actions";
+import { AllUsersEmails, getAnnouncements, HomeClassEmails, newAnnouncement } from "@/lib/actions";
 import SearchHomeClassModal from "./new/course/SearchHomeClassModal";
+import emailjs from '@emailjs/browser';
 
 interface Announcement {
   id: string;
@@ -103,13 +104,12 @@ const AnnouncementsPage: React.FC = () => {
       alert("All fields are required!");
       return;
     }
-
-    // ✅ Asigură-te că exact O clasă este selectată
+    console.log(newAnnouncementData.allUsers);
+    console.log('Selected Home Class:', selectedHomeClass);
     if (!newAnnouncementData.allUsers && (!selectedHomeClass || selectedHomeClass.id === undefined)) {
       alert("Trebuie să selectezi exact o clasă dacă anunțul nu este pentru toți utilizatorii.");
       return;
     }
-
     try {
       const formData = new FormData();
       formData.set("title", newAnnouncementData.title);
@@ -117,9 +117,13 @@ const AnnouncementsPage: React.FC = () => {
       formData.set("date", new Date(newAnnouncementData.date).toISOString());
       formData.set("allUsers", newAnnouncementData.allUsers.toString());
 
+    
       if (!newAnnouncementData.allUsers && selectedHomeClass) {
-        formData.set("homeClassIds", JSON.stringify([selectedHomeClass.id])); // ✅ Trimite doar un singur ID
+        formData.set("homeClassIds", JSON.stringify([selectedHomeClass.id]));
+      } else {
+        formData.delete("homeClassIds"); // Șterge `homeClassIds` dacă `allUsers` este true
       }
+      
 
       const result = await newAnnouncement(formData);
 
@@ -134,7 +138,45 @@ const AnnouncementsPage: React.FC = () => {
         date: new Date(createdAnnouncement.date).toISOString(),
         homeClasses: createdAnnouncement.homeClasses ?? [],
       };
+      let recipients: string[] = [];
 
+      if (newAnnouncementData.allUsers) {
+        // Obținem email-urile tuturor utilizatorilor
+        try {
+          recipients = await AllUsersEmails(); // Obținem email-urile tuturor utilizatorilor
+        } catch (error) {
+          console.error("Eroare la obținerea email-urilor tuturor utilizatorilor:", error);
+        }
+      } else {
+        // Email-uri pentru clasele selectate
+        try {
+          recipients = await HomeClassEmails(false, newAnnouncementData.homeClassIds); // Aici transmitem homeClassIds care este de tip string[]
+        } catch (error) {
+          console.error("Eroare la obținerea email-urilor claselor:", error);
+        }
+      }
+      
+      const templateParams = {
+        title: newAnnouncementData.title,
+        content: newAnnouncementData.content,
+        email_from: "info.application255@gmail.com",
+        // email: recipients.join(','), .
+        to_email: recipients.join(',')
+        
+      };
+      
+      emailjs.send(
+        "service_n98pet1",
+        "template_jwqmelg",
+        templateParams,
+        "8mP7DE5cZlsMFWHWO"
+      )
+      .then((response) => {
+        console.log("Email sent successfully!", response.status, response.text);
+      })
+      .catch((error) => {
+        console.error("Email sending failed:", error);
+      });
       setAnnouncements((prev) => [...prev, announcementWithDefaults]);
       setShowModal(false);
       setNewAnnouncementData({ title: "", content: "", date: "", allUsers: false, homeClassIds: [] });
@@ -223,13 +265,13 @@ const AnnouncementsPage: React.FC = () => {
                 className="w-full p-2 border rounded-lg mt-2"
               />
 
-              <input
-                type="checkbox"
-                checked={newAnnouncementData.allUsers}
-                onChange={(e) => setNewAnnouncementData({ ...newAnnouncementData, allUsers: e.target.checked })}
-                className="mt-2"
-              />
-              <label className="ml-2">Apply to all users</label>
+                <input
+                  type="checkbox"
+                  checked={newAnnouncementData.allUsers}
+                  onChange={(e) => setNewAnnouncementData({ ...newAnnouncementData, allUsers: e.target.checked })}
+                  className="mt-2"
+                />
+                <label className="ml-2">Apply to all users</label>
 
               <SearchHomeClassModal
                 onClose={() => { }}

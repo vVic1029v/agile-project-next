@@ -1,11 +1,12 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture } from "@/lib/database/database";
-import { UserType,Course } from "@prisma/client";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture, prisma } from "@/lib/database/database";
+import { UserType,Course, User } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
 import { SelectedDate } from "@/components/calendar/useCalendarState";
 import { WeekScheduleIdentifier } from "./database/timeSlots";
+import { sendEmail } from "./email";
 
 
 export async function SearchHomeClasses(formData: FormData): Promise<{ results: HomeClassSearchResult[] }> {
@@ -105,6 +106,9 @@ export async function newAnnouncement(formData: FormData) {
   }
 
   const newAnnouncement = await postNewAnnouncement(title, content, date, allUsers, homeClassIds);
+  
+
+
   return { newAnnouncement };
 }
 export async function getAnnouncements(userId: string) {
@@ -174,4 +178,49 @@ export async function RemovePicture(userId:string){
   if (!userId) return null;
   if (!isAuthorized(session, userId)) return null;
 DeleteProfilePicture(userId );
+}
+
+export async function AllUsersEmails(): Promise<string[]> {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        email: true, // Selectăm doar câmpul email
+      },
+    });
+    
+    // Extragem email-urile din obiectele de tip User
+    return users.map((user: { email: string }) => user.email); // Aici extragem doar email-ul
+  } catch (error) {
+    console.error("Eroare la obținerea email-urilor tuturor utilizatorilor:", error);
+    throw new Error("Nu s-au putut obține email-urile.");
+  }
+}
+export async function HomeClassEmails(allUsers: boolean, homeClassIds: string[]): Promise<string[]> {
+  try {
+    if (allUsers) {
+      return await AllUsersEmails(); // Dacă se dorește pentru toți utilizatorii
+    }
+
+    // Filtrăm utilizatorii care sunt în clasele selectate
+    const users = await prisma.student.findMany({
+      where: {
+        homeClassId: {
+          in: homeClassIds, // Filtrăm pe baza homeClassId
+        },
+      },
+      select: {
+        user: {
+          select: {
+            email: true, // Obținem email-ul utilizatorului
+          },
+        },
+      },
+    });
+
+    // Extragem email-urile din rezultatele obținute
+    return users.map(student => student.user.email);
+  } catch (error) {
+    console.error("Eroare la obținerea email-urilor pentru clasele selectate:", error);
+    throw new Error("Nu s-au putut obține email-urile pentru clasele selectate.");
+  }
 }

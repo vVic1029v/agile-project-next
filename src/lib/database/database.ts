@@ -341,7 +341,7 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     allUsers: boolean;
     homeClasses: HomeClass[];
   }> {
-    if ( (!homeClassIds)) {
+    if (!allUsers && (!homeClassIds || homeClassIds.length === 0)) {
       throw new Error("Trebuie să selectezi exact o clasă dacă anunțul nu este pentru toți utilizatorii.");
     }
   
@@ -461,4 +461,49 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     });
 
   }
+  export async function getAllUsersEmails(): Promise<string[]> {
+    try {
+      // Interoghează baza de date pentru a obține email-urile tuturor utilizatorilor
+      const users = await prisma.user.findMany({
+        select: {
+          email: true, // Selectează doar câmpul email
+        },
+      });
   
+      // Returnează un array de email-uri
+      return users.map(user => user.email);
+    } catch (error) {
+      console.error("Error fetching all users' emails:", error);
+      throw new Error("Unable to fetch emails.");
+    }
+  }
+
+ export async function getHomeClassEmails(allUsers: boolean, homeClassIds: string[]): Promise<string[]> {
+    let users;
+  
+    if (allUsers) {
+      // Fetch all users if the announcement is for all users
+      users = await prisma.user.findMany({
+        select: {
+          email: true,
+        },
+      });
+    } else {
+      // Fetch users belonging to the specified home class IDs
+      users = await prisma.user.findMany({
+        where: {
+          OR: homeClassIds.map((homeClassId) => ({
+            student: {
+              homeClassId: homeClassId,
+            },
+          })),
+        },
+        select: {
+          email: true,
+        },
+      });
+    }
+  
+    // Extract and return just the email addresses
+    return users.map((user) => user.email);
+  }
