@@ -1,13 +1,14 @@
 "use client";
 
-import { useRef, useState, useEffect, ReactNode, Fragment } from 'react';
+import { useRef, useState, useEffect, ReactNode } from 'react';
 import Panel from './Panel'; // Import the new Panel component
 
 interface ScrollPanelsProps {
   children: ReactNode[];
+  onActiveIndexChange: (index: number) => void;
 }
 
-export default function ScrollPanels({ children }: ScrollPanelsProps) {
+export default function ScrollPanels({ children, onActiveIndexChange }: ScrollPanelsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isManualScroll, setIsManualScroll] = useState(false);
@@ -21,6 +22,11 @@ export default function ScrollPanels({ children }: ScrollPanelsProps) {
       const panelWidth = containerWidth * 0.8; // 80% width for each panel
       const newIndex = Math.round(scrollLeft / panelWidth);
       setActiveIndex(newIndex);
+
+      if (newIndex !== activeIndex) {
+        setActiveIndex(newIndex);
+        onActiveIndexChange(newIndex); // Call the callback here
+      }
     }
   };
 
@@ -40,6 +46,8 @@ export default function ScrollPanels({ children }: ScrollPanelsProps) {
       // Update active index after animation completes
       setTimeout(() => {
         setActiveIndex(index);
+        onActiveIndexChange(index);
+        
         setIsManualScroll(false);
       }, 500);
     }
@@ -62,14 +70,12 @@ export default function ScrollPanels({ children }: ScrollPanelsProps) {
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="gap-x-[10vw] flex h-full w-full snap-x snap-mandatory overflow-x-visible scroll-smooth pl-[10%] pr-[10%]"
+        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overflow-visible scroll-smooth " //pl-[10%] pr-[10%]
       >
         {/* Panels */}
-        <>
-          {children.map((child, index) => (
-            <Fragment key={index}>{child}</Fragment>
-          ))}
-        </>
+        {children.map((child, index) => (
+          <Panel key={index}>{child}</Panel>
+        ))}
       </div>
 
       {/* Navigation Buttons */}

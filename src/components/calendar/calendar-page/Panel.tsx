@@ -7,9 +7,9 @@ interface PanelProps {
   width?: string;
 }
 
-export default function Panel({ children, width }: PanelProps) {
+export default function Panel({ children, width = 'w-[100%]' }: PanelProps) {
   return (
-    <section className={"overflow-y-hidden h-full shrink-0 px-[1vw] snap-center transition-transform duration-500 ease-in-out " + (width ? ` ${width}` : 'w-[80%]')}>
+    <section className={"overflow-visible h-full shrink-0 px-[1vw] snap-center transition-transform duration-500 ease-in-out flex justify-center " + (width)}>
       {children}
     </section>
   );

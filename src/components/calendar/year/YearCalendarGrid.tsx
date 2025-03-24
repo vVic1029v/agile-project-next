@@ -8,6 +8,7 @@ import AnimatedHeader from '@/components/Common/Headers/AnimatedHeader';
 export interface YearCalendarGridProps {
   year: number;
   onDayClick: (selected: SelectedDate, openModal: boolean) => void;
+  onWeekClick: (selected: SelectedDate, openModal: boolean) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   events?: StructuredEvents;
   selectedDate : SelectedDate;
@@ -17,6 +18,7 @@ export interface YearCalendarGridProps {
 const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({ 
   year, 
   onDayClick, 
+  onWeekClick,
   dayRefs, 
   events, 
   selectedDate,
@@ -38,11 +40,12 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                   {monthChangeIndex !== -1 && weekIndex !== 0 && (
                     <YearCalendarRow
                       key={`${weekIndex}-first`}
-                      week={[...week.slice(0, monthChangeIndex), ...Array(7 - monthChangeIndex).fill({ month: -1, week: weekIndex, day: 0 })]}
+                      week={[...week.slice(0, monthChangeIndex), ...Array(7 - monthChangeIndex).fill({ month: -1, week: weekIndex, day: -1 })]}
                       weekIndex={weekIndex}
                       days={days}
                       selectedDate={selectedDate}
-                      onClick={onDayClick}
+                      onDayClick={onDayClick}
+                      onWeekClick={onWeekClick}
                       dayRefs={dayRefs}
                       year={year}
                       events={events?.[year]?.[weekIndex] ?? []}
@@ -52,16 +55,17 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                   
                   {!(weekIndex > 1 && weeks[weekIndex][6].month === 0) && (
                     <>
-                    <div className="flex justify-center py-10" style={{ top: 100, backgroundColor: 'transparent', zIndex: 20 }}> {/* position: 'sticky', */}
+                    <div className="flex justify-center py-10 overflow-visible" style={{ top: 100, backgroundColor: 'transparent', zIndex: 20 }}> {/* position: 'sticky', */}
                       <AnimatedHeader text={monthNames[week[monthChangeIndex !== -1 ? monthChangeIndex : 0].month]} />
                     </div>
                     <YearCalendarRow
                       key={`${weekIndex}-second`}
-                      week={[...Array(monthChangeIndex !== -1 ? monthChangeIndex : 0).fill({ month: -1, week: weekIndex, day: 0 }), ...week.slice(monthChangeIndex !== -1 ? monthChangeIndex : 0)]}
+                      week={[...Array(monthChangeIndex !== -1 ? monthChangeIndex : 0).fill({ month: -1, week: weekIndex, day: -1 }), ...week.slice(monthChangeIndex !== -1 ? monthChangeIndex : 0)]}
                       weekIndex={weekIndex}
                       days={days}
                       selectedDate={selectedDate}
-                      onClick={onDayClick}
+                      onDayClick={onDayClick}
+                      onWeekClick={onWeekClick}
                       dayRefs={dayRefs}
                       year={year}
                       events={events?.[year]?.[weekIndex] ?? []}
@@ -78,7 +82,8 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                   weekIndex={weekIndex}
                   days={days}
                   selectedDate={selectedDate}
-                  onClick={onDayClick}
+                  onDayClick={onDayClick}
+                  onWeekClick={onWeekClick}
                   dayRefs={dayRefs}
                   year={year}
                   events={events?.[year]?.[weekIndex] ?? []}
@@ -100,7 +105,8 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
             weekIndex={weekIndex}
             days={days}
             selectedDate={selectedDate}
-            onClick={onDayClick}
+            onDayClick={onDayClick}
+            onWeekClick={onWeekClick}
             dayRefs={dayRefs}
             year={year}
             events={events?.[year]?.[weekIndex] ?? []}

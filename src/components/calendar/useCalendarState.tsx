@@ -28,15 +28,14 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
   let initialYear = yearParam ? Number(yearParam) : today.getFullYear();
   let initialWeek = weekParam ? Number(weekParam.split("W")[1]) - 1 : getWeekAndDay(initialYear, today.getMonth() + 1, today.getDate()).week;
   let initialSelectedDate = getToday();
-
+  
   if (dateParam) {
     const [year, month, day] = dateParam.split("-").map(Number);
     const { week, dayWeek } = getWeekAndDay(year, month, day);
     initialYear = year;
     initialWeek = week;
-
+    
     initialSelectedDate = {
-      ...initialSelectedDate,
       day: day,
       month: month-1,
       year: initialYear ,
@@ -44,10 +43,13 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
       dayWeek: dayWeek,
     };
   } else {
+    const date = getWeekStartDateFromYearWeek(initialYear, initialWeek);
     initialSelectedDate = {
-      ...initialSelectedDate,
+      day: date.getDate(),
+      month: date.getMonth(),
       year: initialYear,
       week: initialWeek,
+      dayWeek: date.getDay()-1
     }
   }
 
@@ -55,7 +57,7 @@ const initializeState = (yearParam: string | null, weekParam: string | null, dat
 };
 
 
-export const useCalendarState = (isWeekView: boolean) => {
+export const useCalendarState = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -80,7 +82,7 @@ export const useCalendarState = (isWeekView: boolean) => {
     (year: number, week?: number, extraParams: Record<string, string> = {}) => {
       const search = new URLSearchParams(searchParams.toString());
       search.set("year", String(year));
-      if (isWeekView && week !== undefined) {
+      if (week !== undefined) {
         search.set("week", `W${String(week + 1).padStart(2, "0")}`); // Convert to 1-indexed
       }
       if (!("date" in extraParams)) {
@@ -91,7 +93,7 @@ export const useCalendarState = (isWeekView: boolean) => {
       }
       router.replace(`${pathname}?${search.toString()}`, { scroll: false });
     },
-    [searchParams, router, pathname, isWeekView]
+    [searchParams, router, pathname]
   );
 
   return {

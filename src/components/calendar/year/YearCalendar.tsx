@@ -6,13 +6,14 @@ import { StructuredEvents } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
 
 export interface YearCalendarProps {
-  onClick?: (selected: SelectedDate, openModal: boolean) => void;
+  onDayClick: (selected: SelectedDate, openModal: boolean) => void;
+  onWeekClick: (selected: SelectedDate, openModal: boolean) => void;
   events: StructuredEvents;
   selectedDay: SelectedDate;
   monthHeaders?: boolean;
 }
 
-export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, selectedDay, monthHeaders }) => {
+export const YearCalendar: React.FC<YearCalendarProps> = ({ onDayClick: handleDayClick, onWeekClick: handleWeekClick, events, selectedDay, monthHeaders }) => {
   const today = useMemo(() => new Date(), []);
   const dayRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -43,23 +44,15 @@ export const YearCalendar: React.FC<YearCalendarProps> = ({ onClick, events, sel
     }
   }, []);
 
-  const handleDayClick = useCallback((selected: SelectedDate, openModal: boolean) => {
-    if (onClick) {
-      onClick(selected, openModal);
-    }
-  }, [onClick]);
-
-  // useEffect(() => {
-  //   scrollToDay(today.getMonth(), today.getDate());
-  // }, [scrollToDay, today]);
-
   useEffect(() => {
+    console.log('scrolling to day', selectedDay);
     scrollToDay(selectedDay.month, selectedDay.day);
   }, [scrollToDay, selectedDay]);
 
   return (
     <YearCalendarGrid
       onDayClick={handleDayClick}
+      onWeekClick={handleWeekClick}
       dayRefs={dayRefs}
       events={events}
       year={selectedDay.year}

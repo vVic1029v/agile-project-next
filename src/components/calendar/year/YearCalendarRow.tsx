@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import YearCalendarDayCell from './YearCalendarDayCell';
-import type { DayObj } from '@/lib/calendarUtils';
+import { getWeekStartDateFromYearWeek, type DayObj } from '@/lib/calendarUtils';
 import { useRouter, useSearchParams } from "next/navigation";
 import { DayCell, WeekCell } from '@/lib/database/getCalendarData';
 import { SelectedDate } from '../useCalendarState';
@@ -10,7 +10,8 @@ export interface YearCalendarRowProps {
   weekIndex: number;
   days: DayObj[];
   selectedDate : SelectedDate
-  onClick: (selected: SelectedDate, openModal: boolean) => void;
+  onDayClick: (selected: SelectedDate, openModal: boolean) => void;
+  onWeekClick: (selected: SelectedDate, openModal: boolean) => void;
   dayRefs: React.RefObject<(HTMLDivElement | null)[]>;
   year: number;
   events?: WeekCell;
@@ -22,39 +23,41 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
   weekIndex,
   days,
   selectedDate,
-  onClick,
+  onDayClick,
+  onWeekClick,
   dayRefs,
   year,
   events,
   showNewMonth = true,
 }) => {
   const now = useMemo(() => new Date(), []);
-  // const router = useRouter();
-  // const searchParams = useSearchParams();
 
-  // Helper function to navigate to a specific week on /calendar/week.
+  // Check if the current week includes the selected date
+  const isSelectedWeek = week.some(
+    (dayObj) =>
+      dayObj.day === selectedDate.day && dayObj.month === selectedDate.month
+  );
+
   const goToWeek = (weekIdx: number) => {
-    // Convert the 0-indexed week to a 1-indexed string and pad it.
-    // const weekStr = String(weekIdx + 1).padStart(2, "0");
-    // const newSearch = new URLSearchParams(searchParams.toString());
-    // newSearch.set("year", String(year));
-    // newSearch.set("week", `W${weekStr}`);
-    // newSearch.delete("date"); // Remove the "date" parameter if it exists.
-    // router.push(`/calendar/week?${newSearch.toString()}`, { scroll: false });
-
-    onClick({
-      ...selectedDate,
-      week: weekIdx,
-    }, false);
+    const idx = (week[0].day === -1) ? 6 : 0
+    onWeekClick(
+      {
+        day: week[idx].day,
+        month: week[idx].month,
+        year: year,
+        week: weekIdx,
+        dayWeek: idx
+      },
+      false
+    );
   };
 
   return (
     <div
-      className="relative items-center -mx-[-0px] flex w-[calc(100%+50px)]"
+      className={`relative items-center -mx-[-0px] flex overflow-visible ${
+        isSelectedWeek ? "bg-blue-100" : ""
+      }`} // Highlight the row if it's the selected week
       key={`week-${weekIndex}`}
-      style={{
-        overflow: 'visible', // Ensure content is not clipped
-      }}
     >
       <button
         type="button"
@@ -67,7 +70,11 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
       >
         <span
           className="absolute right-0 top-1/2 -translate-y-1/2 text-2xl"
-          style={{ writingMode: "vertical-lr", textOrientation: "sideways", height: "100%" }}
+          style={{
+            writingMode: "vertical-lr",
+            textOrientation: "sideways",
+            height: "100%",
+          }}
         >
           Week {weekIndex + 1}
         </span>
@@ -75,7 +82,9 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
       <div className="flex w-full">
         {week.map((dayObj, dayIndex) => {
           const index = weekIndex * 7 + dayIndex;
-          const isNewMonth = showNewMonth && (index === 0 || days[index - 1].month !== dayObj.month);
+          const isNewMonth =
+            showNewMonth &&
+            (index === 0 || days[index - 1].month !== dayObj.month);
           const isToday =
             dayObj.month === now.getMonth() &&
             dayObj.day === now.getDate() &&
@@ -89,7 +98,7 @@ const YearCalendarRow: React.FC<YearCalendarRowProps> = ({
               index={index}
               isNewMonth={isNewMonth}
               isToday={isToday}
-              onClick={onClick}
+              onClick={onDayClick}
               dayRefs={dayRefs}
               year={year}
               dayWeek={dayIndex}
