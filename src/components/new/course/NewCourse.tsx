@@ -27,7 +27,7 @@ export default function NewCourse() {
     animate={{ opacity: 1 }}
     transition={{ duration: 1 }}>
       <div className="p-6 rounded-2xl bg-white shadow-lg max-w-lg w-full">
-        <h1 className="text-1xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8">Create a New Course</h1>
+        <h1 className="text-2xl sm:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8">Create a New Course</h1>
         <CourseForm />
       </div>
     </motion.div>

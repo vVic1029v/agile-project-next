@@ -5,6 +5,8 @@ import { PrismaClient, User, Student, FacultyMember, UserType, HomeClass, TimeSl
 import { createScheduleTimeSlots, createTimeSlot, getTimesOfIndentifier, WeekScheduleIdentifier } from "@/lib/database/timeSlots";
 import { CourseTimeSlots, EventTimeSlot } from "./getCalendarData";
 import bcrypt from "bcryptjs";
+import { isAuthorized } from "../auth";
+import { Url } from "next/dist/shared/lib/router/router";
 
 // Initialize Prisma Client
 let prisma: PrismaClient;
@@ -103,11 +105,22 @@ export async function getCheapHomeClassById(homeClassId: string): Promise<HomeCl
 
 export async function postNewCourse(
   homeClassId: string,
-  teacherId: string,
+  teacherEmail: string,
   subject: string,
-  weekScheduleId: WeekScheduleIdentifier,
+  weekScheduleIds: WeekScheduleIdentifier[],
   color: string
 ): Promise<Course | null> {
+  const teacherId= (await getCheapUserByEmail(teacherEmail))?.id;
+  if (!teacherId) {
+    throw new Error(`No User found with email: ${teacherEmail}`);
+  }
+  const facultyMember = await prisma.facultyMember.findUnique({
+    where: { id: teacherId },
+  });
+
+  if (!facultyMember) {
+    throw new Error(`No FacultyMember found with ID: ${teacherId}`);
+  }
   const course = await prisma.course.create({
     data: {
       color: color,
@@ -125,8 +138,11 @@ export async function postNewCourse(
     }
   });
 
-  const timeSlotsData = createScheduleTimeSlots(weekScheduleId, course.id, homeClassId);
-
+  const timeSlotsData = weekScheduleIds.flatMap(id => createScheduleTimeSlots(id, course.id, homeClassId));
+  if (!Array.isArray(timeSlotsData) || timeSlotsData.length === 0) {
+    throw new Error("Failed to generate valid time slots");
+  }
+  
   await prisma.timeSlot.createMany({
     data: timeSlotsData
   });
@@ -325,6 +341,10 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     allUsers: boolean;
     homeClasses: HomeClass[];
   }> {
+    if (!allUsers && (!homeClassIds || homeClassIds.length === 0)) {
+      throw new Error("Trebuie să selectezi exact o clasă dacă anunțul nu este pentru toți utilizatorii.");
+    }
+  
     return prisma.announcement.create({
       data: {
         title,
@@ -338,98 +358,152 @@ export async function resetUserPassword(userId: string, newPassword: string) {
       include: { homeClasses: true },
     });
   }
-  export async function getAllAnnouncements(userId: string): Promise<Announcement[]> {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: { userType: true, student: true },
-    });
   
-    if (!user) {
-      throw new Error("User not found");
-    }
-  
-    if (user.userType === UserType.STUDENT && !user.student) {
-      throw new Error("Student not found");
-    }
-  
-    const homeClassId = user.student?.homeClassId;
-  
-    const announcements = await prisma.announcement.findMany({
-      where: {
-        OR: [
-          { allUsers: true },
-          ...(homeClassId
-            ? [
-                {
-                  homeClasses: {
-                    some: {
-                      id: homeClassId,
-                    },
+  export async function getAllAnnouncements(userId: string): Promise<
+  (Prisma.AnnouncementGetPayload<{ include: { homeClasses: true } }>)[]
+> {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: { userType: true, student: true },
+  });
+
+  if (!user) {
+    throw new Error("User not found");
+  }
+
+  if (user.userType === UserType.STUDENT && !user.student) {
+    throw new Error("Student not found");
+  }
+
+  const homeClassId = user.student?.homeClassId;
+
+  const announcements = await prisma.announcement.findMany({
+    where: {
+      OR: [
+        { allUsers: true },
+        ...(homeClassId
+          ? [
+              {
+                homeClasses: {
+                  some: {
+                    id: homeClassId,
                   },
                 },
-              ]
-            : []),
-        ],
-      },
-      include: { homeClasses: true },
-    });
-  
-    return announcements;
-  }
-  export async function getHomeClass(userId:string): Promise<HomeClass> {
+              },
+            ]
+          : []),
+      ],
+    },
+    include: { homeClasses: true },
+  });
 
-    console.log("Fetching home class for userId:", userId);
-  
+  return announcements;
+}
+  export async function getHomeClassDetails(userId: string) {
+    // Fetch user and their home class (student or facultyMember)
     const user = await prisma.user.findUnique({
       where: { id: userId },
       include: {
-        student: {
-          include: { homeClass: true },
-        },
-        facultyMember: {
-          include: { homeroomClass: true },
-        },
+        student: { include: { homeClass: true } },
+        facultyMember: { include: { homeroomClass: true } },
       },
     });
-  
-    console.log("✅ User from DB:", user);
   
     if (!user) {
       throw new Error("User not found");
     }
   
-    const homeClassId = user.student?.homeClass?.id || user.facultyMember?.homeroomClass?.id;
+    // Determine home class (for student or facultyMember)
+    const homeClassId =
+      user.student?.homeClass?.id || user.facultyMember?.homeroomClass?.id;
   
     if (!homeClassId) {
       throw new Error("User is not assigned to a home class");
     }
   
-    console.log("Fetching home class for ID:", homeClassId);
-  
- const homeClass = await prisma.homeClass.findUnique({
-  where: { id: homeClassId },
-  include: {
-    homeroomFacultyMember: {
-      include: { user: true },
-    },
-    students: {
-      include: { user: true }, 
-    },
-    courses: {
+    // Fetch home class details
+    const homeClass = await prisma.homeClass.findUnique({
+      where: { id: homeClassId },
       include: {
-        facultyMember: { include: { user: true } },
-        timeSlots: true,
+        homeroomFacultyMember: { include: { user: true } },
+        students: { include: { user: true } },
+        courses: { include: { facultyMember: { include: { user: true } } } },
       },
-    },
-  },
-});
-
-  
-    console.log("📊 Rezultat homeClass:", homeClass);
+    });
   
     if (!homeClass) {
       throw new Error("Home class not found");
     }
   
-    return homeClass;
+    return { homeClass };
+  }
+  export async function getUserProfileImage(userId:string){
+    const user=await prisma.user.findFirst({
+      where:{id:userId},
+    })
+    return {profileImg:user?.profileImage}
+  }
+  export async function ChangeProfilePicture(userId:string,profileImage:string){
+    const user = await prisma.user.update({
+      where: { id: userId },
+     data:{
+      profileImage: profileImage
+     }
+    });
+
+  }
+  export async function DeleteProfilePicture(userId:string){
+    const user = await prisma.user.update({
+      where: { id: userId },
+     data:{
+      profileImage: null
+     }
+    });
+
+  }
+  export async function getAllUsersEmails(): Promise<string[]> {
+    try {
+      // Interoghează baza de date pentru a obține email-urile tuturor utilizatorilor
+      const users = await prisma.user.findMany({
+        select: {
+          email: true, // Selectează doar câmpul email
+        },
+      });
+  
+      // Returnează un array de email-uri
+      return users.map(user => user.email);
+    } catch (error) {
+      console.error("Error fetching all users' emails:", error);
+      throw new Error("Unable to fetch emails.");
+    }
+  }
+
+ export async function getHomeClassEmails(allUsers: boolean, homeClassIds: string[]): Promise<string[]> {
+    let users;
+  
+    if (allUsers) {
+      // Fetch all users if the announcement is for all users
+      users = await prisma.user.findMany({
+        select: {
+          email: true,
+        },
+      });
+    } else {
+      // Fetch users belonging to the specified home class IDs
+      users = await prisma.user.findMany({
+        where: {
+          OR: homeClassIds.map((homeClassId) => ({
+            student: {
+              homeClassId: homeClassId,
+            },
+          })),
+        },
+        select: {
+          email: true,
+        },
+      });
+    }
+  
+    // Extract and return just the email addresses
+    return users.map((user) => user.email);
   }

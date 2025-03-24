@@ -35,7 +35,7 @@ const CourseForm: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     if (!selectedHomeClass) {
       setError("Please select a class.");
       setLoading(false);
@@ -46,14 +46,20 @@ const CourseForm: React.FC = () => {
       setLoading(false);
       return;
     }
-
+  
     try {
+      // Parsăm weekScheduleIdentifier din selectedTimeSlots
+      
+      const parsedWeekScheduleIdentifier = JSON.stringify(selectedTimeSlots);
+      console.log("weekScheduleIdentifierRaw:", parsedWeekScheduleIdentifier);
+   
+      
       const formData = new FormData();
       formData.set("query", courseName);
       formData.set("homeClassId", selectedHomeClass.id);
       formData.set("teacherEmail", professorEmail);
       formData.set("subject", courseName);
-      formData.set("weekScheduleIdentifier", JSON.stringify(selectedTimeSlots));
+      formData.set("weekScheduleIdentifier", parsedWeekScheduleIdentifier); // Folosim parsedWeekScheduleIdentifier
       formData.set("color", color);
   
       const results = await NewCourse(formData);
@@ -68,7 +74,7 @@ const CourseForm: React.FC = () => {
       setLoading(false);
     }
   }
-
+  
   return (
     <form className="p-6" onSubmit={handleSubmit}>
       {error && <p className="text-red-500">{error}</p>}
@@ -109,18 +115,21 @@ const CourseForm: React.FC = () => {
       </ModalOverlay>
 
       {selectedTimeSlots.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-lg font-semibold text-gray-800">Selected Time Slots:</h3>
-          <ul className="mt-2 space-y-2">
-            {selectedTimeSlots.map((slot, index) => (
-              <li key={index} className="text-gray-700 flex justify-between">
-                <span>{dayLabels[slot.dayWeek]}</span>
-                <span>{`Period ${slot.period}`}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+  <div className="mt-6">
+    <h3 className="text-lg font-semibold text-gray-800">Selected Time Slots:</h3>
+    <ul className="mt-2 space-y-2">
+      {selectedTimeSlots
+        .filter((slot) => slot && typeof slot.dayWeek === "number" && typeof slot.period === "number")
+        .map((slot, index) => (
+          <li key={index} className="text-gray-700 flex justify-between">
+            <span>{dayLabels[slot.dayWeek]}</span>
+            <span>{`Period ${slot.period}`}</span>
+          </li>
+        ))}
+    </ul>
+  </div>
+)}
+
 
       <button type="submit" className="px-4 py-2 bg-green-600 text-white rounded-md mt-6" disabled={loading}>{loading ? "Creating..." : "Create Course"}</button>
     </form>

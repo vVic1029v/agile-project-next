@@ -115,7 +115,7 @@ const PageBodyWrapper : React.FC<MyComponentProps> = ({ children }) => {
             </li> */}
 
             <li>
-              <Link href="/myclass" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
+              <Link href="/homeclass" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
                 <MdClass className="h-6 w-6 flex-shrink-0" />
                 <span className={`truncate transition-all duration-200 ${isExpanded ? "opacity-100" : "opacity-0"}`}>
                   My Class

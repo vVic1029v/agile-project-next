@@ -1,20 +1,16 @@
-"use client"
-import React,{useState} from "react";
-import { authMiddleware } from "@/lib/auth";
-import ProfilePage from "@/components/ProfilePage";
-
-import MyClassPage from "@/components/Myclass.Page";
-import { useSession } from "next-auth/react";
+"use server"
 
 
-export default function Myclass() {
+import ClassProfile from "@/components/homeclass/page";
+
+
+export default async function  Class() {
  
 
   
   return (
 
-   <MyClassPage></MyClassPage>
-      
+<ClassProfile></ClassProfile>      
   
 );
 

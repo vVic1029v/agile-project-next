@@ -1,11 +1,13 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getHomeClass, getExpensiveUserByEmail } from "@/lib/database/database";
-import { UserType,Course } from "@prisma/client";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture, prisma } from "@/lib/database/database";
+import { UserType,Course, User } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
 import { SelectedDate } from "@/components/calendar/useCalendarState";
 import { WeekScheduleIdentifier } from "./database/timeSlots";
+import { sendEmail } from "./email";
+
 
 export async function SearchHomeClasses(formData: FormData): Promise<{ results: HomeClassSearchResult[] }> {
   const query = formData.get("query") as string;
@@ -43,21 +45,27 @@ export async function NewCourse(formData: FormData) {
   const homeClassId = formData.get("homeClassId") as string;
   const teacherEmail = formData.get("teacherEmail") as string;
   const subject = formData.get("subject") as string;
-  const weekScheduleIdentifierRaw = formData.get("weekScheduleIdentifier") as string; // Assuming it's serialized
+  const weekScheduleIdentifierRaw = formData.get("weekScheduleIdentifier") as string; 
   const color = formData.get("color") as string;
-
+  const weekScheduleIdentifierStr = formData.get("weekScheduleIdentifier") as string;
+const weekScheduleIdentifierss = JSON.parse( weekScheduleIdentifierStr) as SelectedDate[];
+console.log(weekScheduleIdentifierss);
   if (!homeClassId || !teacherEmail || !subject || !weekScheduleIdentifierRaw || !color) {
     throw new Error("Missing required fields in formData");
   }
 
-  const weekScheduleIdentifiers: WeekScheduleIdentifier[] = JSON.parse(weekScheduleIdentifierRaw).map((date: SelectedDate) => {
-    if (date.day === undefined || date.period === undefined) {
+  const weekScheduleIdentifiers: WeekScheduleIdentifier[] = weekScheduleIdentifierss.map((date: SelectedDate) => {
+    if (date.dayWeek === undefined || date.period === undefined) {
       throw new Error("Invalid weekScheduleIdentifier format");
     }
-    return { day: date.day, period: date.period };
+    return { day: date.dayWeek, period: date.period }; // Folosim dayWeek în loc de day
   });
+  
 
-  const weekScheduleIdentifier = weekScheduleIdentifiers[0];
+  console.log("weekScheduleIdentifierRaw:", weekScheduleIdentifierRaw);
+  console.log("weekScheduleIdentifiers:", weekScheduleIdentifiers);
+
+  const weekScheduleIdentifier = weekScheduleIdentifiers; 
   if (!weekScheduleIdentifier) {
     throw new Error("No valid weekScheduleIdentifier found");
   }
@@ -90,14 +98,17 @@ export async function newAnnouncement(formData: FormData) {
   const title = formData.get("title") as string;
   const content = formData.get("content") as string;
   const date = formData.get("date") as string;
-  const allUsers = formData.get("allUsers") === "true"; // Assuming "allUsers" is passed as a string ("true" or "false")
+  const allUsers = formData.get("allUsers") === "true";
   const homeClassIds = formData.get("homeClassIds") ? JSON.parse(formData.get("homeClassIds") as string) : undefined;
-
+  console.log(homeClassIds);
   if (!title || !content || !date) {
     throw new Error("Missing required fields in formData");
   }
 
   const newAnnouncement = await postNewAnnouncement(title, content, date, allUsers, homeClassIds);
+  
+
+
   return { newAnnouncement };
 }
 export async function getAnnouncements(userId: string) {
@@ -109,27 +120,107 @@ export async function getAnnouncements(userId: string) {
 
   return { announcements };
 }
-export async function getHomeClassDetails(userId:string) {
+export async function getClassProfile(userId: string) {
   try {
-    const homeClass = await getHomeClass(userId);
+    const { homeClass } = await getHomeClassDetails(userId);
 
     if (!homeClass) {
-      console.error("Home class not found for userId:", userId);
       throw new Error("Home class not found");
     }
 
-    return {
-      id: homeClass.id,
-      name: homeClass.name,
-      startYear: homeClass.startYear,
-      homeroomFacultyMember: homeClass.homeroomFacultyMemberId,
-      students: homeClass.students,
-      courses: homeClass.courses,
+    const homeClassProfile = {
+      className: homeClass.name || "Unknown Class",
+
+      homeroomTeacher: homeClass.homeroomFacultyMember?.user
+        ? {
+            name: `${homeClass.homeroomFacultyMember.user.firstName || "Unknown"} ${homeClass.homeroomFacultyMember.user.lastName || "Name"}`,
+            email: homeClass.homeroomFacultyMember.user.email || "N/A",
+          }
+        : { name: "No homeroom teacher", email: "N/A" },
+
+      students: (homeClass.students || []).map((student) => ({
+        name: `${student.user?.firstName || "Unknown"} ${student.user?.lastName || "Student"}`,
+        email: student.user?.email || "N/A",
+      })),
+
+      facultyMembers: Array.from(
+        new Map(
+          (homeClass.courses || [])
+            .filter((course) => course.facultyMember?.user) // Asigură-te că există user
+            .map((course) => [
+              course.facultyMember.user.email, // Cheia unică
+              {
+                name: `${course.facultyMember.user.firstName || "Unknown"} ${course.facultyMember.user.lastName || "Faculty"}`,
+                email: course.facultyMember.user.email,
+                subject: course.subject || "Unknown Subject",
+              },
+            ])
+        ).values()
+      ),
     };
+
+    return homeClassProfile;
   } catch (error) {
-    console.error("Error in getHomeClassDetails:", error);
-    throw error;
+    console.error("Error fetching home class profile:", error);
+    throw new Error("Error fetching home class profile");
   }
-} 
+}
 
+export async function ChangePicture(userId:string,profileImage:string){
+  const session = await auth();
+  if (!userId) return null;
+  if (!isAuthorized(session, userId)) return null;
+  ChangeProfilePicture(userId,profileImage);
 
+}
+export async function RemovePicture(userId:string){
+  const session = await auth();
+  if (!userId) return null;
+  if (!isAuthorized(session, userId)) return null;
+DeleteProfilePicture(userId );
+}
+
+export async function AllUsersEmails(): Promise<string[]> {
+  try {
+    const users = await prisma.user.findMany({
+      select: {
+        email: true, // Selectăm doar câmpul email
+      },
+    });
+    
+    // Extragem email-urile din obiectele de tip User
+    return users.map((user: { email: string }) => user.email); // Aici extragem doar email-ul
+  } catch (error) {
+    console.error("Eroare la obținerea email-urilor tuturor utilizatorilor:", error);
+    throw new Error("Nu s-au putut obține email-urile.");
+  }
+}
+export async function HomeClassEmails(allUsers: boolean, homeClassIds: string[]): Promise<string[]> {
+  try {
+    if (allUsers) {
+      return await AllUsersEmails(); // Dacă se dorește pentru toți utilizatorii
+    }
+
+    // Filtrăm utilizatorii care sunt în clasele selectate
+    const users = await prisma.student.findMany({
+      where: {
+        homeClassId: {
+          in: homeClassIds, // Filtrăm pe baza homeClassId
+        },
+      },
+      select: {
+        user: {
+          select: {
+            email: true, // Obținem email-ul utilizatorului
+          },
+        },
+      },
+    });
+
+    // Extragem email-urile din rezultatele obținute
+    return users.map(student => student.user.email);
+  } catch (error) {
+    console.error("Eroare la obținerea email-urilor pentru clasele selectate:", error);
+    throw new Error("Nu s-au putut obține email-urile pentru clasele selectate.");
+  }
+}

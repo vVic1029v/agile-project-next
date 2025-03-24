@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Link from 'next/link';
 import BigButton from '../Common/Buttons/BigButton';
@@ -8,17 +9,17 @@ const HomePage: React.FC = () => {
     <div className="min-h-screen flex flex-col items-center justify-center gap-12 bg-gradient-to-br from-white via-blue-50 to-blue-300">
       <AnimatedHeader text={"Welcome to Your Calendar Dashboard"} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-4xl">
-        <Link href="/calendar/week" passHref>
+        <Link href="/calendar" passHref>
           <BigButton
             iconPath="M8 7V3M16 7V3M4 11h16M4 19h16M4 15h16"
-            label="Week Calendar"
+            label="Calendar"
             delay={0.2}
           />
         </Link>
-        <Link href="/calendar/year" passHref>
+        <Link href="/myclass" passHref>
           <BigButton
             iconPath="M3 4a1 1 0 011-1h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4z"
-            label="Year Calendar"
+            label="Homeclass"
             delay={0.4}
           />
         </Link>
