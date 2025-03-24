@@ -97,8 +97,8 @@ const CourseForm: React.FC = () => {
     className="w-full p-2 border rounded-md cursor-pointer"
   />
 </div>
-      <div className="flex items-center">
-        <button type="button" className="px-4 py-2 bg-cyan-600 text-white rounded-md mt-5" onClick={() => setIsModalOpenSearchHomeClass(true)}>Select Class</button>
+      <div className="flex items-center justify-between">
+        <button type="button" className="px-6 py-2 mr-2 bg-cyan-600 text-white rounded-md mt-5" onClick={() => setIsModalOpenSearchHomeClass(true)}>Select Class</button>
         {selectedHomeClass ? <p className="ml-5 text-cyan-800 mt-5">Selected Class: {selectedHomeClass.name}</p> : <p className="ml-5 text-gray-500 mt-5">No class selected.</p>}
       </div>
 
@@ -107,7 +107,7 @@ const CourseForm: React.FC = () => {
       </ModalOverlay>
 
       <div className="flex items-center mt-5">
-        <button type="button" className="px-4 py-2 bg-cyan-600 text-white rounded-md" onClick={() => setIsModalOpenPeriodSelect(true)}>Select Period</button>
+        <button type="button" className="px-5 py-2 bg-cyan-600 text-white rounded-md" onClick={() => setIsModalOpenPeriodSelect(true)}>Select Period</button>
       </div>
 
       <ModalOverlay onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect} title="Select a period">
