@@ -27,9 +27,9 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
   dayOfWeek,
 }) => {
   return (
-    <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7">
+    <div className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7 overflow-visible">
       <div
-        className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7"
+        className="sticky -top-px z-40 w-full rounded-t-2xl bg-white pt-7 overflow-visible"
         style={{
           position: "absolute",
           top: 0,

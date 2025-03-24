@@ -70,7 +70,7 @@ export default function ScrollPanels({ children, onActiveIndexChange }: ScrollPa
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto scroll-smooth " //pl-[10%] pr-[10%]
+        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overflow-visible scroll-smooth " //pl-[10%] pr-[10%]
       >
         {/* Panels */}
         {children.map((child, index) => (

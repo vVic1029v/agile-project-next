@@ -55,7 +55,7 @@ const YearCalendarGrid: React.FC<YearCalendarGridProps> = ({
                   
                   {!(weekIndex > 1 && weeks[weekIndex][6].month === 0) && (
                     <>
-                    <div className="flex justify-center py-10" style={{ top: 100, backgroundColor: 'transparent', zIndex: 20 }}> {/* position: 'sticky', */}
+                    <div className="flex justify-center py-10 overflow-visible" style={{ top: 100, backgroundColor: 'transparent', zIndex: 20 }}> {/* position: 'sticky', */}
                       <AnimatedHeader text={monthNames[week[monthChangeIndex !== -1 ? monthChangeIndex : 0].month]} />
                     </div>
                     <YearCalendarRow
