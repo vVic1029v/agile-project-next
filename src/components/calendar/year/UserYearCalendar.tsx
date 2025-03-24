@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useCallback, useMemo, ReactNode } from "react";
+import { useState, useCallback, useMemo, ReactNode, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { YearCalendar } from "@/components/calendar/year/YearCalendar";
 import { getWeekStartDateFromYearWeek, monthNames } from "@/lib/calendarUtils";
@@ -11,6 +11,7 @@ import CalendarDayModal from "../event-modal/CalendarDayModal";
 import CalendarContainter from "../CalendarContainer";
 import { getToday, SelectedDate } from "../useCalendarState";
 import { useCalendarStateContext } from "../CalendarStateProvider";
+import ScrollPanels, { ScrollPanelsRef } from "@/components/calendar/calendar-page/ScrollPanels";
 
 interface CalendarContainerProps {
   children: ReactNode;
@@ -21,7 +22,7 @@ export default function UserYearCalendar() {
   const { events, courses } = useCalendarContext();
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
-
+  const scrollPanelsRef = useRef<ScrollPanelsRef>(null);
   const { selectedDate, setSelectedDate, isModalOpen, setIsModalOpen, updateUrl } = useCalendarStateContext();
   console.log(selectedDate)
 
@@ -43,6 +44,13 @@ export default function UserYearCalendar() {
     setSelectedDate((prev) => ({ ...prev, month: monthIndex }));
   };
 
+  useEffect(() => {
+    if (scrollPanelsRef.current) {
+      // Now you can safely use the ref
+      scrollPanelsRef.current.scrollToPanel(selectedDate.week - 1);
+    }
+  }, [scrollPanelsRef, selectedDate.week]);
+  
   const handleSelectedDayChange = useCallback(
     (selected: SelectedDate, openModal: boolean) => {
       if (!userId) return;
@@ -58,15 +66,23 @@ export default function UserYearCalendar() {
   const handleSelectedWeekChange = useCallback(
     (selected: SelectedDate, openModal: boolean) => {
       if (!userId) return;
-      const { day, month, year, week } = selected;
-
+      const { year, week } = selected;
+  
       updateUrl(year, week);
       setSelectedDate(selected);
       if (openModal) setIsModalOpen(true);
+  
+      if (scrollPanelsRef.current) {
+        console.log(`Scrolling to panel: ${week - 1}`); // Debugging
+        scrollPanelsRef.current.scrollToPanel(week - 1);
+      } else {
+        console.warn('ScrollPanelsRef is null');
+      }
     },
     [userId, updateUrl, setSelectedDate, setIsModalOpen]
   );
-
+  
+  
   const closeModal = useMemo(() => () => {
     updateUrl(selectedDate.year);
     setIsModalOpen(false);

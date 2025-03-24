@@ -1,6 +1,4 @@
-"use client";
-
-import { useRef, useState, useEffect, ReactNode } from 'react';
+import React, { useRef, useState, useEffect, ReactNode } from 'react';
 import Panel from './Panel'; // Import the new Panel component
 
 interface ScrollPanelsProps {
@@ -8,7 +6,11 @@ interface ScrollPanelsProps {
   onActiveIndexChange: (index: number) => void;
 }
 
-export default function ScrollPanels({ children, onActiveIndexChange }: ScrollPanelsProps) {
+export interface ScrollPanelsRef {
+  scrollToPanel: (index: number) => void; // Expose this function
+}
+
+const ScrollPanels = React.forwardRef<ScrollPanelsRef, ScrollPanelsProps>(({ children, onActiveIndexChange }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isManualScroll, setIsManualScroll] = useState(false);
@@ -64,13 +66,18 @@ export default function ScrollPanels({ children, onActiveIndexChange }: ScrollPa
     return () => window.removeEventListener('keydown', handleKeyPress);
   }, [activeIndex]);
 
+  // Expose the scrollToPanel function through the ref
+  React.useImperativeHandle(ref, () => ({
+    scrollToPanel
+  }));
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
       {/* Scroll Container */}
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overflow-visible scroll-smooth " //pl-[10%] pr-[10%]
+        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overflow-visible scroll-smooth "
       >
         {/* Panels */}
         {children.map((child, index) => (
@@ -95,4 +102,6 @@ export default function ScrollPanels({ children, onActiveIndexChange }: ScrollPa
       </button>
     </div>
   );
-}
+});
+
+export default ScrollPanels;
