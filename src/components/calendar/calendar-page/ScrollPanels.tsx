@@ -87,19 +87,19 @@ const ScrollPanels = React.forwardRef<ScrollPanelsRef, ScrollPanelsProps>(({ chi
 
       {/* Navigation Buttons */}
       <button
-        onClick={() => scrollToPanel(activeIndex - 1)}
-        disabled={activeIndex === 0}
-        className="fixed left-4 top-1/2 -translate-y-1/2 rounded-full bg-white/30 p-4 backdrop-blur-lg transition-all hover:bg-white/50 disabled:opacity-0"
-      >
-        ←
-      </button>
-      <button
-        onClick={() => scrollToPanel(activeIndex + 1)}
-        disabled={activeIndex === totalPanels - 1}
-        className="fixed right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/30 p-4 backdrop-blur-lg transition-all hover:bg-white/50 disabled:opacity-0"
-      >
-        →
-      </button>
+  onClick={() => scrollToPanel(activeIndex - 1)}
+  disabled={activeIndex === 0}
+  className="fixed left-18 top-1/2 -translate-y-1/2 rounded-full bg-white/30 p-4 backdrop-blur-lg transition-all hover:bg-white/50 disabled:opacity-0 z-50"
+>
+  ←
+</button>
+<button
+  onClick={() => scrollToPanel(activeIndex + 1)}
+  disabled={activeIndex === totalPanels - 1}
+  className="fixed right-4 top-1/2 -translate-y-1/2 rounded-full bg-white/30 p-4 backdrop-blur-lg transition-all hover:bg-white/50 disabled:opacity-0 z-50"
+>
+  →
+</button>
     </div>
   );
 });
