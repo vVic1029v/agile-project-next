@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import CalendarHeader from '../CalendarHeader';
 import { SelectedDate } from '../useCalendarState';
 import Checkbox from '@/components/Common/Checkbox';
-
+import { ScrollPanelsRef } from '../calendar-page/ScrollPanels';
 export interface YearCalendarHeaderProps {
   selectedDay: SelectedDate;
   monthOptions: { name: string; value: string }[];
@@ -15,6 +15,7 @@ export interface YearCalendarHeaderProps {
   onNextYear: () => void;
   onShowMonthHeadersChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   monthHeaders: boolean;
+  
 }
 
 const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
@@ -38,7 +39,7 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
       additionalButtonsLeft={
         <>
           <button // TODO: This should be a SmallButton
-            onClick={() => router.push('/calendar/week')}
+            
             type="button"
             className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100"
           >

@@ -6,9 +6,9 @@ interface ScrollPanelsProps {
   onActiveIndexChange: (index: number) => void;
 }
 
-export interface ScrollPanelsRef {
-  scrollToPanel: (index: number) => void; // Expose this function
-}
+export type ScrollPanelsRef = {
+  scrollToPanel: (index: number) => void;
+};
 
 const ScrollPanels = React.forwardRef<ScrollPanelsRef, ScrollPanelsProps>(({ children, onActiveIndexChange }, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);

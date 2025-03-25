@@ -5,6 +5,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { getClassProfile } from "@/lib/actions";
 import * as motion from "motion/react-client";
+
+import StudentSearchModal from "../StudentSearchModal";
+import ClientStudentSearch from "../ClientStudentSearch";
+import { UserType } from "@prisma/client";
 interface Person {
   name: string;
   email: string;
@@ -16,6 +20,7 @@ interface FacultyMember extends Person {
 
 interface HomeClass {
   className: string;
+  homeclassId: string;
   homeroomTeacher: Person;
   students: Person[];
   facultyMembers: FacultyMember[];
@@ -24,6 +29,8 @@ interface HomeClass {
 export default async function ClassProfile() {
   const session = await getServerSession(authOptions);
 
+
+  
   if (!session?.user?.id) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -47,6 +54,7 @@ export default async function ClassProfile() {
       </div>
     );
   }
+
 
   return (
     <motion.div
@@ -117,7 +125,12 @@ export default async function ClassProfile() {
             ))}
           </ul>
         )}
-      </div>
+{
+  session.user.userType==="FACULTYMEMBER" && (<ClientStudentSearch classId={homeClass.homeclassId} />)
+}
+
+
+</div>
     </motion.div>
   );
 }

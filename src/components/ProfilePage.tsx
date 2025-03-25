@@ -207,11 +207,13 @@ export default function ProfilePage() {
   };
   
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">
     <motion.div 
-      initial={{ scale: 0.9, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      transition={{ duration: 0.6, ease: "easeOut" }}
+    
+    className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-blue-50 to-blue-300">
+    <motion.div 
+     initial={{ scale: 0.9, opacity: 0 }}
+    animate={{ scale: 1, opacity: 1 }}
+    transition={{ duration: 0.6, ease: "easeOut" }}
       className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between"
     >
 
@@ -222,9 +224,7 @@ export default function ProfilePage() {
         className="w-full sm:w-3/5 mb-8 sm:mb-0"
       >
          <motion.h1
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
+         
                 whileHover={{ scale: 1.05 }}
                 className="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 mb-8"
               >
@@ -243,9 +243,7 @@ export default function ProfilePage() {
             </motion.button>
                 </Link>
         <motion.div 
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
+        
         >
           <h1 className="text-2xl font-semibold  text-gray-800 mb-4">Change Password</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -288,9 +286,7 @@ export default function ProfilePage() {
         </motion.div>
       </motion.div>
       <motion.div 
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ delay: 0.4, duration: 0.8 }}
+ 
   className="w-full sm:w-2/5 flex flex-col justify-center items-center"
 >
   
@@ -302,7 +298,7 @@ export default function ProfilePage() {
 >
   
   <Image
-    src={imagePreview ?? profileImage  ?? "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1742747120/user_uploads/39ded51f-4925-487f-9522-6c294c949e74/39ded51f-4925-487f-9522-6c294c949e74-1742747120740.jpg"}
+    src={imagePreview ?? profileImage  ?? "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1742924641/user_uploads/87913eba-123a-458b-8e92-f30229e2fa8e/87913eba-123a-458b-8e92-f30229e2fa8e-1742924641170.jpg"}
     width={500}
     height={300}
     alt="Poza Profil"
@@ -336,6 +332,6 @@ export default function ProfilePage() {
           </button>
     </motion.div>
   </motion.div>
-  </div>
+  </motion.div>
   );
 }

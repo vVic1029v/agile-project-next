@@ -130,7 +130,7 @@ export async function getClassProfile(userId: string) {
 
     const homeClassProfile = {
       className: homeClass.name || "Unknown Class",
-
+      homeclassId: homeClass.id,
       homeroomTeacher: homeClass.homeroomFacultyMember?.user
         ? {
             name: `${homeClass.homeroomFacultyMember.user.firstName || "Unknown"} ${homeClass.homeroomFacultyMember.user.lastName || "Name"}`,
@@ -222,5 +222,57 @@ export async function HomeClassEmails(allUsers: boolean, homeClassIds: string[])
   } catch (error) {
     console.error("Eroare la obținerea email-urilor pentru clasele selectate:", error);
     throw new Error("Nu s-au putut obține email-urile pentru clasele selectate.");
+  }
+}
+export async function searchStudentsByEmail(email: string, classId: string) {
+  try {
+    const students = await prisma.student.findMany({
+      where: {
+        user: {
+          email: {
+            contains: email, // Căutare în timp real
+            mode: "insensitive", // Ignoră litere mari/mici
+          },
+        },
+      },
+      include: {
+        user: true,
+      },
+      take: 5, // Limităm la 5 rezultate pentru performanță
+    });
+
+    return students.map((student) => ({
+      id: student.id,
+      firstName: student.user.firstName,
+      lastName: student.user.lastName,
+      email: student.user.email,
+    }));
+  } catch (error) {
+    console.error("❌ Error fetching students:", error);
+    return [];
+  }
+}
+
+// Funcția de adăugare a studentului într-o clasă
+export async function addStudentToClass(email: string, classId: string) {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { email },
+      include: { student: true },
+    });
+
+    if (!user || !user.student) {
+      throw new Error("Student not found");
+    }
+
+    await prisma.student.update({
+      where: { id: user.student.id },
+      data: { homeClassId: classId },
+    });
+
+    return { success: true, message: "Student added successfully" };
+  } catch (error) {
+    console.error("❌ Error adding student:", error);
+    return { success: false, message: error };
   }
 }

@@ -16,7 +16,7 @@ interface MyComponentProps {
 const PageBodyWrapper : React.FC<MyComponentProps> = ({ children }) => {
   const { data: session } = useSession();
   const userType = session?.user?.userType || ""; // Evită erorile dacă session nu este încărcat
-  const [isExpanded, setIsExpanded] = useState(true);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   return (
     <div className="flex h-screen w-screen overflow-hidden">
@@ -56,6 +56,14 @@ const PageBodyWrapper : React.FC<MyComponentProps> = ({ children }) => {
                 </span>
               </Link>
             </li>
+            <li>
+              <Link href="/calendar" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
+                <HiOutlineCalendar className="h-6 w-6 flex-shrink-0" />
+                <span className={`truncate transition-all duration-200 ${isExpanded ? "opacity-100" : "opacity-0"}`}>
+                  Calendar
+                </span>
+              </Link>
+            </li>
             {userType === "FACULTYMEMBER" && (
               <li>
                 <Link href="/new/home-class" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
@@ -78,23 +86,16 @@ const PageBodyWrapper : React.FC<MyComponentProps> = ({ children }) => {
             )}
            
 
-            <li>
+            {/* <li>
               <Link href="/calendar/year" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
                 <HiCalendar className="h-6 w-6 flex-shrink-0" />
                 <span className={`truncate transition-all duration-200 ${isExpanded ? "opacity-100" : "opacity-0"}`}>
                   Year Calendar
                 </span>
               </Link>
-            </li>
+            </li> */}
 
-            <li>
-              <Link href="/calendar/week" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
-                <HiOutlineCalendar className="h-6 w-6 flex-shrink-0" />
-                <span className={`truncate transition-all duration-200 ${isExpanded ? "opacity-100" : "opacity-0"}`}>
-                  Week Calendar
-                </span>
-              </Link>
-            </li>
+         
 
             <li>
               <Link href="/announcements" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
@@ -115,7 +116,7 @@ const PageBodyWrapper : React.FC<MyComponentProps> = ({ children }) => {
             </li> */}
 
             <li>
-              <Link href="/homeclass" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
+              <Link href="/myclass" className="flex items-center space-x-3 py-2 px-4 rounded-md hover:bg-gray-700 transition-all duration-200">
                 <MdClass className="h-6 w-6 flex-shrink-0" />
                 <span className={`truncate transition-all duration-200 ${isExpanded ? "opacity-100" : "opacity-0"}`}>
                   My Class

@@ -73,7 +73,6 @@ export default function UserYearCalendar() {
       if (openModal) setIsModalOpen(true);
   
       if (scrollPanelsRef.current) {
-        console.log(`Scrolling to panel: ${week - 1}`); // Debugging
         scrollPanelsRef.current.scrollToPanel(week - 1);
       } else {
         console.warn('ScrollPanelsRef is null');
@@ -81,7 +80,6 @@ export default function UserYearCalendar() {
     },
     [userId, updateUrl, setSelectedDate, setIsModalOpen]
   );
-  
   
   const closeModal = useMemo(() => () => {
     updateUrl(selectedDate.year);
