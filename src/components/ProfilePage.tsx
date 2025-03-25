@@ -288,7 +288,7 @@ export default function ProfilePage() {
       <motion.div 
  
   className="w-full sm:w-2/5 flex flex-col justify-center items-center"
->
+> 
   
 <motion.div
   whileHover={{ scale: 1.1, boxShadow: "0px 10px 20px rgba(0, 0, 255, 0.3)" }}

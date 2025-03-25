@@ -1,43 +1,76 @@
+"use client";
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import BigButton from '../Common/Buttons/BigButton';
-import AnimatedHeader from '../Common/Headers/AnimatedHeader';
+import { motion } from 'framer-motion';
+
+// Definirea citatelor și autorilor
+const quotes = [
+  { text: "You don’t have to be great to start, but you have to start to be great.", author: "– Zig Ziglar" },
+  { text: "There are no shortcuts to any place worth going.", author: "– Beverly Stills" },
+  { text: "The best way to predict your future is to create it.", author: "– Abraham Lincoln" },
+  { text: "In a world where you can be anything, be kind.", author: "– Jennifer Dukes Lee" },
+  { text: "None of us is as smart as all of us.", author: "– Ken Blanchard" },
+  { text: "Learn from yesterday. Live for today. Hope for tomorrow.", author: "- Albert Einstein" },
+  { text: "Motivation is what gets you started. Habit is what keeps you going", author: " – Jim Ryun" },
+  { text: "Success is the sum of small efforts, repeated.", author: "— R. Collier" },
+  { text: "Don’t let what you cannot do interfere with what you can do.", author: "- John Wooden" },
+  { text: "The beautiful thing about learning is that no one can take it away from you.", author: "- B.B. King" },
+];
 
 const HomePage: React.FC = () => {
+  const [quote, setQuote] = useState<{ text: string; author: string }>({ text: '', author: '' });
+
+  useEffect(() => {
+    const randomQuote = quotes[Math.floor(Math.random() * quotes.length)];
+    setQuote(randomQuote);
+  }, []);
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center gap-12 bg-gradient-to-br from-white via-blue-50 to-blue-300">
-      <AnimatedHeader text={"Welcome to Your Calendar Dashboard"} />
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 w-full max-w-4xl">
-        <Link href="/calendar" passHref>
-          <BigButton
-            iconPath="M8 7V3M16 7V3M4 11h16M4 19h16M4 15h16"
-            label="Calendar"
-            delay={0.2}
-          />
-        </Link>
-        <Link href="/myclass" passHref>
-          <BigButton
-            iconPath="M3 4a1 1 0 011-1h16a1 1 0 011 1v16a1 1 0 01-1 1H4a1 1 0 01-1-1V4z"
-            label="Homeclass"
-            delay={0.4}
-          />
-        </Link>
-        <Link href="/announcements" passHref>
-          <BigButton
-            iconPath="M11 5l6-3v16l-6-3H5a2 2 0 01-2-2V7a2 2 0 012-2h6zM19 9v6M15 12h4"
-            label="Announcements"
-            delay={0.6}
-          />
-        </Link>
-        <Link href="/myaccount" passHref>
-          <BigButton
-            iconPath="M12 2C10.343 2 9 3.343 9 5s1.343 3 3 3 3-1.343 3-3-1.343-3-3-3zM4 20c0-3.313 4-4 8-4s8 .687 8 4"
-            label="My account"
-            delay={0.8}
-          />
-        </Link>
+    <div className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4">
+      <div className="absolute inset-0 bg-black bg-opacity-70"></div>
+
+      <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
+        <img src="/uploads/logo1.jpg" className="w-20 h-20 sm:w-20 sm:h-20 rounded-full hidden sm:block" alt="Logo" />
       </div>
+
+      <motion.div className="relative z-10 bg-black bg-opacity-60 p-6 sm:p-10 text-center text-white w-full max-w-7xl "
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.2, duration: 0.8 }}
+      >
+        {/* Titlu */}
+        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide drop-shadow-2xl leading-tight sm:leading-snug text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-200">
+          Welcome to your <span className="text-gray-300">Frontyard!</span>
+        </h1>
+
+        {/* Citat cu efect special */}
+        <p className="mt-6 text-xl sm:text-2xl italic text-gray-300 font-serif relative">
+          <span className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-500 opacity-20 blur-xl rounded-lg -z-10"></span>
+          <span className="text-2xl sm:text-3xl">“</span>{quote.text}
+          <span className="text-xl sm:text-2xl">”</span>
+        </p>
+        <p className="mt-4 text-lg sm:text-xl text-gray-400">
+          {quote.author}
+        </p>
+
+        {/* Butoane */}
+        <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-8 w-full">
+          {[ 
+            { href: '/calendar', icon: 'fa-calendar-alt', label: 'Calendar' },
+            { href: '/myclass', icon: 'fa-school', label: 'Homeclass' },
+            { href: '/announcements', icon: 'fa-bullhorn', label: 'Announcements' },
+            { href: '/myaccount', icon: 'fa-user', label: 'My Account' }
+          ].map(({ href, icon, label }) => (
+            <Link key={href} href={href} passHref>
+              <button className="flex flex-col items-center justify-center gap-2 p-6 sm:p-8 w-48 sm:w-64 h-28 sm:h-32 bg-gray-800 hover:bg-gray-700 transition shadow-lg rounded-xl">
+                <span className={`fas ${icon} text-3xl sm:text-4xl`}></span>
+                <span className="text-sm sm:text-lg font-semibold text-white">{label}</span>
+              </button>
+            </Link>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 };
