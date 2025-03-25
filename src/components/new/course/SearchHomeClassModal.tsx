@@ -58,7 +58,7 @@ export default function SearchHomeClassModal({ onClose, onSelect }: SearchModalP
           </button>
           <button
             type="button"
-            className="px-3 py-1 text-sm bg-blue-600 text-white rounded-md disabled:opacity-50"
+            className="px-3 py-1 text-sm bg-neutral-800 text-white rounded-md disabled:opacity-50"
             disabled={!selectedItem}
             onClick={() => {
               if (selectedItem) {

@@ -74,23 +74,6 @@ const AnnouncementsPage: React.FC = () => {
     fetchAnnouncements(); // Call the function inside useEffect
   }, [session]); // Add session as a dependency// Add session as a dependency
 
-  // useEffect(() => {
-  //   const fetchHomeClasses = async () => {
-  //     try {
-  //       const res = await fetch("/api/searchHomeClasses");
-
-  //       if (!res.ok) throw new Error("Failed to fetch home classes");
-
-  //       const data: HomeClass[] = await res.json();
-
-  //       setHomeClasses(data);
-  //     } catch (error) {
-  //       console.error("Error fetching home classes:", error);
-  //     }
-  //   };
-
-  //   fetchHomeClasses();
-  // }, []);
 
   const openDetailsModal = (announcement: Announcement) => {
     setSelectedAnnouncement(announcement);
@@ -200,12 +183,12 @@ const AnnouncementsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-white via-blue-50 to-blue-300">
+    <div className="min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 bg-neutral-100">
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="text-4xl font-bold text-cyan-600"
+        className="text-4xl font-bold text-neutral-800"
       >
         Announcements
       </motion.h1>
@@ -292,7 +275,7 @@ const AnnouncementsPage: React.FC = () => {
                 className="w-full p-2 border rounded-lg mt-2"
               />
 
-              <button onClick={handleSubmitAnnouncement} className="bg-cyan-600 text-white p-3 rounded-lg w-full mt-4">
+              <button onClick={handleSubmitAnnouncement} className="bg-neutral-900  hover:bg-neutral-700 text-white p-3 rounded-lg w-full mt-4">
                 Submit
               </button>
             </form>

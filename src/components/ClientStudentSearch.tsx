@@ -35,7 +35,7 @@ export default function ClientStudentSearch({ classId }: ClientStudentSearchProp
     <div className="mt-4">
       <button
         onClick={() => setShowModal(true)}
-        className="px-4 py-2 bg-blue-600 text-white rounded-md"
+        className="px-4 py-2 bg-neutral-700 hover:bg-neutral-900 text-white rounded-md ml-5"
       >
         Add Student
       </button>

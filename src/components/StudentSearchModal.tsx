@@ -49,7 +49,7 @@ export default function StudentSearchModal({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
       <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-        <h2 className="text-lg font-semibold mb-4">Search Students</h2>
+        <h2 className="text-lg font-semibold mb-4">Search and add Students</h2>
 
         <input
           type="text"

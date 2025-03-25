@@ -17,7 +17,7 @@ interface SearchResultListProps {
             <li
               key={item.id}
               className={`p-2 cursor-pointer ${
-                selectedItemId === item.id ? "bg-blue-100" : "hover:bg-gray-100"
+                selectedItemId === item.id ? "bg-neutral-300" : "hover:bg-gray-100"
               }`}
               onClick={() => onSelect(item)}
             >
