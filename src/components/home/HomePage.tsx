@@ -63,7 +63,7 @@ const HomePage: React.FC = () => {
             { href: '/myaccount', icon: 'fa-user', label: 'My Account' }
           ].map(({ href, icon, label }) => (
             <Link key={href} href={href} passHref>
-              <button className="flex flex-col items-center justify-center gap-2 p-6 sm:p-8 w-48 sm:w-64 h-28 sm:h-32 bg-gray-800 hover:bg-gray-700 transition shadow-lg rounded-xl">
+              <button className="flex flex-col items-center justify-center gap-2 p-6 sm:p-8 w-48 sm:w-64 h-28 sm:h-32 bg-neutral-800 hover:bg-neutral-900 transition shadow-lg rounded-xl">
                 <span className={`fas ${icon} text-3xl sm:text-4xl`}></span>
                 <span className="text-sm sm:text-lg font-semibold text-white">{label}</span>
               </button>
