@@ -189,14 +189,14 @@ const NewsFeed: React.FC = () => {
             </div>
 
             {preview && (
-              <div className="mt-4 w-full flex justify-center">
-                <img
-                  src={preview}
-                  alt="preview"
-                  className="rounded-lg shadow-lg w-full max-w-full object-cover"
-                />
-              </div>
-            )}
+  <div className="mt-4 w-full flex justify-center">
+    <img
+      src={preview}
+      alt="preview"
+      className="rounded-lg shadow-lg w-auto max-w-full max-h-80 object-contain"  // Ajustează aici pentru a controla dimensiunea imaginii
+    />
+  </div>
+)}
 
             <button
               onClick={handleSubmit}
