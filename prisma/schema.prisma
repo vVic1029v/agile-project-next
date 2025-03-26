@@ -21,6 +21,7 @@ model User {
   student       Student?
   events        Event[]        @relation("UserEvents")
   profileImage  String?
+  news          News[]         @relation("UserNews") 
 }
 
 model Student {
@@ -118,6 +119,16 @@ model Announcement {
   allUsers    Boolean     @default(false)  
   homeClasses HomeClass[]   @relation("AnnouncementHomeClass")
 }
+model News {
+ id        String   @id @default(uuid())
+  title     String
+  content   String
+  imageUrl  String?  
+  date      DateTime @default(now())
+  authorId  String   
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade, name: "UserNews")
+}
+
 
 
 enum UserType {

@@ -35,13 +35,14 @@ export default function SignIn() {
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
-        className="w-full max-w-5xl h-[600px] bg-neutral-800 rounded-2xl shadow-xl flex overflow-hidden"
+        className="w-full max-w-5xl h-[600px] bg-neutral-800 rounded-2xl shadow-xl flex flex-col sm:flex-row overflow-hidden"
       >
-        {/* Stânga - Secțiunea Formularului */}
-        <div className="w-1/2 flex justify-center items-center p-10">
-          <div className="w-full max-w-sm bg-neutral-800 p-8 rounded-xl ">
-            <h1 className="text-3xl sm:text-4xl font-extrabold  text-neutral-100 mb-8 text-center">
+        {/* Secțiunea Formularului */}
+        <div className="w-full sm:w-1/2 flex justify-center items-center p-6 sm:p-10">
+          <div className="w-full max-w-sm bg-neutral-800 p-8 rounded-xl">
+            <h1 className="text-3xl sm:text-4xl font-extrabold text-neutral-100 mb-8 text-center">
               Welcome Back!
+              <br />
               Sign In
             </h1>
 
@@ -86,18 +87,14 @@ export default function SignIn() {
           </div>
         </div>
 
-        {/* Dreapta - Imagine */}
+        {/* Dreapta - Imagine (ascunsă pe mobile) */}
         <div
-          className="w-1/2 bg-cover bg-center"
-          style={{ backgroundImage: "url('/uploads/logincampus.webp')",
+          className="hidden sm:block w-1/2 bg-cover bg-center"
+          style={{
+            backgroundImage: "url('/uploads/logincampus.webp')",
             backgroundPosition: "70% center",
-            
-           }}
-        >
-     
-
-       
-        </div>
+          }}
+        ></div>
       </motion.div>
     </div>
   );

@@ -11,7 +11,7 @@ const MainButton: React.FC<MainButtonProps> = ({ onClick, children, className })
     <button
       onClick={onClick}
       type="button"
-      className={`bg-neutral-700 text-white p-3 rounded-lg mt-4 hover:bg-neutral-900 ${className}`}
+      className={`bg-neutral-800 text-white p-3 rounded-lg mt-4 hover:bg-neutral-900 ${className}`}
     >
       {children}
     </button>

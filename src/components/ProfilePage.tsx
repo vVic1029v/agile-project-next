@@ -201,19 +201,19 @@ export default function ProfilePage() {
       className="min-h-screen flex items-center justify-center bg-neutral-100"
     >
       <motion.div
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
         className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between"
       >
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.8 }}
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }}
+        transition={{ duration: 1 }}
           className="w-full sm:w-3/5 mb-8 sm:mb-0"
         >
           <motion.h1
-            whileHover={{ scale: 1.05 }}
+            
             className="text-3xl sm:text-4xl font-extrabold  text-neutral-800 mb-8"
           >
             My account

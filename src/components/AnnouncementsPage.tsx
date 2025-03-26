@@ -193,7 +193,7 @@ const AnnouncementsPage: React.FC = () => {
         Announcements
       </motion.h1>
       {isFacultyMember && (
-        <MainButton onClick={() => setShowModal(true)}>Add Announcement</MainButton>
+        <MainButton onClick={() => setShowModal(true)}>+ Add Announcement</MainButton>
       )}
 
       <motion.div

@@ -92,7 +92,7 @@ export default async function ClassProfile() {
                   </a>
                 </div>
                 {prof.subject && (
-                  <span className="inline-block mt-1 bg-neutral-100 text-neutral-800 text-xs font-semibold px-3 py-1 rounded-full border">
+                  <span className="inline-block mt-1 bg-neutral-700 text-neutral-100 text-xs font-semibold px-3 py-1 rounded-full border">
                     {prof.subject}
                   </span>
                 )}

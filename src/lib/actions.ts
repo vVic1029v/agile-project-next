@@ -276,3 +276,68 @@ export async function addStudentToClass(email: string, classId: string) {
     return { success: false, message: error };
   }
 }
+
+export const createNews = async (data: {
+  title: string;
+  content: string;
+  imageUrl?: string;
+  authorId: string;
+  date: string;
+}) => {
+  try {
+    // Crearea unui news în baza de date
+    const news = await prisma.news.create({
+      data: {
+        title: data.title,
+        content: data.content,
+        imageUrl: data.imageUrl,
+        authorId: data.authorId,
+        date:new Date(),
+      },
+    });
+    return news;
+  } catch (error) {
+    throw new Error("Failed to create news: " + error);
+  }
+};
+
+export const getAllNews = async () => {
+  try {
+    // Preluarea tuturor noutăților
+    const news = await prisma.news.findMany({
+      include: {
+        author: true, // Include autorul în rezultat pentru a-l folosi pe frontend
+      },
+      orderBy: {
+        date: "desc", // Sortare după data noutății
+      },
+    });
+    return news;
+  } catch (error) {
+    throw new Error("Failed to fetch news: " + error);
+  }
+};
+
+export const getAuthorNameById = async (userId: string): Promise<string | null> => {
+  try {
+    // Căutăm utilizatorul după ID
+    const user = await prisma.user.findUnique({
+      where: {
+        id: userId, // presupunem că 'id' este câmpul de identificare al utilizatorului
+      },
+      select: {
+        firstName: true,  // Selectăm și prenumele
+        lastName: true,   // Selectăm și numele
+      },
+    });
+
+    // Dacă utilizatorul există, returnăm numele complet
+    if (user) {
+      return `${user.firstName} ${user.lastName}`;
+    }
+    return null;  // Dacă utilizatorul nu există, returnăm null
+  } catch (error) {
+    console.error("Error fetching author name: ", error);
+    return null;
+  }
+};
