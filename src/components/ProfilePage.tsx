@@ -214,7 +214,7 @@ export default function ProfilePage() {
         >
           <motion.h1
             whileHover={{ scale: 1.05 }}
-            className="text-3xl sm:text-4xl font-extrabold text-transparent  text-neutral-800 mb-8"
+            className="text-3xl sm:text-4xl font-extrabold  text-neutral-800 mb-8"
           >
             My account
           </motion.h1>
