@@ -41,7 +41,7 @@ const CreateHomeClass = () => {
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }}>
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mt-6 w-96 space-y-4">
         <motion.div
-          className="text-2xl sm:text-3xl font-extrabold text-transparent text-neutral-700 text-center mb-8"
+          className="text-2xl sm:text-3xl font-extrabold  text-neutral-700 text-center mb-8"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}

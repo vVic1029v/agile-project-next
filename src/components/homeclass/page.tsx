@@ -61,7 +61,7 @@ export default async function ClassProfile() {
       transition={{ duration: 1 }}
     >
       <div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6">
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-transparent text-neutral-800 mb-8 text-center">
+        <h1 className="text-3xl sm:text-4xl font-extrabold  text-neutral-800 mb-8 text-center">
           {homeClass.className}
         </h1>
 

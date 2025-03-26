@@ -8,6 +8,28 @@ import { NewCourse } from "@/lib/actions";
 
 const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
+const subjects = [
+  "English",
+  "French",
+  "Romanian",
+  "Chemistry",
+  "Physics",
+  "Math",
+  "Sports",
+  "Religion",
+  "Economy",
+  "Psychology",
+  "Sociology",
+  "Logical Thinking",
+  "Informatics",
+  "History",
+  "Geography",
+  "Holocaust History",
+  "Drawing",
+  "Biology",
+  "Latin"
+];
+
 const CourseForm: React.FC = () => {
   const [isModalOpenSearchHomeClass, setIsModalOpenSearchHomeClass] = useState(false);
   const [isModalOpenPeriodSelect, setIsModalOpenPeriodSelect] = useState(false);
@@ -77,13 +99,18 @@ const CourseForm: React.FC = () => {
 
       <div className="mb-4">
         <label className="block font-semibold text-neutral-700">Course Name:</label>
-        <input 
-          type="text" 
-          value={courseName} 
-          onChange={(e) => setCourseName(e.target.value)} 
-          className="w-full p-2 border rounded-md text-neutral-900" 
-          placeholder="Enter course name" 
-        />
+        <select
+          value={courseName}
+          onChange={(e) => setCourseName(e.target.value)}
+          className="w-full p-2 border rounded-md text-neutral-900"
+        >
+          <option value="">Select a subject</option>
+          {subjects.map((subject) => (
+            <option key={subject} value={subject}>
+              {subject}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div className="mb-4">
