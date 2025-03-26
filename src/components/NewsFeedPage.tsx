@@ -132,6 +132,9 @@ const NewsFeed: React.FC = () => {
       >
         {news.map((newsItem) => (
           <motion.div
+          initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
             key={newsItem.id}
             onClick={() => openDetailsModal(newsItem)}
             className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
