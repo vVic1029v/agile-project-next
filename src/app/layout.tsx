@@ -4,8 +4,8 @@ import { Geist, Geist_Mono, } from "next/font/google";
 import { IBM_Plex_Serif } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
-import ClientWrapper from "@/components/body/ClientWrapper";
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import ClientWrapper from "@/components/Body/ClientWrapper";
 
 
 const geistSans = Geist({

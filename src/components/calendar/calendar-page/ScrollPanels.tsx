@@ -15,7 +15,7 @@ const ScrollPanels = React.forwardRef<ScrollPanelsRef, ScrollPanelsProps>(({ chi
   const [activeIndex, setActiveIndex] = useState(0);
   const [isManualScroll, setIsManualScroll] = useState(false);
   const totalPanels = children.length;
-
+ 
   // Handle scroll events
   const handleScroll = () => {
     if (containerRef.current && !isManualScroll) {
@@ -103,5 +103,5 @@ const ScrollPanels = React.forwardRef<ScrollPanelsRef, ScrollPanelsProps>(({ chi
     </div>
   );
 });
-
+ScrollPanels.displayName = 'ScrollPanels';
 export default ScrollPanels;
