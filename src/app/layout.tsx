@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
-import ClientWrapper from "@/components/body/ClientWrapper";
+import ClientWrapper from "@/components/Body/ClientWrapper";
 
 
 
