@@ -13,7 +13,7 @@ interface Student {
 interface StudentSearchModalProps {
   classId: string;
   onClose: () => void;
-  onSelect: (student: Student) => void; // ❗Acum primește `Student`
+  onSelect: (student: Student) => void;
 }
 
 export default function StudentSearchModal({
@@ -48,7 +48,7 @@ export default function StudentSearchModal({
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+      <div className="bg-neutral-100 p-6 rounded-lg shadow-lg w-96 ">
         <h2 className="text-lg font-semibold mb-4">Search and add Students</h2>
 
         <input
@@ -56,7 +56,7 @@ export default function StudentSearchModal({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Search by email"
-          className="border p-2 w-full rounded-md"
+          className="border p-2 w-full rounded-md bg-transparent focus:ring-neutral-500 transition duration-200"
         />
 
         <div className="mt-2 border rounded-md max-h-40 overflow-y-auto">
@@ -66,7 +66,7 @@ export default function StudentSearchModal({
             students.map((student) => (
               <div
                 key={student.id}
-                onClick={() => onSelect(student)} // 🔥 Trimite `student` întreg, nu doar email-ul
+                onClick={() => onSelect(student)} 
                 className="p-2 cursor-pointer hover:bg-gray-100"
               >
                 {student.firstName} {student.lastName} - {student.email}
@@ -79,7 +79,7 @@ export default function StudentSearchModal({
 
         <button
           onClick={onClose}
-          className="mt-4 w-full bg-gray-400 text-white py-2 rounded-md"
+          className="mt-4 w-full bg-gray-400 text-white py-2 rounded-md bg-neutral-600"
         >
           Close
         </button>

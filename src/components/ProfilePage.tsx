@@ -198,13 +198,14 @@ export default function ProfilePage() {
 
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-neutral-100"
+      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]"
     >
+       <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
       <motion.div
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between"
+        className="bg-neutral-100 p-8 rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between z-10"
       >
         <motion.div
         initial={{ opacity: 0 }} 
@@ -242,7 +243,7 @@ export default function ProfilePage() {
                   id="currentPassword"
                   value={currentPassword}
                   onChange={(e) => setCurrentPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 transition duration-200"
+                  className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 transition duration-200 bg-neutral-100"
                   placeholder="Current password"
                 />
               </div>
@@ -253,7 +254,7 @@ export default function ProfilePage() {
                   id="newPassword"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
-                  className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 transition duration-200"
+                  className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-500 transition duration-200 bg-neutral-100"
                   placeholder="New password"
                 />
               </div>
@@ -277,7 +278,7 @@ export default function ProfilePage() {
           <motion.div
             whileHover={{ scale: 1.1, boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.3)" }}
             transition={{ duration: 0.3 }}
-            className="w-60 h-60 bg-gradient-to-r from-neutral-300 to-neutral-500 rounded-lg shadow-xl flex items-center justify-center border-8 border-white cursor-pointer relative overflow-hidden"
+            className="w-60 h-60 bg-gradient-to-r from-neutral-300 to-neutral-500 rounded-lg shadow-xl flex items-center justify-center border-8 border-neutral-100 cursor-pointer relative overflow-hidden"
             onClick={() => document.getElementById("fileInput")?.click()}
           >
             <Image

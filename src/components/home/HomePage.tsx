@@ -40,8 +40,8 @@ const HomePage: React.FC = () => {
         transition={{ delay: 0.2, duration: 0.8 }}
       >
         {/* Titlu */}
-        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide drop-shadow-2xl leading-tight sm:leading-snug text-transparent bg-clip-text bg-gradient-to-r from-gray-100 to-gray-200">
-          Welcome to your <span className="text-gray-300">Frontyard!</span>
+        <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide drop-shadow-2xl leading-tight sm:leading-snug text-transparent bg-neutral-100 bg-clip-text">
+          Welcome to your <span className="text-neutral-100">Frontyard!</span>
         </h1>
 
         {/* Citat cu efect special */}

@@ -32,7 +32,7 @@ export default function ClientStudentSearch({ classId }: ClientStudentSearchProp
   };
 
   return (
-    <div className="mt-4">
+    <div className="mt-4 bg-neutral-100">
       <button
         onClick={() => setShowModal(true)}
         className="px-4 py-2 bg-neutral-700 hover:bg-neutral-900 text-white rounded-md ml-5"

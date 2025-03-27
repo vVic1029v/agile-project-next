@@ -1,7 +1,10 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
 import { SessionProvider } from "next-auth/react";
 import { PropsWithChildren } from "react"
 import PageBodyWrapper from "./PageBodyWrapper";
