@@ -36,7 +36,7 @@ export default function SearchHomeClassModal({ onClose, onSelect }: SearchModalP
    <div>
       <div className="p-6">
         {/* <h2 className="text-lg font-semibold mb-2">Select a class</h2> */}
-        <p className="text-sm text-gray-500 mb-4">Search and select a class.</p>
+        <p className="text-sm text-neutral-800 mb-4">Search and select a class.</p>
 
         {/* Search Input */}
         <SearchInput query={query} onChange={(value) => { setQuery(value); handleSearch(value); }} />

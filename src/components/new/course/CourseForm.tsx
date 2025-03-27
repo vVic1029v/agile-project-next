@@ -102,11 +102,11 @@ const CourseForm: React.FC = () => {
         <select
           value={courseName}
           onChange={(e) => setCourseName(e.target.value)}
-          className="w-full p-2 border rounded-md text-neutral-900"
+          className="w-full p-2 border rounded-md text-neutral-900 bg-transparent focus:ring-neutral-500 transition duration-200"
         >
           <option value="">Select a subject</option>
           {subjects.map((subject) => (
-            <option key={subject} value={subject}>
+            <option key={subject} value={subject} className="bg-trasnparent">
               {subject}
             </option>
           ))}
@@ -119,7 +119,7 @@ const CourseForm: React.FC = () => {
           type="email" 
           value={professorEmail} 
           onChange={(e) => setProfessorEmail(e.target.value)} 
-          className="w-full p-2 border rounded-md text-neutral-900" 
+          className="w-full p-2 border rounded-md text-neutral-900 bg-transparent focus:ring-neutral-500 transition duration-200" 
           placeholder="Enter professor's email" 
         />
       </div>

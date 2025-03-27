@@ -106,29 +106,30 @@ const NewsFeed: React.FC = () => {
   };
   return (
     <div className="min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 bg-transparent">
+      <div className="items-center flex flex-col w-full max-w-4xl" >
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="text-4xl font-bold text-neutral-50"
+        transition={{ duration: .6 }}
+        className="text-4xl font-bold text-neutral-100"
       >
-        News Feed
+        News feed
       </motion.h1>
 
       {session?.user.userType === "FACULTYMEMBER" && (
         <button
-          className="bg-neutral-50 text-neutral-900 p-2 rounded-lg mt-4 flex items-center gap-2 hover:bg-neutral-200"
+          className="bg-neutral-100 text-neutral-900 p-2 rounded-lg mt-4 flex items-center gap-2 hover:bg-neutral-200"
           onClick={() => setIsModalOpen(true)}
         >
           Add News +
         </button>
       )}
+      </div>
+   
 
       <motion.div
         className="w-full max-w-4xl space-y-6 mt-6"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration:0.5 }}
+  
       >
         {news.map((newsItem) => (
           <motion.div
@@ -137,7 +138,7 @@ const NewsFeed: React.FC = () => {
         transition={{ duration: 0.3 }}
             key={newsItem.id}
             onClick={() => openDetailsModal(newsItem)}
-            className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
+            className="bg-neutral-100 p-6 rounded-lg shadow-lg cursor-pointer"
             whileHover={{ scale: 1.02 }}
           >
             <h2 className="text-3xl font-semibold mb-5 ">{newsItem.title}</h2>
@@ -159,9 +160,9 @@ const NewsFeed: React.FC = () => {
       </motion.div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg w-96 shadow-xl">
-            <h2 className="text-2xl font-semibold">Add News</h2>
+        <div className="fixed inset-0 flex items-center justify-center bg-neutral-900 bg-opacity-50">
+          <div className="bg-neutral-50 p-8 rounded-lg w-96 shadow-xl">
+            <h2 className="text-2xl font-semibold">Add news</h2>
             <input
               type="text"
               placeholder="Title"

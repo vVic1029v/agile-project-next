@@ -60,7 +60,7 @@ export default async function ClassProfile() {
     > 
     <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
       
-      <motion.div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6 z-10"
+      <motion.div className="p-6 bg-neutral-100 rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6 z-10"
        initial={{ opacity: 0 }}
        animate={{ opacity: 1 }}
        transition={{ duration: 1 }}

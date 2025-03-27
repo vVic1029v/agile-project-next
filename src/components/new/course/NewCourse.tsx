@@ -25,7 +25,7 @@ export default function NewCourse() {
     <motion.div className="min-h-screen flex items-center justify-center bg-stone-100 bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]" >
   
    <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
-      <motion.div className="p-6 rounded-2xl bg-white shadow-lg max-w-lg w-full z-10"
+      <motion.div className="p-6 rounded-2xl bg-neutral-100 shadow-lg max-w-lg w-full z-10"
        initial={{ opacity: 0 }} 
        animate={{ opacity: 1 }}
        transition={{ duration: 1 }}>

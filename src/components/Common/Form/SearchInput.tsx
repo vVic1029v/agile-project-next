@@ -16,7 +16,7 @@ const SearchInput: React.FC<SearchInputProps> = ({ query, onChange }) => {
         type="text"
         value={query}
         onChange={(e) => onChange(e.target.value)}
-        className="border rounded-md mb-3 block w-full ps-10 p-2.5"
+        className="border rounded-md mb-3 block w-full ps-10 p-2.5 focus:ring-neutral-500 transition duration-200"
         placeholder="Search..."
       />
     </div>

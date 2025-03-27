@@ -40,7 +40,7 @@ const CreateHomeClass = () => {
     <div className="flex flex-col items-center justify-center min-h-screen bg-stone-100 p-6 bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]">
       <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className='z-10'>
-      <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mt-6 w-96 space-y-4">
+      <form onSubmit={handleSubmit} className=" p-6 rounded-lg shadow-md mt-6 w-96 space-y-4 bg-neutral-100">
         <motion.div
           className="text-2xl sm:text-3xl font-extrabold  text-neutral-700 text-center mb-8"
           initial={{ opacity: 0 }}
@@ -58,7 +58,7 @@ const CreateHomeClass = () => {
             value={teacherEmail}
             onChange={(e) => setTeacherEmail(e.target.value)}
             required
-            className="w-full p-2 border rounded-md"
+            className="w-full p-2 border rounded-md bg-transparent focus:ring-neutral-500 transition duration-200"
           />
         </div>
 
@@ -71,7 +71,7 @@ const CreateHomeClass = () => {
             onChange={(e) => setStartYear(e.target.value)}
             required
             min="2000"
-            className="w-full p-2 border rounded-md"
+            className="w-full p-2 border rounded-md bg-transparent focus:ring-neutral-500 transition duration-200"
           />
         </div>
 
@@ -84,7 +84,7 @@ const CreateHomeClass = () => {
             onChange={(e) => setNameLetter(e.target.value.toUpperCase())}
             required
             maxLength={5}
-            className="w-full p-2 border rounded-md"
+            className="w-full p-2 border rounded-md bg-transparent focus:ring-neutral-500 transition duration-200"
           />
         </div>
 

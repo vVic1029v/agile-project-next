@@ -188,7 +188,7 @@ const AnnouncementsPage: React.FC = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="text-4xl font-bold text-neutral-50"
+        className="text-4xl font-bold text-neutral-100"
       >
         Announcements
       </motion.h1>
@@ -206,7 +206,7 @@ const AnnouncementsPage: React.FC = () => {
           <motion.div
             key={announcement.id}
             onClick={() => openDetailsModal(announcement)}
-            className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"
+            className="bg-neutral-100 p-6 rounded-lg shadow-lg cursor-pointer"
             whileHover={{ scale: 1.02 }}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -226,12 +226,12 @@ const AnnouncementsPage: React.FC = () => {
 
       {showModal && (
         <motion.div
-          className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
+          className="fixed inset-0 flex items-center justify-center bg-neutral-900 bg-opacity-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
-          <div className="bg-white p-8 rounded-lg w-96 shadow-xl">
-            <h2 className="text-2xl font-semibold">Add New Announcement</h2>
+          <div className="bg-neutral-50 p-8 rounded-lg w-96 shadow-xl">
+            <h2 className="text-2xl font-semibold text-neutral-900">Add a new announcement</h2>
             <form onSubmit={(e) => e.preventDefault()}>
               <input
                 type="text"
@@ -289,7 +289,7 @@ const AnnouncementsPage: React.FC = () => {
 
       {selectedAnnouncement && (
         <motion.div
-          className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50"
+          className="fixed inset-0 flex items-center justify-center bg-neutral-900 bg-opacity-50"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
         >
