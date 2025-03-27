@@ -55,12 +55,17 @@ export default async function ClassProfile() {
 
   return (
     <motion.div
-      className="bg-neutral-100 min-h-screen flex items-center justify-center p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 1 }}
-    >
-      <div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6">
+      className="bg-neutral-100 min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]"
+    
+    > 
+    <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
+      
+      <motion.div className="p-6 bg-white rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6 z-10"
+       initial={{ opacity: 0 }}
+       animate={{ opacity: 1 }}
+       transition={{ duration: 1 }}
+      >
+     
         <h1 className="text-3xl sm:text-4xl font-extrabold  text-neutral-800 mb-8 text-center">
           {homeClass.className}
         </h1>
@@ -125,7 +130,7 @@ export default async function ClassProfile() {
         {session.user.userType === "FACULTYMEMBER" && (
           <ClientStudentSearch classId={homeClass.homeclassId} />
         )}
-      </div>
+      </motion.div >
     </motion.div>
   );
 }

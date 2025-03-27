@@ -77,7 +77,7 @@ const ScrollPanels = React.forwardRef<ScrollPanelsRef, ScrollPanelsProps>(({ chi
       <div
         ref={containerRef}
         onScroll={handleScroll}
-        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overflow-visible scroll-smooth "
+        className="flex h-full w-full snap-x snap-mandatory overflow-x-auto overflow-visible scroll-smooth scrollbar-hide"
       >
         {/* Panels */}
         {children.map((child, index) => (

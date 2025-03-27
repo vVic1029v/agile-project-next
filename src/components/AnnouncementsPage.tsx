@@ -183,12 +183,12 @@ const AnnouncementsPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 bg-neutral-100">
+    <div className="min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 bg-transparent">
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="text-4xl font-bold text-neutral-800"
+        className="text-4xl font-bold text-neutral-50"
       >
         Announcements
       </motion.h1>

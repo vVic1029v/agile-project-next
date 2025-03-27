@@ -105,19 +105,19 @@ const NewsFeed: React.FC = () => {
     }
   };
   return (
-    <div className="min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 bg-neutral-100">
+    <div className="min-h-screen flex flex-col items-center py-12 px-4 sm:px-6 lg:px-8 bg-transparent">
       <motion.h1
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="text-4xl font-bold text-neutral-800"
+        className="text-4xl font-bold text-neutral-50"
       >
         News Feed
       </motion.h1>
 
       {session?.user.userType === "FACULTYMEMBER" && (
         <button
-          className="bg-neutral-800 text-white p-2 rounded-lg mt-4 flex items-center gap-2"
+          className="bg-neutral-50 text-neutral-900 p-2 rounded-lg mt-4 flex items-center gap-2 hover:bg-neutral-200"
           onClick={() => setIsModalOpen(true)}
         >
           Add News +
@@ -128,13 +128,13 @@ const NewsFeed: React.FC = () => {
         className="w-full max-w-4xl space-y-6 mt-6"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
+        transition={{ duration:0.5 }}
       >
         {news.map((newsItem) => (
           <motion.div
           initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.3 }}
             key={newsItem.id}
             onClick={() => openDetailsModal(newsItem)}
             className="bg-white p-6 rounded-lg shadow-lg cursor-pointer"

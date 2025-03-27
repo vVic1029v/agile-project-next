@@ -198,13 +198,14 @@ export default function ProfilePage() {
 
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-neutral-100"
+      className="min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]"
     >
+       <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
       <motion.div
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between"
+        className="bg-white p-8 rounded-3xl shadow-2xl w-full max-w-4xl flex flex-col sm:flex-row items-center justify-between z-10"
       >
         <motion.div
         initial={{ opacity: 0 }} 
