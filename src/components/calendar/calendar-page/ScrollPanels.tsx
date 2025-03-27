@@ -103,5 +103,5 @@ const ScrollPanels = React.forwardRef<ScrollPanelsRef, ScrollPanelsProps>(({ chi
     </div>
   );
 });
-ScrollPanels.displayName = 'ScrollPanels';
+// ScrollPanels.displayName = 'ScrollPanels';
 export default ScrollPanels;
