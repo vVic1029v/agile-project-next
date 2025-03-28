@@ -4,7 +4,6 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
-// Definirea citatelor și autorilor
 const quotes = [
   { text: "You don’t have to be great to start, but you have to start to be great.", author: "– Zig Ziglar" },
   { text: "There are no shortcuts to any place worth going.", author: "– Beverly Stills" },
@@ -29,23 +28,22 @@ const HomePage: React.FC = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4">
       <div className="absolute inset-0 bg-black bg-opacity-70"></div>
-
-      <div className="absolute top-4 left-4 flex items-center gap-2 z-20">
-        <img src="/uploads/logo1.jpg" className="w-20 h-20 sm:w-20 sm:h-20 rounded-full hidden sm:block" alt="Logo" />
-      </div>
-
-      <motion.div className="relative z-10 bg-black bg-opacity-60 p-6 sm:p-10 text-center text-white w-full max-w-7xl "
+      
+      <motion.div className="relative z-10 bg-black bg-opacity-60 p-6 sm:p-10 text-center text-white w-full max-w-7xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.2, duration: 0.8 }}
       >
-        {/* Titlu */}
         <h1 className="text-4xl sm:text-6xl font-extrabold tracking-wide drop-shadow-2xl leading-tight sm:leading-snug text-transparent bg-neutral-100 bg-clip-text">
           Welcome to your <span className="text-neutral-100">Frontyard!</span>
         </h1>
-
-        {/* Citat cu efect special */}
-        <p className="mt-6 text-xl sm:text-2xl italic text-gray-300 font-serif relative">
+        
+        {/* Logo centrat între titlu și citat */}
+        <div className="flex justify-center my-6">
+          <img src="/uploads/logo.jpg" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full" alt="Logo" />
+        </div>
+        
+        <p className="mt-4 text-xl sm:text-2xl italic text-gray-300 font-serif relative">
           <span className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-500 opacity-20 blur-xl rounded-lg -z-10"></span>
           <span className="text-2xl sm:text-3xl">“</span>{quote.text}
           <span className="text-xl sm:text-2xl">”</span>
@@ -54,7 +52,6 @@ const HomePage: React.FC = () => {
           {quote.author}
         </p>
 
-        {/* Butoane */}
         <div className="flex flex-wrap justify-center gap-4 sm:gap-6 mt-8 w-full">
           {[ 
             { href: '/calendar', icon: 'fa-calendar-alt', label: 'Calendar' },
