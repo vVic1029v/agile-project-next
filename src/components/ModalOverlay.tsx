@@ -4,11 +4,11 @@ import { ReactNode, useEffect } from "react";
 interface ModalOverlayProps {
   children: ReactNode;
   onClose?: () => void;
-  isOpen: boolean;
+  isEventOpen: boolean;
   title?: string;
 }
 
-export const ModalOverlay = ({ children, onClose, isOpen, title }: ModalOverlayProps) => {
+export const ModalOverlay = ({ children, onClose, isEventOpen, title }: ModalOverlayProps) => {
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && onClose) onClose(); // Close on ESC key
@@ -18,7 +18,7 @@ export const ModalOverlay = ({ children, onClose, isOpen, title }: ModalOverlayP
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
-  if (!isOpen) return null;
+  if (!isEventOpen) return null;
 
   return (
     <div

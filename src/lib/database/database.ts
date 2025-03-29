@@ -8,9 +8,24 @@ import bcrypt from "bcryptjs";
 import { isAuthorized } from "../auth";
 import { Url } from "next/dist/shared/lib/router/router";
 
+
 // Initialize Prisma Client
 let prisma: PrismaClient;
+interface EventData {
+  title: string;
+  type: string;
+  courseId: string;
+  timeSlotId?: string;
+  yearNumber: number;
+  weekNumber: number;
+  description?: string | null;
+  dayOfWeek?: number;
+  startHour?: number;
+  startMinute?: number;
+  endHour?: number;
+  endMinute?: number;
 
+}
 if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient();
 } else {
@@ -260,6 +275,7 @@ export async function postEventTimeSlot(eventData: Event): Promise<Event | null>
   }).then(event => event ?? null);
 }
 
+
 // TimeSlot-related Functions
 // ==========================
 
@@ -268,7 +284,11 @@ export async function getTimeSlot(timeSlotId: string): Promise<TimeSlot | null> 
     where: { id: timeSlotId },
   });
 }
-
+export async function getTimeSlots(courseId: string): Promise<TimeSlot[]> {
+  return prisma.timeSlot.findMany({
+    where: { courseId },
+  });
+}
 // HomeClass Search Function
 // =========================
 
@@ -526,3 +546,55 @@ export async function resetUserPassword(userId: string, newPassword: string) {
   
     return timeSlots;
   }
+
+
+export async function postEventAction( eventData: EventData) {
+  if ( !eventData) {
+    return { error: "Missing parameters" };
+  }
+
+  if (
+    !eventData.title ||
+    !eventData.type ||
+    !eventData.courseId ||
+    (eventData.timeSlotId === undefined &&
+      (!eventData.dayOfWeek || !eventData.startHour || !eventData.startMinute || !eventData.endHour || !eventData.endMinute))
+  ) {
+    return { error: "Missing event data fields" };
+  }
+
+  try {
+    let newEvent: Event | null = null;
+    
+    const completeEventData = {
+      ...eventData,
+      id: crypto.randomUUID(),
+      description: eventData.description ?? null,
+      timeSlotId: eventData.timeSlotId ?? "",
+      type: eventData.type as EventType, // ✅ Convertim `string` în `EventType`
+    };
+
+    if (eventData.timeSlotId === undefined) {
+      newEvent = await postEventFloating(
+        eventData.dayOfWeek!,
+        eventData.startHour!,
+        eventData.startMinute!,
+        eventData.endHour!,
+        eventData.endMinute!,
+        completeEventData
+      );
+    } else {
+      newEvent = await postEventTimeSlot(completeEventData);
+    }
+
+    if (newEvent) {
+      
+      return { success: "Event created successfully", event: newEvent };
+    } else {
+      return { error: "Failed to create event" };
+    }
+  } catch (error) {
+    console.error("Error during event creation:", error);
+    return { error: "Server error" };
+  }
+}

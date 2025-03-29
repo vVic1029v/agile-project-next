@@ -11,6 +11,8 @@ import CalendarContainter from "../CalendarContainer";
 import { getWeekAndDay, getWeeksInYear } from "@/lib/calendarUtils";
 import { getToday, SelectedDate, useCalendarState } from "../useCalendarState";
 import { useCalendarStateContext } from "../CalendarStateProvider";
+import EventFormModal from "@/components/EventFormModal";
+import { Modal } from "@/components/Modal";
 
 interface CalendarContainerProps {
   children: ReactNode;
@@ -74,9 +76,16 @@ export default function UserWeekCalendar() {
 
   return (
     <>
-      <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
-        <CalendarDayModal selectedDate={selectedDate} events={events} />
-      </ModalOverlay>
+    
+    {isModalOpen && (
+      <Modal isOpen={isModalOpen} onClose={closeModal} children={
+        <EventFormModal onClose={closeModal} selectedDate={selectedDate} />
+      }>
+      
+      </Modal>
+  
+    )}
+  
       <WeekCalendarContainer isModalOpen={isModalOpen}>
         <WeekCalendarHeader
           selectedDate={selectedDate}

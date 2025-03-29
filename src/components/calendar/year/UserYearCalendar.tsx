@@ -53,16 +53,20 @@ export default function UserYearCalendar() {
   
   const handleSelectedDayChange = useCallback(
     (selected: SelectedDate, openModal: boolean) => {
+      console.log("Zi selectată:", selected);
+      console.log("Deschid modal?", openModal);
       if (!userId) return;
       const { day, month, year } = selected;
       const dateString = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
       updateUrl(year, undefined, { date: dateString });
       setSelectedDate(selected);
-      if (openModal) setIsModalOpen(true);
+      if (openModal) {
+        setIsModalOpen(true);
+        console.log("Modal deschis!");
+      }
     },
     [userId, updateUrl, setSelectedDate, setIsModalOpen]
   );
-
   const handleSelectedWeekChange = useCallback(
     (selected: SelectedDate, openModal: boolean) => {
       if (!userId) return;
@@ -100,7 +104,7 @@ export default function UserYearCalendar() {
 
   return (
     <>
-      <ModalOverlay onClose={closeModal} isOpen={isModalOpen}>
+      <ModalOverlay onClose={closeModal} isEventOpen={isModalOpen}>
         <CalendarDayModal selectedDate={selectedDate} events={events} />
       </ModalOverlay>
 

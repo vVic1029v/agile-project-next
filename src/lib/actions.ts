@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture, prisma } from "@/lib/database/database";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture, prisma, getUserById, getTimeSlots } from "@/lib/database/database";
 import { UserType,Course, User } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
@@ -341,3 +341,30 @@ export const getAuthorNameById = async (userId: string): Promise<string | null> 
     return null;
   }
 };
+
+export const userCourses = async (userId: string) => {  
+  try {
+  const user=await getUserById(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  const courses=  await getUserCourses(userId,user?.userType);
+  return courses;
+    }
+  
+   catch (error) {
+    console.error("Error fetching user courses:", error);
+    throw new Error("Failed to fetch user courses");
+  }
+}
+export const AlltimeSlots = async (courseId: string) => {
+  try{
+  const timeSlots = await getTimeSlots(courseId);
+  if (!timeSlots) {
+    throw new Error("Time slots not found");
+  }
+  return timeSlots;
+} catch{
+  console.error("Error fetching time slots:", Error);
+  throw new Error("Failed to fetch time slots");
+} }
