@@ -6,7 +6,7 @@ import "./globals.css";
 import SessionWrapper from "@/components/SessionWrapper";
 
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import ClientWrapper from "@/components/Body/ClientWrapper";
+import ClientWrapper from "@/components/body/ClientWrapper";
 
 
 const geistSans = Geist({
