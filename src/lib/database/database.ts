@@ -507,4 +507,22 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     // Extract and return just the email addresses
     return users.map((user) => user.email);
   }
- 
+  export async function getWeekSchedule(weekNumber: number, year: number) {
+    const timeSlots = await prisma.timeSlot.findMany({
+      where: {
+        course: {
+          events: {
+            some: {
+              weekNumber,
+              yearNumber: year,
+            },
+          },
+        },
+      },
+      include: {
+        course: true, // Pentru a obține numele cursului
+      },
+    });
+  
+    return timeSlots;
+  }

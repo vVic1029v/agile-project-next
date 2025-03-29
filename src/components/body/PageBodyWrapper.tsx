@@ -34,7 +34,7 @@ const PageBodyWrapper: React.FC<MyComponentProps> = ({ children }) => {
       {/* Sidebar */}
    {/* Sidebar */}  
 <nav
-   className={`bg-neutral-900 text-white transition-all duration-300 fixed md:relative z-50 h-full ${
+   className={`bg-neutral-900 text-white transition-all duration-300 fixed md:relative z-50 h-full  ${
     isExpanded ? "w-screen md:w-64" : "w-20"
   } ${isExpanded ? "left-0" : "-left-full md:left-0"}`}
 >
@@ -51,7 +51,7 @@ const PageBodyWrapper: React.FC<MyComponentProps> = ({ children }) => {
   </div>
 
   {/* Navigation Links */}
-  <div className="flex-1 p-4 mt-4">
+  <div className="flex-1 p-4 mt-4 ">
     <ul className="space-y-1 flex flex-col items-center w-full">
       <li>
         <Link href="/home"   onClick={() => setIsExpanded(false)} className="flex flex-col items-center justify-center py-3 px-5 rounded-md hover:bg-gray-700 transition-all duration-200">

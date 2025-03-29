@@ -282,7 +282,7 @@ export default function ProfilePage() {
             onClick={() => document.getElementById("fileInput")?.click()}
           >
             <Image
-              src={imagePreview ?? profileImage ?? "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1742924641/user_uploads/87913eba-123a-458b-8e92-f30229e2fa8e/87913eba-123a-458b-8e92-f30229e2fa8e-1742924641170.jpg"}
+              src={imagePreview ?? profileImage ?? "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743249741/user_uploads/82eee357-2864-40e7-8715-e9734bd0cbb6/82eee357-2864-40e7-8715-e9734bd0cbb6-1743249742588.jpg"}
               width={500}
               height={300}
               alt="Profile Picture"

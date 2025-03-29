@@ -14,7 +14,7 @@ export type WeekScheduleIdentifier = {
 
 export const daySchedule: DaySchedule = [
   { start: { hour: 7, minute: 30 }, end: { hour: 8, minute: 15 } }, // 7:30–8:15
-  { start: { hour: 8, minute: 20 }, end: { hour: 9, minute: 5 } }, // 8:20–9:05 (5 min break, then 10 min)
+  { start: { hour: 8, minute: 20 }, end: { hour: 9, minute: 0o5 } }, // 8:20–9:05 (5 min break, then 10 min)
   { start: { hour: 9, minute: 15 }, end: { hour: 10, minute: 0 } }, // 9:15–10:00
   { start: { hour: 10, minute: 5 }, end: { hour: 10, minute: 50 } }, // 10:05–10:50
   { start: { hour: 11, minute: 0 }, end: { hour: 11, minute: 45 } }, // 11:00–11:45

@@ -8,6 +8,7 @@ import * as motion from "motion/react-client";
 import StudentSearchModal from "../StudentSearchModal";
 import ClientStudentSearch from "../ClientStudentSearch";
 import { UserType } from "@prisma/client";
+import Link from "next/link";
 
 interface Person {
   name: string;
@@ -47,8 +48,12 @@ export default async function ClassProfile() {
 
   if (!homeClass) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl text-gray-700">No class data found.</p>
+      <div className="min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]">
+        <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
+        <div className="p-6 rounded-lg bg-red-100 border-2 border-red-500 text-center max-w-lg w-full z-10">
+          <h1 className="text-3xl font-bold text-red-600 mb-4">No class data found</h1>
+        
+        </div>
       </div>
     );
   }
@@ -79,6 +84,14 @@ export default async function ClassProfile() {
             ({homeClass.homeroomTeacher.email})
           </a>
         </p>
+        <p className="text-neutral-700 mb-4 text-lg">
+          <strong>Useful links :</strong>
+          </p>
+          <span> Virtual catalog : <Link href="https://www.24edu.ro/">https://www.24edu.ro/</Link></span>
+       
+          <br></br>
+          <span> Google Classroom : <Link href="https://classroom.google.com/">https://classroom.google.com/</Link> </span>
+       
 
         <h2 className="text-2xl font-semibold mt-6 mb-3">Professors</h2>
         {homeClass.facultyMembers.length === 0 ? (
