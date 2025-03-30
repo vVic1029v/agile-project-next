@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useSession } from "next-auth/react";
 import { useCalendarStateContext } from './calendar/CalendarStateProvider';
-import { userCourses, AlltimeSlots } from '@/lib/actions';
-
+import { userCourses, AlltimeSlots} from '@/lib/actions';
+import emailjs from '@emailjs/browser';
+import { getCourseUserEmails } from '@/lib/actions';
 interface EventFormProps {
   selectedDate: { year: number; month: number; day: number; week: number };
   onClose: () => void;
@@ -63,7 +64,7 @@ const EventFormModal = ({ selectedDate, onClose }: EventFormProps) => {
       const userId = session.user.id;
       const userType = session.user.userType;
       const courseRes = await userCourses(userId);
-  
+    
       if (courseRes) {
         // Transform the data to match the Course interface
         const courses = courseRes.map((course) => ({
@@ -80,6 +81,7 @@ const EventFormModal = ({ selectedDate, onClose }: EventFormProps) => {
   
 
   useEffect(() => {
+
     async function fetchTimeSlots() {
       if (courseId) {
         const timeSlotRes = await AlltimeSlots(courseId);
@@ -97,7 +99,12 @@ const EventFormModal = ({ selectedDate, onClose }: EventFormProps) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-
+    const emailsUser= await getCourseUserEmails(courseId);
+    if (!emailsUser) {
+      alert("No emails found for the selected course.");
+      setLoading(false);
+      return;
+    }
     const eventData: EventData = {
       title,
       type: type === "PROJECT" ? "MISC" : type,
@@ -119,12 +126,31 @@ const EventFormModal = ({ selectedDate, onClose }: EventFormProps) => {
       body: JSON.stringify({ userId: session?.user.id, eventData }),
     });
 
-    if (response.ok) {
-      alert('Event created successfully!');
-      onClose();
-    } else {
-      alert('Failed to create event');
+   
+  if (response.ok) {
+    alert('Event created successfully!');
+    try {
+     const recipients = await getCourseUserEmails(courseId);
+      const templateParams = {
+        title:eventData.title,
+        type: eventData.type,
+        description: eventData.description,
+        startHour: eventData.startHour,
+        startMinute: eventData.startMinute,
+        endHour: eventData.endHour,
+        endMinute: eventData.endMinute,
+        email_from: "info.application255@gmail.com",
+        to_email: recipients.join(',')
+      };
+      await emailjs.send("service_n98pet1", "template_h9s309t", templateParams, "8mP7DE5cZlsMFWHWO");
+    } catch (error) {
+      console.error("Error sending email notifications:", error);
     }
+    onClose();
+  } else {
+    alert('Failed to create event');
+  }
+ 
     setLoading(false);
   };
 
@@ -159,7 +185,7 @@ const EventFormModal = ({ selectedDate, onClose }: EventFormProps) => {
           ))}
         </select>
         <select value={timeSlotId} onChange={(e) => setTimeSlotId(e.target.value || undefined)} className="w-full border p-2 rounded mb-2">
-          <option value="">Select Time Slot (Optional)</option>
+          <option value="">Select Time Slot</option>
           {timeSlots.map((slot) => (
             <option key={slot.id} value={slot.id}>{slot.label}</option>
           ))}

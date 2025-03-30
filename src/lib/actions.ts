@@ -1,6 +1,6 @@
 "use server";
 
-import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture, prisma, getUserById, getTimeSlots } from "@/lib/database/database";
+import { getHomeClassesByName, HomeClassSearchResult,getUserCourses, postNewCourse, getCheapUserByEmail, postNewHomeClass, postNewAnnouncement, getAllAnnouncements, getExpensiveUserByEmail, getHomeClassDetails, ChangeProfilePicture, DeleteProfilePicture, prisma, getUserById, getTimeSlots, CourseUsersEmails } from "@/lib/database/database";
 import { UserType,Course, User } from "@prisma/client";
 import { get } from "http";
 import { auth, isAuthorized } from "@/lib/auth";
@@ -368,3 +368,18 @@ export const AlltimeSlots = async (courseId: string) => {
   console.error("Error fetching time slots:", Error);
   throw new Error("Failed to fetch time slots");
 } }
+
+export async function getCourseUserEmails(courseId:string):Promise<String[]>{
+  try {
+    const courseUsers = await CourseUsersEmails(courseId);
+  
+    if (!courseUsers) {
+      throw new Error("Course not found");
+    }
+  
+    return courseUsers;
+  } catch (error) {
+    console.error("Error fetching course user emails:", error);
+    throw new Error("Failed to fetch course user emails");
+  }
+}

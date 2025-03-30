@@ -602,3 +602,45 @@ export async function postEventAction( eventData: EventData) {
     return { error: "Server error" };
   }
 }
+export async function CourseUsersEmails(courseId: string): Promise<string[]> {
+  const [facultyData, studentData] = await Promise.all([
+    prisma.course.findUnique({
+      where: { id: courseId },
+      select: {
+        facultyMember: {
+          select: {
+            user: {
+              select: { email: true }
+            }
+          }
+        }
+      }
+    }),
+
+    prisma.studentCourse.findMany({
+      where: { courseId },
+      select: {
+        student: {
+          select: {
+            user: {
+              select: { email: true }
+            }
+          }
+        }
+      }
+    })
+  ]);
+
+  // Obținem email-ul profesorului dacă există
+  const facultyEmail = facultyData?.facultyMember?.user?.email;
+  
+  // Obținem lista email-urilor studenților
+  const studentEmails = studentData.map(sc => sc.student.user.email);
+  
+  // Construim lista finală de email-uri
+  const allEmails = facultyEmail ? [facultyEmail, ...studentEmails] : studentEmails;
+
+  console.log("All Emails for Course:", courseId, allEmails);
+  return allEmails;
+}
+
