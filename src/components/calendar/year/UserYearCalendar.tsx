@@ -104,9 +104,7 @@ export default function UserYearCalendar() {
 
   return (
     <>
-      <ModalOverlay onClose={closeModal} isEventOpen={isModalOpen}>
-        <CalendarDayModal selectedDate={selectedDate} events={events} />
-      </ModalOverlay>
+     
 
       <YearCalendarContainer isModalOpen={isModalOpen}>
         <YearCalendarHeader

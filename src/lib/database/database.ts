@@ -201,6 +201,7 @@ export async function getUserEvents(userId: string): Promise<EventTimeSlot[]> {
       timeSlot: true
     }
   });
+  console.log("ALL THE USER EVENTS !!!!! " ,events);
   return events;
 }
 
@@ -252,10 +253,12 @@ export async function postEventFloating(dayOfWeek: number, startHour: number, st
       timeSlot: { connect: { id: newTimeSlotId.id } },
       users: {
         connect: userIds.map(userId => ({ id: userId }))
-      }
+      },
+      description: eventData.description, // Adaugă această linie
     }
   }).then(event => event ?? null);
 }
+
 
 export async function postEventTimeSlot(eventData: Event): Promise<Event | null> {
   const userIds = await getAllCourseUserIds(eventData);
@@ -270,7 +273,8 @@ export async function postEventTimeSlot(eventData: Event): Promise<Event | null>
       timeSlotId: eventData.timeSlotId,
       users: {
         connect: userIds.map(userId => ({ id: userId }))
-      }
+      },
+      description: eventData.description, // Adaugă această linie
     }
   }).then(event => event ?? null);
 }

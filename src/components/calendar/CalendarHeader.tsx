@@ -65,6 +65,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({
                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m15 19-7-7 7-7" />
               </svg>
             </button>
+            
             <h1 className="min-w-40 text-center text-lg font-semibold sm:min-w-40 sm:text-xl">
               {title}
             </h1>

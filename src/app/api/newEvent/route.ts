@@ -14,30 +14,26 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
     }
 
-    const { title, type, courseId, timeSlotId, yearNumber, weekNumber, dayOfWeek, startHour, startMinute, endHour, endMinute } = eventData;
-    // Validate required fields
+    const { title, type, courseId, timeSlotId, yearNumber, weekNumber, dayOfWeek, startHour, startMinute, endHour, endMinute, description } = eventData;
+
     if (!title || !type || !courseId || (timeSlotId === undefined && (!dayOfWeek || !startHour || !startMinute || !endHour || !endMinute))) {
         return NextResponse.json({ error: "Missing event data fields" }, { status: 400 });
     }
-
-
-    // Proceed to create event with the calculated week number
+    
     try {
         let newEvent: Event | null = null;
-        if (timeSlotId === undefined)
-        {
+        if (timeSlotId === undefined) {
             newEvent = await postEventFloating(dayOfWeek, startHour, startMinute, endHour, endMinute, {
                 ...eventData,
+                description, // Asigură-te că `description` este inclus
             });
-        }
-        else
-        {
+        } else {
             newEvent = await postEventTimeSlot({
                 ...eventData,
+                description, // Adaugă `description` și aici
             });
         }
-            
-        
+    
         if (newEvent) {
             return NextResponse.json({ message: "Event created successfully", event: newEvent }, { status: 201 });
         } else {
@@ -47,4 +43,5 @@ export async function POST(request: Request) {
         console.error("Error during event creation:", error);
         return NextResponse.json({ error: "Server error" }, { status: 500 });
     }
+    
 }
