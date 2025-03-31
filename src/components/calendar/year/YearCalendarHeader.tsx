@@ -55,13 +55,13 @@ const YearCalendarHeader: React.FC<YearCalendarHeaderProps> = ({
             >
               Open This Week
             </button> */}
-            <button
+            {/* <button
               type="button"
               className="rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-900 hover:bg-gray-100"
               onClick={handleNewEvent}
             >
               Add new Event
-            </button>
+            </button> */}
             <Checkbox
               name="monthHeaders"
               checked={monthHeaders}

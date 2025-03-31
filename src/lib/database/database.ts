@@ -603,42 +603,38 @@ export async function postEventAction( eventData: EventData) {
   }
 }
 export async function CourseUsersEmails(courseId: string): Promise<string[]> {
-  const [facultyData, studentData] = await Promise.all([
-    prisma.course.findUnique({
-      where: { id: courseId },
-      select: {
-        facultyMember: {
-          select: {
-            user: {
-              select: { email: true }
-            }
-          }
-        }
-      }
-    }),
+  // Găsim homeClassId asociat cursului
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+    select: { homeClassId: true, facultyMember: { select: { user: { select: { email: true } } } } }
+  });
 
-    prisma.studentCourse.findMany({
-      where: { courseId },
-      select: {
-        student: {
-          select: {
-            user: {
-              select: { email: true }
-            }
-          }
-        }
-      }
-    })
-  ]);
+  if (!course) {
+    console.log(`No course found with ID: ${courseId}`);
+    return [];
+  }
 
-  // Obținem email-ul profesorului dacă există
-  const facultyEmail = facultyData?.facultyMember?.user?.email;
-  
-  // Obținem lista email-urilor studenților
-  const studentEmails = studentData.map(sc => sc.student.user.email);
-  
-  // Construim lista finală de email-uri
-  const allEmails = facultyEmail ? [facultyEmail, ...studentEmails] : studentEmails;
+  // Găsim toți utilizatorii din HomeClass (dacă există)
+  let homeClassEmails: string[] = [];
+  if (course.homeClassId) {
+    const homeClassUsers = await prisma.user.findMany({
+      where: {
+        OR: [
+          { student: { homeClassId: course.homeClassId } }, // Studenții clasei
+          { facultyMember: { homeroomClass: { id: course.homeClassId } } } // Dirigintele
+        ]
+      },
+      select: { email: true }
+    });
+
+    homeClassEmails = homeClassUsers.map(user => user.email);
+  }
+
+  // Adăugăm și profesorul cursului
+  const facultyEmail = course.facultyMember?.user.email ? [course.facultyMember.user.email] : [];
+
+  // Combinăm toate emailurile
+  const allEmails = [...new Set([...homeClassEmails, ...facultyEmail])];
 
   console.log("All Emails for Course:", courseId, allEmails);
   return allEmails;

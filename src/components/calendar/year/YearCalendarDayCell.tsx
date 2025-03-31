@@ -31,6 +31,18 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   isBlank = false,
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const getImageSrc = (eventType: string) => {
+    switch (eventType) {
+      case "HOMEWORK":
+        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743418782/fvqi7kiywgbrfcuw5rb8.png";
+      case "TEST":
+        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743418482/n8qtqo9v34pp1tmlsh1m.png";
+      case "MISC":
+        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743418763/j8aallswpdt9eytzeghk.png";
+      default:
+        return "";
+    }
+  };
 
   const handleOpenModal = () => {
     setIsModalOpen(true);
@@ -56,6 +68,7 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
     e.stopPropagation();
   };
 
+
   return (
     <CalendarCellWrapper
       onClick={handleClick}
@@ -80,17 +93,10 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
             <button
               key={idx}
               onClick={handleButtonClick}
-              className="flex items-center justify-center w-[25%] aspect-square bg-gradient-to-bl from-cyan-500 to-blue-500 rounded-2xl hover:border-double border-white self-start"
-              style={{ borderWidth: "0.2rem" }}
+              className="flex items-center justify-center w-[29%] aspect-square  rounded-2xl hover:border-double  self-start"
+              style={{ borderWidth: "0.05rem" }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="white"
-                className="m-auto"
-              >
-                <path d="M12 2a10 10 0 1 1-10 10A10 10 0 0 1 12 2zm0 18a8 8 0 1 0-8-8 8 8 0 0 0 8 8zm1-13h-2v6h6v-2h-4z" />
-              </svg>
+           <img src={getImageSrc(event.type)} alt={event.type} />
             </button>
           ))}
         </div>

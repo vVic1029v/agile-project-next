@@ -6,8 +6,9 @@ import { Modal } from '@/components/Modal';
 import { getCourses } from '@/lib/actions'; // Importă server action-ul
 import { getWeekAndDay } from '@/lib/calendarUtils';
 import { Event ,TimeSlot} from '@/components/calendar/week/UserWeekCalendar'; // Asigură-te că ai importat corect tipul Event
+import EventFormModal from './EventFormModal';
 interface DayEventsModalProps {
-  selectedDate: { year: number; month: number; day: number };
+  selectedDate: { year: number; month: number; day: number; week: number };
   isOpen: boolean;
   events: Event[]; 
   onClose: () => void;
@@ -23,6 +24,14 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({ selectedDate, isOpen, o
   const [events, setEvents] = useState<Event[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const { data: session } = useSession();
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
+  const handleNewEvent = () => {
+    setIsModalOpen(true);
+  };
   useEffect(() => {
     async function fetchData() {
       if (!session || !selectedDate || !isOpen) return;
@@ -98,6 +107,16 @@ const DayEventsModal: React.FC<DayEventsModalProps> = ({ selectedDate, isOpen, o
           <p>No events for this day.</p>
         )}
       </div>
+      <button
+              type="button"
+              className="rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100 mt-6 "
+              onClick={handleNewEvent}
+            >
+              Add new Event
+            </button>
+            <Modal isOpen={isModalOpen} onClose={closeModal}>
+        <EventFormModal onClose={closeModal} selectedDate={selectedDate} />
+      </Modal>
     </Modal>
   );
 };

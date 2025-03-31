@@ -57,14 +57,11 @@ const WeekCalendarCell: React.FC<WeekCalendarCellProps> = ({
               className="flex items-center justify-center w-[25%] aspect-square bg-gradient-to-bl from-cyan-500 to-blue-500 rounded-2xl hover:border-double border-white self-start"
               style={{ borderWidth: "0.2rem" }}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                fill="white"
+              <img
+               src= "/public/singleBranch.png"
                 className="m-auto"
-              >
-                <path d="M12 2a10 10 0 1 1-10 10A10 10 0 0 1 12 2zm0 18a8 8 0 1 0-8-8 8 8 0 0 0 8 8zm1-13h-2v6h6v-2h-4z" />
-              </svg>
+              />
+               
             </button>
           ))}
         </div>

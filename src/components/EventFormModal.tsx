@@ -64,7 +64,7 @@ const EventFormModal = ({ selectedDate, onClose }: EventFormProps) => {
       const userId = session.user.id;
       const userType = session.user.userType;
       const courseRes = await userCourses(userId);
-    
+      console.log(`${selectedDate.year}-${String(selectedDate.month +1).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`);
       if (courseRes) {
         // Transform the data to match the Course interface
         const courses = courseRes.map((course) => ({
@@ -131,17 +131,13 @@ const EventFormModal = ({ selectedDate, onClose }: EventFormProps) => {
     alert('Event created successfully!');
     try {
      const recipients = await getCourseUserEmails(courseId);
-      const templateParams = {
-        title:eventData.title,
-        type: eventData.type,
-        description: eventData.description,
-        startHour: eventData.startHour,
-        startMinute: eventData.startMinute,
-        endHour: eventData.endHour,
-        endMinute: eventData.endMinute,
-        email_from: "info.application255@gmail.com",
-        to_email: recipients.join(',')
-      };
+     const templateParams = {
+          title: eventData.title,
+          content: eventData.description,
+          date: `${selectedDate.year}-${String(selectedDate.month).padStart(2, '0')}-${String(selectedDate.day).padStart(2, '0')}`,
+          email_from: "info.application255@gmail.com",
+          to_email: recipients.join(','),
+        };
       await emailjs.send("service_n98pet1", "template_h9s309t", templateParams, "8mP7DE5cZlsMFWHWO");
     } catch (error) {
       console.error("Error sending email notifications:", error);
