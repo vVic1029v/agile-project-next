@@ -34,11 +34,11 @@ const YearCalendarDayCell: React.FC<YearDayCellProps> = ({
   const getImageSrc = (eventType: string) => {
     switch (eventType) {
       case "HOMEWORK":
-        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743418782/fvqi7kiywgbrfcuw5rb8.png";
+        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743445784/lwtutjwofarsx3wo1ysg.png";
       case "TEST":
-        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743418482/n8qtqo9v34pp1tmlsh1m.png";
+        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743445785/iu91mrczyfwjxecqzljn.png";
       case "MISC":
-        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743418763/j8aallswpdt9eytzeghk.png";
+        return "https://res.cloudinary.com/dqdn7bvwq/image/upload/v1743445787/cm3gsfxgdvfjqwyq6zm7.png";
       default:
         return "";
     }
