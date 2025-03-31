@@ -63,7 +63,7 @@ export default async function ClassProfile() {
       className="bg-neutral-100 min-h-screen flex items-center justify-center p-4 bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]"
     
     > 
-    <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
+    <div className="absolute inset-0 bg-black bg-opacity-70 z[-1] h-full w-full"></div>
       
       <motion.div className="p-6 bg-neutral-100 rounded-3xl shadow-md max-w-3xl mx-auto w-full space-y-6 z-10"
        initial={{ opacity: 0 }}

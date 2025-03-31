@@ -200,7 +200,7 @@ export default function ProfilePage() {
     <motion.div
       className="min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]"
     >
-       <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
+       <div className="absolute inset-0 bg-black bg-opacity-70 z[-1] w-full h-full"></div>
       <motion.div
         initial={{ opacity: 0 }} 
         animate={{ opacity: 1 }}

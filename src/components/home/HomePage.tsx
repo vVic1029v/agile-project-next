@@ -27,8 +27,15 @@ const HomePage: React.FC = () => {
 
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4">
-      <div className="absolute inset-0 bg-black bg-opacity-70"></div>
-      
+      <div className="absolute inset-0 bg-black bg-opacity-70 z[-5]"></div>
+      <div className="absolute top-4 right-4 space-y-4 hidden sm:block z-50">
+        <a href="https://classroom.google.com/" className="block transform transition duration-300 hover:scale-110 ">
+          <img src="/uploads/classroom.jpg" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full" alt="Logo 1" />
+        </a>
+        <a href="https://www.24edu.ro/" className="block transform transition duration-300 hover:scale-110">
+          <img src="/uploads/24edu.jpg" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full" alt="Logo 2" />
+        </a>
+      </div>
       <motion.div className="relative z-10 bg-black bg-opacity-60 p-6 sm:p-10 text-center text-white w-full max-w-7xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -39,9 +46,14 @@ const HomePage: React.FC = () => {
         </h1>
         
         {/* Logo centrat între titlu și citat */}
+        <div className='flex flex-wrap justify-center gap-4 sm:gap-6  w-full'>
+      
         <div className="flex justify-center my-6">
           <img src="/uploads/logo.jpg" className="w-20 h-20 sm:w-24 sm:h-24 rounded-full" alt="Logo" />
         </div>
+       
+        </div>
+      
         
         <p className="mt-4 text-xl sm:text-2xl italic text-gray-300 font-serif relative">
           <span className="absolute inset-0 bg-gradient-to-r from-gray-300 to-gray-500 opacity-20 blur-xl rounded-lg -z-10"></span>

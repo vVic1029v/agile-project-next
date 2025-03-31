@@ -38,7 +38,7 @@ const CreateHomeClass = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-stone-100 p-6 bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2]">
-      <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-70 z[-1] h-full w-full"></div>
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1 }} className='z-10'>
       <form onSubmit={handleSubmit} className=" p-6 rounded-lg shadow-md mt-6 w-96 space-y-4 bg-neutral-100">
         <motion.div

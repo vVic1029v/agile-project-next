@@ -12,7 +12,7 @@ export default function AnnouncementsPageSelector() {
 
   return (
     <div className="h-screen w-full bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4 z[-2] ">
-      <div className="absolute inset-0 bg-black bg-opacity-70 z[-1]"></div>
+      <div className="absolute inset-0 bg-black bg-opacity-70 z[-1] h-full w-full"></div>
       <div>
         {" "}
         <ScrollPanels onActiveIndexChange={onActiveIndexChange}>
