@@ -28,12 +28,12 @@ const HomePage: React.FC = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-cover bg-center bg-[url('/uploads/frontyard.webp')] px-4">
       <div className="absolute inset-0 bg-black bg-opacity-70 z[-5]"></div>
-      <div className="absolute top-4 right-4 space-y-4 hidden sm:block z-50">
+      <div className="absolute top-4 right-4 hidden sm:flex gap-4 z-50">
         <a href="https://classroom.google.com/" className="block transform transition duration-300 hover:scale-110 ">
-          <img src="/uploads/classroom.jpg" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full" alt="Logo 1" />
+          <img src="/uploads/classroom.jpg" className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg" alt="Logo 1" />
         </a>
         <a href="https://www.24edu.ro/" className="block transform transition duration-300 hover:scale-110">
-          <img src="/uploads/24edu.jpg" className="w-10 h-10 sm:w-12 sm:h-12 rounded-full" alt="Logo 2" />
+          <img src="/uploads/24edu.jpg" className="w-10 h-10 sm:w-10 sm:h-10 rounded-lg" alt="Logo 2" />
         </a>
       </div>
       <motion.div className="relative z-10 bg-black bg-opacity-60 p-6 sm:p-10 text-center text-white w-full max-w-7xl"
