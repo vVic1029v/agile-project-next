@@ -5,6 +5,7 @@ import { ModalOverlay } from "@/components/ModalOverlay";
 import { SelectedDate } from "@/components/calendar/useCalendarState";
 import ModalWeekCalendar from "@/components/ModalWeekCalendar";
 import { NewCourse } from "@/lib/actions";
+import { Modal } from "@/components/Modal";
 
 const dayLabels = ["Mon", "Tue", "Wed", "Thu", "Fri"];
 
@@ -149,9 +150,9 @@ const CourseForm: React.FC = () => {
         )}
       </div>
 
-      <ModalOverlay onClose={() => setIsModalOpenSearchHomeClass(false)} isOpen={isModalOpenSearchHomeClass} title="Select a class">
+      <Modal onClose={() => setIsModalOpenSearchHomeClass(false)} isOpen={isModalOpenSearchHomeClass}>
         <SearchHomeClassModal onClose={() => setIsModalOpenSearchHomeClass(false)} onSelect={(item) => { setSelectedHomeClass(item); setIsModalOpenSearchHomeClass(false); }} />
-      </ModalOverlay>
+      </Modal>
 
       <div className="flex items-center mt-5">
         <button 
@@ -163,9 +164,9 @@ const CourseForm: React.FC = () => {
         </button>
       </div>
 
-      <ModalOverlay onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect} title="Select a period">
+      <Modal onClose={() => setIsModalOpenPeriodSelect(false)} isOpen={isModalOpenPeriodSelect}>
         <ModalWeekCalendar selectedTimeSlots={selectedTimeSlots} handleSelectTimeSlot={handleSelectTimeSlot} />
-      </ModalOverlay>
+      </Modal>
 
       {selectedTimeSlots.length > 0 && (
         <div className="mt-6">
