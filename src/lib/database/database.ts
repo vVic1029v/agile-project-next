@@ -8,9 +8,24 @@ import bcrypt from "bcryptjs";
 import { isAuthorized } from "../auth";
 import { Url } from "next/dist/shared/lib/router/router";
 
+
 // Initialize Prisma Client
 let prisma: PrismaClient;
+interface EventData {
+  title: string;
+  type: string;
+  courseId: string;
+  timeSlotId?: string;
+  yearNumber: number;
+  weekNumber: number;
+  description?: string | null;
+  dayOfWeek?: number;
+  startHour?: number;
+  startMinute?: number;
+  endHour?: number;
+  endMinute?: number;
 
+}
 if (process.env.NODE_ENV === 'production') {
   prisma = new PrismaClient();
 } else {
@@ -186,6 +201,7 @@ export async function getUserEvents(userId: string): Promise<EventTimeSlot[]> {
       timeSlot: true
     }
   });
+  console.log("ALL THE USER EVENTS !!!!! " ,events);
   return events;
 }
 
@@ -237,10 +253,12 @@ export async function postEventFloating(dayOfWeek: number, startHour: number, st
       timeSlot: { connect: { id: newTimeSlotId.id } },
       users: {
         connect: userIds.map(userId => ({ id: userId }))
-      }
+      },
+      description: eventData.description, // Adaugă această linie
     }
   }).then(event => event ?? null);
 }
+
 
 export async function postEventTimeSlot(eventData: Event): Promise<Event | null> {
   const userIds = await getAllCourseUserIds(eventData);
@@ -255,10 +273,12 @@ export async function postEventTimeSlot(eventData: Event): Promise<Event | null>
       timeSlotId: eventData.timeSlotId,
       users: {
         connect: userIds.map(userId => ({ id: userId }))
-      }
+      },
+      description: eventData.description, // Adaugă această linie
     }
   }).then(event => event ?? null);
 }
+
 
 // TimeSlot-related Functions
 // ==========================
@@ -268,7 +288,11 @@ export async function getTimeSlot(timeSlotId: string): Promise<TimeSlot | null> 
     where: { id: timeSlotId },
   });
 }
-
+export async function getTimeSlots(courseId: string): Promise<TimeSlot[]> {
+  return prisma.timeSlot.findMany({
+    where: { courseId },
+  });
+}
 // HomeClass Search Function
 // =========================
 
@@ -507,4 +531,111 @@ export async function resetUserPassword(userId: string, newPassword: string) {
     // Extract and return just the email addresses
     return users.map((user) => user.email);
   }
- 
+  export async function getWeekSchedule(weekNumber: number, year: number) {
+    const timeSlots = await prisma.timeSlot.findMany({
+      where: {
+        course: {
+          events: {
+            some: {
+              weekNumber,
+              yearNumber: year,
+            },
+          },
+        },
+      },
+      include: {
+        course: true, // Pentru a obține numele cursului
+      },
+    });
+  
+    return timeSlots;
+  }
+
+
+export async function postEventAction( eventData: EventData) {
+  if ( !eventData) {
+    return { error: "Missing parameters" };
+  }
+
+  if (
+    !eventData.title ||
+    !eventData.type ||
+    !eventData.courseId ||
+    (eventData.timeSlotId === undefined &&
+      (!eventData.dayOfWeek || !eventData.startHour || !eventData.startMinute || !eventData.endHour || !eventData.endMinute))
+  ) {
+    return { error: "Missing event data fields" };
+  }
+
+  try {
+    let newEvent: Event | null = null;
+    
+    const completeEventData = {
+      ...eventData,
+      id: crypto.randomUUID(),
+      description: eventData.description ?? null,
+      timeSlotId: eventData.timeSlotId ?? "",
+      type: eventData.type as EventType, // ✅ Convertim `string` în `EventType`
+    };
+
+    if (eventData.timeSlotId === undefined) {
+      newEvent = await postEventFloating(
+        eventData.dayOfWeek!,
+        eventData.startHour!,
+        eventData.startMinute!,
+        eventData.endHour!,
+        eventData.endMinute!,
+        completeEventData
+      );
+    } else {
+      newEvent = await postEventTimeSlot(completeEventData);
+    }
+
+    if (newEvent) {
+      
+      return { success: "Event created successfully", event: newEvent };
+    } else {
+      return { error: "Failed to create event" };
+    }
+  } catch (error) {
+    console.error("Error during event creation:", error);
+    return { error: "Server error" };
+  }
+}
+export async function CourseUsersEmails(courseId: string): Promise<string[]> {
+  // Găsim homeClassId asociat cursului
+  const course = await prisma.course.findUnique({
+    where: { id: courseId },
+    select: { homeClassId: true, facultyMember: { select: { user: { select: { email: true } } } } }
+  });
+
+  if (!course) {
+    console.log(`No course found with ID: ${courseId}`);
+    return [];
+  }
+
+  // Găsim toți utilizatorii din HomeClass (dacă există)
+  let homeClassEmails: string[] = [];
+  if (course.homeClassId) {
+    const homeClassUsers = await prisma.user.findMany({
+      where: {
+        OR: [
+          { student: { homeClassId: course.homeClassId } }, // Studenții clasei
+          { facultyMember: { homeroomClass: { id: course.homeClassId } } } // Dirigintele
+        ]
+      },
+      select: { email: true }
+    });
+
+    homeClassEmails = homeClassUsers.map(user => user.email);
+  }
+
+  // Adăugăm și profesorul cursului
+  const facultyEmail = course.facultyMember?.user.email ? [course.facultyMember.user.email] : [];
+
+  // Combinăm toate emailurile
+  const allEmails = [...new Set([...homeClassEmails, ...facultyEmail])];
+
+  console.log("All Emails for Course:", courseId, allEmails);
+  return allEmails;
+}
